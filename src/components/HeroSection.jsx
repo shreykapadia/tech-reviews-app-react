@@ -14,14 +14,14 @@ function HeroSection() {
         <p className="text-xl md:text-2xl text-brand-text mb-10 leading-relaxed max-w-3xl mx-auto animate-fade-in">
           From cutting-edge gadgets to essential software, TechScore provides unbiased, in-depth reviews and comparisons. Make smarter choices with us.
         </p>
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 animate-fade-in delay-200">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 animate-fade-in delay-200 px-4 sm:px-0">
           <input
             type="email"
             placeholder="email@example.com"
-            className="w-full sm:w-96 p-4 pr-12 text-lg rounded-full border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all duration-300 shadow-md text-gray-700 placeholder-gray-400"
+            className="w-full max-w-xs sm:max-w-sm md:w-96 p-3 pr-10 text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all duration-300 shadow-md text-gray-700 placeholder-gray-400"
           />
           <button
-            className="flex items-center justify-center px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
+            className="flex items-center justify-center max-w-xs sm:w-auto px-6 py-3 bg-blue-600 text-white text-base font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
           >
             Sign up for updates
           </button>
