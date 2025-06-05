@@ -1,10 +1,71 @@
 // src/components/Header.jsx
 import React, { useState, useEffect, useRef } from 'react';
 
+// --- Icon Components ---
+const SearchIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+const AnimatedMenuIcon = ({ isOpen }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2.5}
+    stroke="currentColor"
+    className="w-7 h-7"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      // Path 1: Forms top hamburger line OR first leg of X.
+      // All paths are defined as if they are the middle bar (d="M3.75 12h16.5").
+      // When not open, this path is translated UP to become the top hamburger line.
+      // When open, it's at its natural y=12 position and rotates.
+      className={`transition-all duration-300 ease-in-out origin-center ${
+        isOpen ? 'rotate-45' : 'translate-y-[-6.125px]'
+      }`}
+      d="M3.75 12h16.5" // Defined at the vertical center
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      // Path 2: Forms middle hamburger line OR fades out for X.
+      // Stays at y=12. Fades and shrinks horizontally when open.
+      className={`transition-all duration-300 ease-in-out origin-center ${
+        isOpen ? 'opacity-0 scale-x-0' : 'opacity-100 scale-x-100'
+      }`}
+      d="M3.75 12h16.5" // Defined at the vertical center
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      // Path 3: Forms bottom hamburger line OR second leg of X.
+      // When not open, this path is translated DOWN to become the bottom hamburger line.
+      // When open, it's at its natural y=12 position and rotates.
+      className={`transition-all duration-300 ease-in-out origin-center ${
+        isOpen ? '-rotate-45' : 'translate-y-[6.125px]'
+      }`}
+      d="M3.75 12h16.5" // Defined at the vertical center
+    />
+  </svg>
+);
+
+const BackArrowIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+  </svg>
+);
+
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const headerRef = useRef(null);
+  const mobileSearchInputRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,73 +82,212 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Effect for closing menu when clicking outside of it
+  // Effect for closing menu or mobile search when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
+        if (isMenuOpen) setIsMenuOpen(false);
+        if (isMobileSearchOpen) setIsMobileSearchOpen(false);
       }
     };
-    if (isMenuOpen) {
+    if (isMenuOpen || isMobileSearchOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isMobileSearchOpen]);
+
+  // Effect for focusing mobile search input when it opens
+  useEffect(() => {
+    if (isMobileSearchOpen && mobileSearchInputRef.current) {
+      mobileSearchInputRef.current.focus();
+    }
+  }, [isMobileSearchOpen]);
+
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    if (searchQuery.trim() === '') return;
+    // If submitting an empty query (e.g., by clicking icon when input is empty),
+    // we can choose to just close the search bar.
+    // setIsMobileSearchOpen(false); // Or keep it open and let user clear/type
+    alert(`Searching for: ${searchQuery}\n(Search functionality to be implemented)`);
+    // Optionally close after successful search:
+    // setSearchQuery('');
+    // setIsMobileSearchOpen(false);
+  };
+
+  const handleToggleMenu = () => {
+    if (isMobileSearchOpen) {
+      setIsMobileSearchOpen(false); // Close search if opening menu
+      setSearchQuery('');
+    }
+    setIsMenuOpen(prev => !prev);
+  };
+
+  const handleToggleMobileSearch = () => {
+    setIsMobileSearchOpen(prev => {
+      const openingSearch = !prev;
+      if (openingSearch) {
+        setIsMenuOpen(false); // Close menu if opening search
+      } else {
+        setSearchQuery(''); // Clear search query when closing
+      }
+      return openingSearch;
+    });
+  };
+
+  const closeMobileNavAndSearch = () => {
+    setIsMenuOpen(false);
+    // setIsMobileSearchOpen(false); // Not needed here as links are in menu
+  }
 
   // Determine header style based on scroll and menu state
-  const hasSolidBackground = isScrolled || isMenuOpen;
+  const hasSolidBackground = isScrolled || isMenuOpen || isMobileSearchOpen;
   // Text color for logo and hamburger icon (contrasts with background)
-  const primaryInteractiveColorClass = hasSolidBackground ? 'text-brand-primary' : 'text-white';
+  const primaryInteractiveColorClass = hasSolidBackground ? 'text-brand-primary' : 'text-gray-700';
   // Text color for navigation links (contrasts with background)
-  const navLinkColorClass = hasSolidBackground ? 'text-brand-text' : 'text-white';
+  const navLinkColorClass = hasSolidBackground ? 'text-brand-text' : 'text-gray-700';
+  // Search input style based on background
+  const desktopSearchInputClasses = `
+    w-full py-2 px-4 pr-10 text-sm rounded-full border-2 transition-all duration-300 ease-in-out
+    focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent
+    ${hasSolidBackground 
+      ? 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white' 
+      : 'border-gray-400 bg-transparent text-gray-700 placeholder-gray-500 focus:bg-white focus:text-brand-text focus:placeholder-gray-500'
+    }
+  `;
+  const desktopSearchButtonClasses = `
+    absolute right-0 top-0 h-full flex items-center justify-center px-3 transition-colors duration-300
+    ${hasSolidBackground ? 'text-brand-primary hover:text-brand-accent' : 'text-gray-700 hover:text-brand-primary'}
+  `;
 
   return (
     <header
       ref={headerRef}
-      className={`fixed w-full top-0 left-0 z-50 transition-all duration-300 ease-in-out py-4 ${
-        hasSolidBackground ? 'bg-white shadow-lg' : 'bg-transparent'
+      className={`fixed w-full top-0 left-0 z-50 transition-all duration-300 ease-in-out ${
+        hasSolidBackground ? 'bg-white shadow-lg' : 'bg-transparent' /* isMobileSearchOpen is already part of hasSolidBackground */
       }`}
     >
-      <div className="container mx-auto flex justify-between items-center px-4">
-        {/* Logo */}
-        <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 cursor-pointer font-serif ${primaryInteractiveColorClass}`}>
-          TechScore
-        </h1>
+      {/* Added `relative` for positioning animated children */}
+      <div className="container mx-auto relative flex items-center justify-between px-4 h-16 md:h-20"> {/* Removed overflow-hidden for simplicity with inline search */}
+ 
+        {/* --- DEFAULT HEADER UI --- */}
+        {/* This block now always stays, and the mobile search input is injected into it */}
+        <div
+          className="flex items-center justify-between w-full h-full"
+        >
+            {/* Logo */}
+            <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 cursor-pointer font-serif text-brand-primary`}>
+              TechScore
+            </h1>
 
-        {/* Hamburger Button - visible on mobile, hidden on md and up */}
-        <div className="md:hidden">
-          <button
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-            className={`p-1 rounded focus:outline-none ${primaryInteractiveColorClass}`}
-          >
-            {isMenuOpen ? (
-              // Close (X) icon
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              // Hamburger icon
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-7 h-7">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
-            )}
-          </button>
+            {/* Conditionally Rendered Mobile Search Input Form */}
+            <form
+                id="mobileHeaderSearchForm"
+                onSubmit={handleSearchSubmit}
+                // md:hidden ensures it's only for mobile.
+                // flex-grow allows it to take available space.
+                // mx-2 for spacing.
+                // transition-all for smooth width/opacity changes.
+                className={`md:hidden flex-grow mx-2 transition-all duration-300 ease-in-out ${
+                    isMobileSearchOpen ? 'max-w-full opacity-100' : 'max-w-0 opacity-0 pointer-events-none'
+                }`}
+            >
+                <input
+                    ref={mobileSearchInputRef}
+                    type="search"
+                    name="mobile_search_query"
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                    placeholder="Search..."
+                    className="w-full py-2 bg-transparent border-0 border-b-2 border-gray-300 focus:border-brand-primary focus:outline-none focus:ring-0 text-brand-text placeholder-gray-500"
+                    aria-label="Search input for mobile"
+                />
+            </form>
+
+            {/* Desktop Search Bar (Centrally Aligned) */}
+            <div className="hidden md:flex flex-1 mx-4 lg:mx-8 justify-center items-center">
+              <form onSubmit={handleSearchSubmit} className="w-full max-w-lg relative">
+                <input
+                  type="search"
+                  name="search_query_field"
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                  placeholder="Search products, reviews..."
+                  className={desktopSearchInputClasses}
+                  aria-label="Search"
+                />
+                <button type="submit" className={desktopSearchButtonClasses} aria-label="Submit search">
+                  <SearchIcon />
+                </button>
+              </form>
+            </div>
+
+            {/* Right-Side Controls: Mobile Search Icon, Hamburger, Desktop Nav */}
+            {/* Added flex-shrink-0 to prevent this group from shrinking */}
+            <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
+              {/* Mobile Search Toggle/Submit Button */}
+              <button
+                // If search is open, this button acts as submit for the form.
+                // If search is closed, it toggles the search open.
+                onClick={!isMobileSearchOpen ? handleToggleMobileSearch : undefined}
+                type={isMobileSearchOpen ? "submit" : "button"}
+                form={isMobileSearchOpen ? "mobileHeaderSearchForm" : undefined}
+                aria-label={isMobileSearchOpen ? "Submit search query" : "Open search bar"}
+                className={`md:hidden p-1 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
+              >
+                <SearchIcon />
+              </button>
+
+              {/* Hamburger Button (Mobile Only) */}
+              <div className="md:hidden">
+                <button
+                  onClick={handleToggleMenu}
+                  aria-label="Toggle menu"
+                  aria-expanded={isMenuOpen}
+                  className={`p-1 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}>
+                  <AnimatedMenuIcon isOpen={isMenuOpen} />
+                </button>
+              </div>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden md:block">
+                 <ul className={`flex flex-row space-x-6 lg:space-x-8 text-lg font-medium items-center ${navLinkColorClass}`}>
+                    <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</a></li>
+                    <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Products</a></li>
+                    <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>About</a></li>
+                 </ul>
+              </nav>
+          </div>
         </div>
-
-        {/* Navigation Links */}
-        <nav className={`absolute md:relative top-full md:top-auto left-0 md:left-auto right-0 md:right-auto w-full md:w-auto transition-all duration-300 ease-in-out origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-95 opacity-0 pointer-events-none'} md:scale-y-100 md:opacity-100 md:pointer-events-auto ${isMenuOpen ? 'bg-white shadow-lg md:shadow-none py-3' : ''} md:bg-transparent`}>
-          <ul className={`flex flex-col md:flex-row md:space-x-6 lg:space-x-8 text-lg font-medium items-center ${isMenuOpen ? 'px-4 space-y-4 text-brand-text' : navLinkColorClass}`}>
-            <li><a href="#" className="block py-2 md:py-0 hover:text-brand-primary transition-colors duration-200" onClick={() => setIsMenuOpen(false)}>Home</a></li>
-            <li><a href="#" className="block py-2 md:py-0 hover:text-brand-primary transition-colors duration-200" onClick={() => setIsMenuOpen(false)}>Products</a></li>
-            <li><a href="#" className="block py-2 md:py-0 hover:text-brand-primary transition-colors duration-200" onClick={() => setIsMenuOpen(false)}>About</a></li>
-          </ul>
-        </nav>
       </div>
+
+      {/* Mobile Navigation Dropdown (only if menu is open AND mobile search is NOT active) */}
+      {/* 
+        This nav is always in the DOM for mobile, its visibility and animation are controlled by classes.
+        - `origin-top`: Ensures scaling happens from the top edge.
+        - `transition-all duration-300 ease-in-out`: Smoothly animates opacity and transform (scale).
+      */}
+      <nav
+        className={`md:hidden absolute top-full left-0 right-0 w-full bg-white shadow-lg py-3 transition-all duration-300 ease-in-out origin-top ${
+          isMenuOpen && !isMobileSearchOpen
+            ? 'opacity-100 scale-y-100' // Open state: visible and full height
+            : 'opacity-0 scale-y-0 pointer-events-none' // Closed state: invisible, zero height, not interactive
+        }`}
+      >
+          <ul className="flex flex-col px-4 space-y-4 text-brand-text text-lg font-medium items-center">
+            <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</a></li>
+            <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Products</a></li>
+            <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>About</a></li>
+          </ul>
+      </nav>
     </header>
   );
 }
+
 export default Header;
