@@ -8,7 +8,7 @@ function ProductListings({ products, onProductClick, calculateCriticsScore }) {
   }
 
   return (
-    <section className="container mx-auto p-8 pt-20">
+    <section className="container mx-auto p-8 pt-8">
       <h2 className="text-3xl font-bold text-brand-primary mb-8 text-center font-serif">Featured Reviews</h2>
       <div id="product-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {products.map(product => (

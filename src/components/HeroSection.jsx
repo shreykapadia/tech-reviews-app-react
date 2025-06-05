@@ -3,7 +3,7 @@ import React from 'react';
 
 function HeroSection() {
   return (
-    <section className="hero-bg-image relative flex items-center justify-center min-h-screen py-24 text-center px-4 overflow-hidden">
+    <section className="hero-bg-image relative flex items-center justify-center min-h-screen py-24 text-center overflow-hidden">
       <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-filter backdrop-blur-sm"></div>
 
       <div className="relative z-10 max-w-4xl mx-auto">
