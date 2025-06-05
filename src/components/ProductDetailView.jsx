@@ -61,7 +61,7 @@ function ProductDetailView({ product, onBackClick, calculateCriticsScore }) {
               </div>
             </div>
 
-            <div className="mb-8 p-6 bg-brand-light-gray rounded-lg shadow-sm border border-gray-100">
+            <div className="mb-8 p-6 bg-brand-light-gray rounded-lg shadow-sm border border-gray-100 text-left">
               <h3 className="text-2xl font-bold text-brand-text mb-4 font-serif">Key Specifications</h3>
               <ul id="product-detail-key-specs" className="list-disc list-inside space-y-2 text-brand-text">
                 {Object.entries(product.keySpecs).map(([key, value]) => (
@@ -74,7 +74,7 @@ function ProductDetailView({ product, onBackClick, calculateCriticsScore }) {
               <summary id="pros-cons-toggle-btn" className="text-lg text-brand-text font-serif cursor-pointer">
                 AI-Generated Pros & Cons Summary
               </summary>
-              <div id="pros-cons-content" className="content mt-4">
+              <div id="pros-cons-content" className="content mt-4 text-left">
                 <h4 className="text-xl font-semibold text-brand-text mb-3">Pros:</h4>
                 <ul id="product-detail-pros" className="list-disc list-inside space-y-1 text-brand-text mb-4">
                   {product.aiProsCons?.pros?.map((pro, index) => (
