@@ -1,5 +1,6 @@
 // src/components/Header.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 
 // --- Icon Components ---
 const SearchIcon = () => (
@@ -59,7 +60,7 @@ const BackArrowIcon = () => (
   </svg>
 );
 
-function Header() {
+function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubmit and isHomePage props
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -112,13 +113,13 @@ function Header() {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     if (searchQuery.trim() === '') return;
-    // If submitting an empty query (e.g., by clicking icon when input is empty),
-    // we can choose to just close the search bar.
-    // setIsMobileSearchOpen(false); // Or keep it open and let user clear/type
-    alert(`Searching for: ${searchQuery}\n(Search functionality to be implemented)`);
-    // Optionally close after successful search:
-    // setSearchQuery('');
-    // setIsMobileSearchOpen(false);
+
+    if (onSearchSubmit) {
+      onSearchSubmit(searchQuery);
+    }
+    // It's good practice to clear the search query in the header and close mobile search after submission
+    setSearchQuery('');
+    if (isMobileSearchOpen) setIsMobileSearchOpen(false);
   };
 
   const handleToggleMenu = () => {
@@ -146,31 +147,33 @@ function Header() {
     // setIsMobileSearchOpen(false); // Not needed here as links are in menu
   }
 
-  // Determine header style based on scroll and menu state
-  const hasSolidBackground = isScrolled || isMenuOpen || isMobileSearchOpen;
+  // Determine if the header should be transparent
+  // Transparent only if on homepage, not scrolled, and no menus/mobile search are open
+  const showTransparentHeader = isHomePage && !isScrolled && !isMenuOpen && !isMobileSearchOpen;
+
   // Text color for logo and hamburger icon (contrasts with background)
-  const primaryInteractiveColorClass = hasSolidBackground ? 'text-brand-primary' : 'text-gray-700';
+  const primaryInteractiveColorClass = showTransparentHeader ? 'text-gray-700' : 'text-brand-primary';
   // Text color for navigation links (contrasts with background)
-  const navLinkColorClass = hasSolidBackground ? 'text-brand-text' : 'text-gray-700';
+  const navLinkColorClass = showTransparentHeader ? 'text-gray-700' : 'text-brand-text';
   // Search input style based on background
   const desktopSearchInputClasses = `
     w-full py-2 px-4 pr-10 text-sm rounded-full border-2 transition-all duration-300 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent
-    ${hasSolidBackground 
-      ? 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white' 
-      : 'border-gray-400 bg-transparent text-gray-700 placeholder-gray-500 focus:bg-white focus:text-brand-text focus:placeholder-gray-500'
+    ${showTransparentHeader // When header is transparent, search bar still looks solid
+      ? 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white shadow-md' // Styles for solid look
+      : 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white' // Styles for solid state (already solid)
     }
   `;
   const desktopSearchButtonClasses = `
     absolute right-0 top-0 h-full flex items-center justify-center px-3 transition-colors duration-300
-    ${hasSolidBackground ? 'text-brand-primary hover:text-brand-accent' : 'text-gray-700 hover:text-brand-primary'}
+    ${showTransparentHeader ? 'text-brand-primary hover:text-brand-accent' : 'text-brand-primary hover:text-brand-accent'}
   `;
 
   return (
     <header
       ref={headerRef}
       className={`fixed w-full top-0 left-0 z-50 transition-all duration-300 ease-in-out ${
-        hasSolidBackground ? 'bg-white shadow-lg' : 'bg-transparent' /* isMobileSearchOpen is already part of hasSolidBackground */
+        showTransparentHeader ? 'bg-transparent' : 'bg-white shadow-lg'
       }`}
     >
       {/* Added `relative` for positioning animated children */}
@@ -182,9 +185,11 @@ function Header() {
           className="flex items-center justify-between w-full h-full"
         >
             {/* Logo */}
-            <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 cursor-pointer font-serif text-brand-primary`}>
-              TechScore
-            </h1>
+            <Link to="/" className="cursor-pointer" onClick={closeMobileNavAndSearch}>
+              <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 font-serif text-brand-primary`}>
+                TechScore
+              </h1>
+            </Link>
 
             {/* Conditionally Rendered Mobile Search Input Form */}
             <form

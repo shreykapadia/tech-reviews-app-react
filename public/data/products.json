@@ -5,6 +5,7 @@
       "brand": "Apple",
       "category": "Smartphone",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=iPhone16Pro",
+      "description": "The iPhone 16 Pro from Apple redefines mobile excellence with its A18 Pro Chip, stunning 6.3-inch ProMotion OLED display, and a revolutionary 48MP main camera system, delivering unparalleled performance and photographic capabilities.",
       "keySpecs": {
         "screenSize": "6.3\" ProMotion OLED",
         "processor": "A18 Pro Chip",
@@ -53,6 +54,7 @@
       "brand": "Apple",
       "category": "Smartphone",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=iPhone16",
+      "description": "Experience the perfect blend of power and style with the Apple iPhone 16, featuring the A18 Chip, a vibrant 6.1-inch Super Retina XDR display, and an upgraded 48MP main camera for capturing life's moments in stunning detail.",
       "keySpecs": {
         "screenSize": "6.1\" Super Retina XDR",
         "processor": "A18 Chip",
@@ -107,6 +109,7 @@
       "brand": "Google",
       "category": "Smartphone",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=Pixel9Pro",
+      "description": "Google's Pixel 9 Pro sets a new standard for smart photography and AI integration, powered by the Tensor G4 Chip, a brilliant 6.7-inch LTPO OLED display, and an advanced AI camera system for breathtaking images and intelligent features.",
       "keySpecs": {
         "screenSize": "6.7\" LTPO OLED",
         "processor": "Tensor G4 Chip",
@@ -168,6 +171,7 @@
       "brand": "Google",
       "category": "Smartphone",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=Pixel9",
+      "description": "The Google Pixel 9 offers a compact yet powerful smartphone experience, driven by the Tensor G4 Chip. It features a crisp 6.2-inch OLED display and a smart dual-camera system, all wrapped in a sleek, modern design.",
       "keySpecs": {
         "screenSize": "6.2\" OLED",
         "processor": "Tensor G4 Chip",
@@ -228,6 +232,7 @@
       "brand": "Samsung",
       "category": "Smartphone",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=S25Ultra",
+      "description": "Samsung's Galaxy S25 Ultra is the pinnacle of mobile innovation, boasting a Snapdragon 8 Gen 4 processor, a massive 6.8-inch Dynamic AMOLED 2X display, a groundbreaking 200MP camera, and integrated S Pen functionality for ultimate productivity and creativity.",
       "keySpecs": {
         "screenSize": "6.8\" Dynamic AMOLED 2X",
         "processor": "Snapdragon 8 Gen 4",
@@ -276,6 +281,7 @@
       "brand": "Samsung",
       "category": "Smartphone",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=S25",
+      "description": "The Samsung Galaxy S25 combines sleek design with powerful performance, featuring the Snapdragon 8 Gen 4 processor, a vibrant 6.2-inch Dynamic AMOLED 2X display, and a versatile triple camera system, making it a premium compact choice.",
       "keySpecs": {
         "screenSize": "6.2\" Dynamic AMOLED 2X",
         "processor": "Snapdragon 8 Gen 4",
@@ -326,6 +332,7 @@
       "brand": "Apple",
       "category": "Laptop",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=MBAirM4",
+      "description": "Apple's MacBook Air with the M4 chip (13-inch) delivers exceptional performance and incredible battery life in an impossibly thin and light design, featuring a stunning Liquid Retina display and fanless operation for silent efficiency.",
       "keySpecs": {
         "screenSize": "13.6\" Liquid Retina",
         "processor": "M4 Chip",
@@ -375,6 +382,7 @@
       "brand": "Apple",
       "category": "Laptop",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=MBProM4",
+      "description": "Unleash professional-grade power with the Apple MacBook Pro M4 (14-inch), equipped with the M4 Pro chip, a breathtaking Liquid Retina XDR display with ProMotion, and extended battery life for demanding creative workflows.",
       "keySpecs": {
         "screenSize": "14.2\" Liquid Retina XDR",
         "processor": "M4 Pro Chip",
@@ -429,6 +437,7 @@
       "brand": "Microsoft",
       "category": "Laptop",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=SL7",
+      "description": "The Microsoft Surface Laptop 7 (13.5-inch) combines elegant design with next-generation performance, featuring the Snapdragon X Elite processor, a vibrant PixelSense display, and all-day battery life for seamless productivity on Windows.",
       "keySpecs": {
         "screenSize": "13.5\" PixelSense",
         "processor": "Snapdragon X Elite",
@@ -490,6 +499,7 @@
       "brand": "Dell",
       "category": "Laptop",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=XPS14",
+      "description": "Dell's XPS 14 is a masterclass in premium laptop design, offering a stunning 14.5-inch OLED display, powerful Intel Core Ultra 7 processing, and optional NVIDIA RTX graphics, all housed in a sleek and minimalist chassis.",
       "keySpecs": {
         "screenSize": "14.5\" OLED",
         "processor": "Intel Core Ultra 7",
@@ -551,6 +561,7 @@
       "brand": "HP",
       "category": "Laptop",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=Spectrex360",
+      "description": "The HP Spectre x360 14 is a versatile 2-in-1 convertible laptop, featuring a gorgeous 14-inch OLED touchscreen, Intel Core Ultra 7 processor, and long battery life, perfect for creative professionals and on-the-go productivity.",
       "keySpecs": {
         "screenSize": "14\" OLED Touch",
         "processor": "Intel Core Ultra 7",
@@ -602,6 +613,7 @@
       "brand": "Samsung",
       "category": "TV",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=S95D",
+      "description": "Samsung's S95D QD-OLED TV (65-inch) delivers breathtaking picture quality with its advanced anti-reflection screen, vibrant colors, deep blacks, and a 144Hz refresh rate for an immersive viewing and gaming experience.",
       "keySpecs": {
         "screenSize": "65\" QD-OLED",
         "resolution": "4K Resolution",
@@ -661,6 +673,7 @@
       "brand": "LG",
       "category": "TV",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=G4OLED",
+      "description": "The LG G5 OLED evo TV (65-inch) offers an exceptionally bright and vibrant picture with its Brightness Booster Max technology and stunning Gallery Design that mounts flush to your wall, perfect for cinephiles and gamers alike.",
       "keySpecs": {
         "screenSize": "65\" OLED evo",
         "resolution": "4K Resolution",
@@ -714,6 +727,7 @@
       "brand": "Sony",
       "category": "TV",
       "imageURL": "https://placehold.co/150x150/E0E0E0/1F2937?text=A95L",
+      "description": "Sony's BRAVIA A95L QD-OLED TV (65-inch) combines stunning QD-OLED picture quality with the intelligent Cognitive Processor XR and Acoustic Surface Audio+ for a deeply immersive and realistic home entertainment experience, powered by Google TV.",
       "keySpecs": {
         "screenSize": "65\" QD-OLED",
         "resolution": "4K Resolution",

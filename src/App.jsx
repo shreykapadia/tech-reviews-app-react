@@ -1,5 +1,6 @@
 // src/App.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Added useLocation
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import SearchAndFilter from './components/SearchAndFilter';
@@ -7,10 +8,12 @@ import ProductListings from './components/ProductListings';
 import ProductDetailView from './components/ProductDetailView';
 import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/scoreCalculations';
 
+import SearchResultsPage from './components/SearchResultsPage'; // Import the SearchResultsPage
+
 import './App.css';
 import './index.css';
 
-function App() {
+function AppContent() { // Renamed App to AppContent to use hooks from react-router-dom
   const [productsData, setProductsData] = useState({});
   const [criticWeightsData, setCriticWeightsData] = useState({});
   const [allProductsArray, setAllProductsArray] = useState([]); // Flattened array for filtering
@@ -19,6 +22,12 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [availableCategories, setAvailableCategories] = useState([]);
+
+  // State for header search functionality
+  const [headerSearchQuery, setHeaderSearchQuery] = useState('');
+  const [headerSearchResults, setHeaderSearchResults] = useState(null);
+  const navigate = useNavigate(); 
+  const location = useLocation(); // Hook to get current location
 
   // Create a memoized version of calculateCriticsScore that depends on criticWeightsData
   const calculateCriticsScore = useCallback((reviews) => {
@@ -100,38 +109,103 @@ function App() {
     setSelectedProduct(null);
   };
 
-  return (
-    <div className="bg-brand-light-gray font-sans antialiased text-brand-text">
-      <Header />
+  // This function is called when the search is submitted from the Header
+  const handleHeaderSearchSubmit = (query) => {
+    setHeaderSearchQuery(query); // Update the search query state
+    navigate('/search');         // Navigate to the search results page
+  };
 
-      <main>
-        <HeroSection />
+  // useEffect to calculate search results when headerSearchQuery or allProductsArray changes
+  useEffect(() => {
+    // If there's no search query, set results to null (or empty array if on search page already)
+    // This allows SearchResultsPage to show its initial "Enter a search term" prompt
+    if (!headerSearchQuery.trim()) {
+      if (location.pathname === '/search') {
+        setHeaderSearchResults([]); // Show "no results" or prompt on search page
+      } else {
+        setHeaderSearchResults(null); // No active search
+      }
+      return;
+    }
 
-        {/* Conditionally render SearchAndFilter and ProductListings or ProductDetailView */}
-        {selectedProduct ? (
-          <ProductDetailView
-            product={selectedProduct}
-            onBackClick={handleBackToProducts}
+    // Only perform filtering if allProductsArray has been populated
+    if (allProductsArray.length > 0) {
+      const lowerCaseQuery = headerSearchQuery.toLowerCase();
+      const results = allProductsArray.filter(product =>
+        product.productName.toLowerCase().includes(lowerCaseQuery) ||
+        product.brand.toLowerCase().includes(lowerCaseQuery) ||
+        (product.category && product.category.toLowerCase().includes(lowerCaseQuery))
+      );
+      setHeaderSearchResults(results);
+    } else if (headerSearchQuery.trim()) {
+      // Products aren't loaded yet, but a search was made. Show empty results.
+      setHeaderSearchResults([]);
+    }
+  }, [headerSearchQuery, allProductsArray, location.pathname]); // Rerun when query, products, or location changes
+
+  // Component for the main page content (Home)
+  const HomePageLayout = () => (
+    <>
+      <HeroSection />
+      {selectedProduct ? (
+        <ProductDetailView
+          product={selectedProduct}
+          onBackClick={handleBackToProducts}
+          calculateCriticsScore={calculateCriticsScore}
+        />
+      ) : (
+        <>
+          <SearchAndFilter
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+            categories={availableCategories}
+          />
+          <ProductListings
+            products={filteredProducts}
+            onProductClick={handleProductCardClick}
             calculateCriticsScore={calculateCriticsScore}
           />
-        ) : (
-          <>
-            <SearchAndFilter
-              searchTerm={searchTerm}
-              onSearchChange={handleSearchChange}
-              selectedCategory={selectedCategory}
-              onCategoryChange={handleCategoryChange}
-              categories={availableCategories}
-            />
-            <ProductListings
-              products={filteredProducts}
-              onProductClick={handleProductCardClick}
-              calculateCriticsScore={calculateCriticsScore}
-            />
-          </>
-        )}
+        </>
+      )}
+    </>
+  );
+
+  const isCurrentPageHome = location.pathname === '/';
+
+  return (
+    <div className="bg-brand-light-gray font-sans antialiased text-brand-text">
+      <Header onSearchSubmit={handleHeaderSearchSubmit} isHomePage={isCurrentPageHome} />
+
+      <main>
+        <Routes>
+          <Route path="/" element={<HomePageLayout />} />
+          <Route
+            path="/search"
+            element={
+              <SearchResultsPage
+                searchTerm={headerSearchQuery}
+                searchResults={headerSearchResults}
+                onProductClick={handleProductCardClick} // Assuming you want to open ProductDetailView from search results too
+                calculateCriticsScore={calculateCriticsScore}
+              />
+            }
+          />
+          {/* You might want a dedicated route for ProductDetailView if accessed directly via URL */}
+          {/* <Route path="/product/:productId" element={<ProductDetailView ... />} /> */}
+        </Routes>
       </main>
     </div>
+  );
+}
+
+// Wrap AppContent with Router
+function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
