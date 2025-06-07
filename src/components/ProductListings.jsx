@@ -20,10 +20,10 @@ function ProductListings({ products, calculateCriticsScore }) {
   const getProductKey = (product) => product.id || product.productName;
 
   const carouselConfig = {
-    itemsPerPageDesktop: 3, // Show 3 cards for wider appearance
+    itemsPerPageDesktop: 4, // Show 4 cards
     maxItems: 12,
     mobileItemWidth: 'w-[85vw] sm:w-[70vw]', // Make cards wider on mobile
-    desktopPageContainerClassName: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 md:gap-8', // Adjust grid for 3 items
+    desktopPageContainerClassName: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8', // Adjust grid for 4 items
   };
 
   useEffect(() => {

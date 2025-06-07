@@ -68,7 +68,10 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
         <img
           src={product.imageURL || '/images/placeholder-image.webp'}
           alt={product.productName}
-          className={`w-full h-full object-cover ${isCarousel ? "group-hover:scale-105 transition-transform duration-300 rounded-md" : ""}`} // Added rounded-md for carousel
+          className={`
+            w-full h-full 
+            ${isCarousel ? "object-contain group-hover:scale-105 transition-transform duration-300 rounded-md" : "object-cover"}
+          `}
           loading="lazy" // Criterion II.5
         />
       </div>
@@ -113,19 +116,26 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
         </div>
 
         {/* Scores Section - Criterion IV.1 */}
-        <div className={`flex items-center ${
+        <div className={`flex ${
           isCarousel 
-            ? "text-base gap-x-4 mt-auto pt-3" // Larger text, gap, and top padding for carousel
-            : "text-xs gap-x-3 mt-2 flex-wrap gap-y-1" // Default
+            ? "justify-around mt-auto pt-3 items-start" // Use justify-around for spacing, items-start for vertical alignment
+            : "items-center text-xs gap-x-3 mt-2 flex-wrap gap-y-1" // Default for non-carousel
           }`}>
           {/* mt-auto for carousel pushes scores to the bottom of flex-grow area, pt-2 for spacing. Criterion IV.2, IV.6 */}
-          <div>
-            <span className={`font-semibold ${criticsScoreColorClass}`}>{criticsScoreDisplay}</span> {/* Criterion IV.3, IV.4, IV.5 */}
-            <span className="text-gray-500 ml-0.5">Critics</span>
+          {/* Critic Score Block */}
+          <div className={`flex flex-col ${isCarousel ? "items-center" : ""}`}>
+            <span className={`${isCarousel ? "text-2xl font-bold" : "font-semibold"} ${criticsScoreColorClass}`}>
+              {criticsScoreDisplay}
+            </span>
+            <span className={`text-gray-500 ${isCarousel ? "text-xs mt-0.5" : "ml-0.5"}`}>Critics</span>
           </div>
-          <div>
-            <span className={`font-semibold ${audienceScoreColorClass}`}>{audienceScoreToDisplay}</span> {/* Criterion IV.3, IV.4, IV.5 */}
-            <span className="text-gray-500 ml-0.5">Audience</span>
+
+          {/* Audience Score Block */}
+          <div className={`flex flex-col ${isCarousel ? "items-center" : ""}`}>
+            <span className={`${isCarousel ? "text-2xl font-bold" : "font-semibold"} ${audienceScoreColorClass}`}>
+              {audienceScoreToDisplay}
+            </span>
+            <span className={`text-gray-500 ${isCarousel ? "text-xs mt-0.5" : "ml-0.5"}`}>Audience</span>
             {/* Audience review count - omitted for carousel for simplicity (Criterion IV.3), shown for default */}
             {!isCarousel && product.audienceReviewCount > 0 && (
               <span className="text-gray-400 text-xs ml-0.5">({product.audienceReviewCount.toLocaleString()})</span>
