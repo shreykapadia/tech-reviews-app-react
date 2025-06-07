@@ -1,6 +1,7 @@
 // src/App.jsx
 import React, { useState, useEffect, useCallback } from 'react'; // Added useLocation
 import Cookies from 'js-cookie'; // Import js-cookie
+import { HelmetProvider } from 'react-helmet-async'; // Import HelmetProvider
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
@@ -16,6 +17,7 @@ import CookieConsentBanner from './components/CookieConsentBanner'; // Import th
 import TermsOfServicePage from './components/TermsOfServicePage'; // Import the Terms of Service page
 import ProductPage from './components/ProductPage'; // Import the new ProductPage component
 
+import CategoryPage from './components/CategoryPage'; // Import the CategoryPage component
 import SearchResultsPage from './components/SearchResultsPage'; // Import the SearchResultsPage
 
 import './App.css';
@@ -297,6 +299,15 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
               />
             } 
           />
+          <Route
+            path="/category/:categorySlug"
+            element={
+              <CategoryPage
+                allProducts={allProductsArray}
+                calculateCriticsScore={calculateCriticsScore}
+              />
+            }
+          />
         </Routes>
         {/* Footer is outside main but part of the overall page structure */}
       </main>
@@ -314,9 +325,11 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 // Wrap AppContent with Router
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </HelmetProvider>
   );
 }
 

@@ -24,12 +24,15 @@ const Breadcrumbs = ({ product }) => {
             </div>
           </li>
         )}
-        <li>
-          <div className="flex items-center">
-            <ChevronRightIcon className="h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true" />
-            <span className="ml-1.5 sm:ml-2 font-medium text-brand-text">{productName}</span>
-          </div>
-        </li>
+        {/* Only display the product name if it exists and is not an empty string */}
+        {productName && (
+          <li>
+            <div className="flex items-center">
+              <ChevronRightIcon className="h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true" />
+              <span className="ml-1.5 sm:ml-2 font-medium text-brand-text">{productName}</span>
+            </div>
+          </li>
+        )}
       </ol>
     </nav>
   );
@@ -38,7 +41,7 @@ const Breadcrumbs = ({ product }) => {
 Breadcrumbs.propTypes = {
   product: PropTypes.shape({
     category: PropTypes.string,
-    productName: PropTypes.string.isRequired,
+    productName: PropTypes.string, // productName is now optional
   }),
 };
 

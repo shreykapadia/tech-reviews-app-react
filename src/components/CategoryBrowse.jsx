@@ -42,7 +42,7 @@ const CategoryBrowse = React.memo(function CategoryBrowse() {
             categoriesData.map((category) => (
               <a
                 key={category.slug}
-                href={`/categories/${category.slug}`} // Placeholder URL
+                href={`/category/${category.slug}`} // Updated URL to match CategoryPage route
                 aria-label={category.ariaLabel}
                 className="group bg-white rounded-xl shadow-lg p-4 sm:p-6 transform hover:scale-105 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 flex flex-col items-center justify-center text-center aspect-square"
                 // aspect-square ensures the card is a square, good for consistent tap targets

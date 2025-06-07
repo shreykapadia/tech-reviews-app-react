@@ -132,50 +132,53 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
         <script type="application/ld+json">{JSON.stringify(schema)}</script>
       </Helmet>
 
-      <Breadcrumbs product={product} />
+      {/* Add a wrapper div with top padding to account for the fixed header */}
+      <div className="pt-16 md:pt-20">
+        <Breadcrumbs product={product} />
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6 sm:pt-16 sm:pb-8">
-        {/* Hero Section for Product Page */}
-        {/* Mobile: Info (Title etc.) first, then Gallery. */}
-        {/* Desktop (lg+): Gallery first (left), then Info (right). */}
-        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-8 sm:mb-10">
-          {/* Info column - order-1 on mobile, order-2 (right) on lg */}
-          <div className="order-1 lg:order-2 w-full lg:w-4/12 flex flex-col gap-4 sm:gap-5">
-            <ProductTitleBrand productName={product.productName} brand={product.brand} />
-            <CriticsScoreDisplay criticsScore={criticsScoreValue} />
-            <AudienceRatingDisplay
-              audienceRatingString={product.audienceRating}
-              audienceReviewCount={product.audienceReviewCount || placeholderUserReviews.length} // Use placeholder if actual count not in JSON
-            />
-            <ProsConsSummary aiProsCons={product.aiProsCons} />
+        {/* Adjust top padding of this container to py-6 sm:py-8 for consistent spacing after breadcrumbs */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Hero Section for Product Page */}
+          {/* Mobile: Info (Title etc.) first, then Gallery. */}
+          {/* Desktop (lg+): Gallery first (left), then Info (right). */}
+          <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-8 sm:mb-10">
+            {/* Info column - order-1 on mobile, order-2 (right) on lg */}
+            <div className="order-1 lg:order-2 w-full lg:w-4/12 flex flex-col gap-4 sm:gap-5">
+              <ProductTitleBrand productName={product.productName} brand={product.brand} />
+              <CriticsScoreDisplay criticsScore={criticsScoreValue} />
+              <AudienceRatingDisplay
+                audienceRatingString={product.audienceRating}
+                audienceReviewCount={product.audienceReviewCount || placeholderUserReviews.length} // Use placeholder if actual count not in JSON
+              />
+              <ProsConsSummary aiProsCons={product.aiProsCons} />
+            </div>
+            {/* Image Gallery column - order-2 on mobile, order-1 (left) on lg */}
+            <div className="order-2 lg:order-1 w-full lg:w-8/12">
+              <ProductImageGallery galleryItems={product.gallery || [{ type: 'image', url: product.imageURL, alt: product.productName }]} productName={product.productName} />
+            </div>
           </div>
-          {/* Image Gallery column - order-2 on mobile, order-1 (left) on lg */}
-          <div className="order-2 lg:order-1 w-full lg:w-8/12">
-            <ProductImageGallery galleryItems={product.gallery || [{ type: 'image', url: product.imageURL, alt: product.productName }]} productName={product.productName} />
+
+          {/* Where to Buy - might be part of hero or its own section */}
+          <div className="mb-8 sm:mb-10">
+               <WhereToBuyShare
+                  retailersData={product.retailersData} // Assuming this might be added to products.json
+                  productPageUrl={productPageUrl}
+                  productName={product.productName}
+              />
           </div>
+
+          {/* Main Content Sections */}
+          <ProductSpecifications product={product} />
+          <CriticsReviewSection product={product} />
+          <AudienceReviewSection product={product} />
+          <FeatureSpecificInsights product={product} />
+          <CompareSimilarProducts
+              currentProduct={product}
+              allProducts={allProducts}
+              calculateCriticsScore={calculateCriticsScore}
+          />
+          <RelatedArticles currentProduct={product} />
         </div>
-
-        {/* Where to Buy - might be part of hero or its own section */}
-        <div className="mb-8 sm:mb-10">
-             <WhereToBuyShare
-                retailersData={product.retailersData} // Assuming this might be added to products.json
-                productPageUrl={productPageUrl}
-                productName={product.productName}
-            />
-        </div>
-
-        {/* Main Content Sections */}
-        <ProductSpecifications product={product} />
-        <CriticsReviewSection product={product} />
-        <AudienceReviewSection product={product} />
-        <FeatureSpecificInsights product={product} />
-        <CompareSimilarProducts
-            currentProduct={product}
-            allProducts={allProducts}
-            calculateCriticsScore={calculateCriticsScore}
-        />
-        <RelatedArticles currentProduct={product} />
-
       </div>
     </HelmetProvider>
   );

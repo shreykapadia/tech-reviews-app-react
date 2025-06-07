@@ -62,7 +62,7 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
         className={
           isCarousel
             ? "relative w-full h-56 bg-gray-100 px-6 pt-6" // Carousel: Added px-6 pt-6 for image "margins"
-            : "relative w-24 sm:w-32 h-auto sm:h-32 flex-shrink-0 bg-gray-100" // Default
+            : "relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-100" // Default, ensure square on mobile
         }
       >
         <img
