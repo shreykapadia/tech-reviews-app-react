@@ -20,8 +20,10 @@ function ProductListings({ products, calculateCriticsScore }) {
   const getProductKey = (product) => product.id || product.productName;
 
   const carouselConfig = {
-    itemsPerPageDesktop: 4,
+    itemsPerPageDesktop: 3, // Show 3 cards for wider appearance
     maxItems: 12,
+    mobileItemWidth: 'w-[85vw] sm:w-[70vw]', // Make cards wider on mobile
+    desktopPageContainerClassName: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 md:gap-8', // Adjust grid for 3 items
   };
 
   useEffect(() => {
@@ -84,6 +86,7 @@ function ProductListings({ products, calculateCriticsScore }) {
       key={getProductKey(product)}
       product={product}
       // onProductClick={onProductClick} // Not strictly needed if ProductCard handles navigation
+      layoutType="carousel" // This enables the vertical layout
       calculateCriticsScore={calculateCriticsScore}
     />
   );

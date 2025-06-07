@@ -3,8 +3,9 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const ProductCard = ({ product, calculateCriticsScore }) => {
+const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' }) => {
   const criticsScoreDisplay = useMemo(() => {
+    // Existing score calculation logic
     return product.criticReviews ? Math.round(calculateCriticsScore(product.criticReviews)) : '--';
   }, [product.criticReviews, calculateCriticsScore]);
 
@@ -20,7 +21,7 @@ const ProductCard = ({ product, calculateCriticsScore }) => {
       }
     }
     return null;
-  }, [product.audienceRating]);
+  }, [product.audienceRating]); // Keep existing score calculation
   const audienceScoreToDisplay = audienceScoreOutOf100 !== null ? audienceScoreOutOf100 : '--';
 
   // Generalized score color function
@@ -41,48 +42,94 @@ const ProductCard = ({ product, calculateCriticsScore }) => {
 
   const productNameSlug = product.productName.toLowerCase().replace(/\s+/g, '-');
 
+  const isCarousel = layoutType === 'carousel';
+
+  // Base classes for the Link, Criterion I.3
+  const baseLinkClasses = "group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out overflow-hidden border border-gray-200 animate-fade-in-up";
+  // Layout specific classes for the Link, Criterion I.1
+  const linkLayoutClasses = isCarousel
+    ? "flex flex-col h-full" // Carousel: Vertical stack, h-full to fill carousel item wrapper
+    : "flex flex-row";       // Default: Horizontal layout
+
   return (
     <Link
       to={`/product/${productNameSlug}`} // Direct navigation
-      className="product-card-link group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out flex flex-row overflow-hidden border border-gray-200 animate-fade-in-up"
+      className={`${baseLinkClasses} ${linkLayoutClasses}`} // Criterion I.1, I.3
       aria-label={`View details for ${product.productName}`}
     >
-      {/* Image Section - Left */}
-      <div className="relative w-24 sm:w-32 h-auto sm:h-32 flex-shrink-0 bg-gray-100">
+      {/* Image Section - Top for carousel, Left for default. Criterion II.1 */}
+      <div
+        className={
+          isCarousel
+            ? "relative w-full h-56 bg-gray-100 px-6 pt-6" // Carousel: Added px-6 pt-6 for image "margins"
+            : "relative w-24 sm:w-32 h-auto sm:h-32 flex-shrink-0 bg-gray-100" // Default
+        }
+      >
         <img
           src={product.imageURL || '/images/placeholder-image.webp'}
           alt={product.productName}
-          className="w-full h-full object-cover" // Changed to object-cover for better fill
-          loading="lazy"
+          className={`w-full h-full object-cover ${isCarousel ? "group-hover:scale-105 transition-transform duration-300 rounded-md" : ""}`} // Added rounded-md for carousel
+          loading="lazy" // Criterion II.5
         />
       </div>
 
-      {/* Info Section - Right */}
-      <div className="p-3 flex flex-col flex-grow justify-between">
-        <div>
-          <h3 className="text-sm sm:text-base font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-0.5 truncate" title={product.productName}>
-            {product.productName}
-          </h3>
-          <p className="text-xs text-gray-500 mb-1">{product.brand}</p>
-          {product.description && (
+      {/* Info Section - Below image for carousel, Right for default. Criterion I.2 */}
+      <div
+        className={
+          isCarousel
+            ? "p-4 flex flex-col flex-grow" // Carousel: Increased padding slightly for larger text
+            : "p-3 flex flex-col flex-grow justify-between" // Default
+        }
+      >
+        {/* Product Name & Brand Section - Criterion III.1 */}
+        <div> {/* This container ensures Name/Brand are grouped at the top of the info section */}
+          {isCarousel ? (
+            <>
+              <h3 className="text-xl font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-1 truncate" title={product.productName}>
+                {product.productName}
+              </h3>
+              <p className="text-base text-gray-500 mb-2">{product.brand}</p>
+            </>
+          ) : (
+            <>
+              <h3 className="text-sm sm:text-base font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-0.5 truncate" title={product.productName}>
+                {product.productName}
+              </h3>
+              <p className="text-xs text-gray-500 mb-1">{product.brand}</p>
+            </>
+          )}
+
+          {!isCarousel && product.description && ( // Description for default layout
             <p className="text-xs text-gray-600 mt-1 line-clamp-2 sm:line-clamp-1 md:line-clamp-2" title={product.description}>
               {product.description}
             </p>
           )}
+          {/* Description for carousel is omitted as per Criterion V to prioritize main elements.
+              If needed, it would go here with a tight line-clamp, e.g.:
+              isCarousel && product.description && (
+                <p className="text-xs text-gray-600 mt-1 line-clamp-1 mb-2" title={product.description}>{product.description}</p>
+              )
+          */}
         </div>
 
-        {/* Compact Scores section */}
-        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs items-center">
+        {/* Scores Section - Criterion IV.1 */}
+        <div className={`flex items-center ${
+          isCarousel 
+            ? "text-base gap-x-4 mt-auto pt-3" // Larger text, gap, and top padding for carousel
+            : "text-xs gap-x-3 mt-2 flex-wrap gap-y-1" // Default
+          }`}>
+          {/* mt-auto for carousel pushes scores to the bottom of flex-grow area, pt-2 for spacing. Criterion IV.2, IV.6 */}
           <div>
-            <span className={`font-semibold ${criticsScoreColorClass}`}>{criticsScoreDisplay}</span>
+            <span className={`font-semibold ${criticsScoreColorClass}`}>{criticsScoreDisplay}</span> {/* Criterion IV.3, IV.4, IV.5 */}
             <span className="text-gray-500 ml-0.5">Critics</span>
           </div>
           <div>
-            <span className={`font-semibold ${audienceScoreColorClass}`}>{audienceScoreToDisplay}</span>
+            <span className={`font-semibold ${audienceScoreColorClass}`}>{audienceScoreToDisplay}</span> {/* Criterion IV.3, IV.4, IV.5 */}
             <span className="text-gray-500 ml-0.5">Audience</span>
-              {product.audienceReviewCount > 0 && (
+            {/* Audience review count - omitted for carousel for simplicity (Criterion IV.3), shown for default */}
+            {!isCarousel && product.audienceReviewCount > 0 && (
               <span className="text-gray-400 text-xs ml-0.5">({product.audienceReviewCount.toLocaleString()})</span>
-              )}
+            )}
           </div>
         </div>
       </div>
@@ -96,11 +143,16 @@ ProductCard.propTypes = {
     brand: PropTypes.string.isRequired,
     imageURL: PropTypes.string,
     audienceRating: PropTypes.string,
-    description: PropTypes.string, // Added description
+    description: PropTypes.string,
     audienceReviewCount: PropTypes.number,
     criticReviews: PropTypes.array,
   }).isRequired,
   calculateCriticsScore: PropTypes.func.isRequired,
+  layoutType: PropTypes.oneOf(['default', 'carousel']), // New prop for layout context
+};
+
+ProductCard.defaultProps = {
+  layoutType: 'default', // Default to existing layout
 };
 
 export default ProductCard;
