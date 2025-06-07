@@ -8,7 +8,9 @@ const SubmitArrowIcon = () => (
   </svg>
 );
 
-function HeroSection() {
+// Wrap the component definition with React.memo.
+// Using a named function expression for better debugging and component display name in React DevTools.
+const HeroSection = React.memo(function HeroSection() {
   const handleEmailSubmit = (event) => {
     event.preventDefault();
     // TODO: Implement actual email signup logic
@@ -54,6 +56,6 @@ function HeroSection() {
       </div>
     </section>
   );
-}
+});
 
 export default HeroSection;

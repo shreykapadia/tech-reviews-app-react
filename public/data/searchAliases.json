@@ -1,0 +1,25 @@
+{
+    "tv": [
+        "tv",
+        "television",
+        "tvs",
+        "smart tv"
+    ],
+    "phone": [
+        "phone",
+        "phones",
+        "smartphone",
+        "smartphones",
+        "mobile",
+        "cellphone",
+        "cellphones"
+    ],
+    "laptop": [
+        "laptop",
+        "notebook",
+        "notebooks",
+        "portable computer",
+        "computer",
+        "computers"
+    ]
+}

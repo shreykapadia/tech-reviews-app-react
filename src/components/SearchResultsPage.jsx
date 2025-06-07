@@ -1,11 +1,10 @@
 // src/components/SearchResultsPage.jsx
 import React, { useState, useEffect, useMemo } from 'react';
-import SearchResultItemCard from './SearchResultItemCard'; // Import the new card
+import ProductCard from './ProductCard'; // Import ProductCard
 
 function SearchResultsPage({
   searchTerm,
   searchResults: initialSearchResults, // Renamed to initialSearchResults
-  onProductClick,
   calculateCriticsScore,
 }) {
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -260,10 +259,9 @@ function SearchResultsPage({
             ) : (
               <div className={resultsGridClasses}>
                 {displayedProducts.map(item => ( // Changed 'product' to 'item' for clarity
-                  <SearchResultItemCard
+                  <ProductCard
                     key={item.productName + item.brand + (item.id || '')} // Ensure unique key
-                    item={item}
-                    onCardClick={onProductClick}
+                    product={item} // Pass 'item' as 'product' prop to ProductCard
                     calculateCriticsScore={calculateCriticsScore}
                   />
                 ))}

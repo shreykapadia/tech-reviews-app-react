@@ -1,0 +1,21 @@
+[
+    {
+        "name": "Smartphones",
+        "slug": "smartphones",
+        "iconPlaceholder": "📱",
+        "ariaLabel": "Browse Smartphones category"
+    },
+    {
+        "name": "Laptops",
+        "slug": "laptops",
+        "iconPlaceholder": "💻",
+        "ariaLabel": "Browse Laptops category"
+    },
+    {
+        "name": "TVs",
+        "slug": "tvs",
+        "iconPlaceholder": "📺",
+        "ariaLabel": "Browse TVs category"
+    }
+
+]

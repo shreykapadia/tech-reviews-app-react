@@ -1,27 +1,89 @@
 // src/App.jsx
 import React, { useState, useEffect, useCallback } from 'react'; // Added useLocation
+import Cookies from 'js-cookie'; // Import js-cookie
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import SearchAndFilter from './components/SearchAndFilter';
 import ProductListings from './components/ProductListings';
 import ProductDetailView from './components/ProductDetailView';
+import CategoryBrowse from './components/CategoryBrowse'; // Import the CategoryBrowse component
+import Footer from './components/Footer'; // Import the Footer component
 import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/scoreCalculations';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage'; // Import the Privacy Policy page
+import HowItWorksSection from './components/HowItWorksSection'; // Import the HowItWorksSection
+import CookieConsentBanner from './components/CookieConsentBanner'; // Import the CookieConsentBanner
+import TermsOfServicePage from './components/TermsOfServicePage'; // Import the Terms of Service page
+import ProductPage from './components/ProductPage'; // Import the new ProductPage component
 
 import SearchResultsPage from './components/SearchResultsPage'; // Import the SearchResultsPage
 
 import './App.css';
 import './index.css';
 
+// Helper function to get all related search terms for a given query
+// It now accepts aliases as an argument
+const getEffectiveSearchTerms = (query, aliases = {}) => {
+  const lowerQuery = query.toLowerCase().trim();
+  if (!lowerQuery) return [];
+
+  let effectiveTermsSet = new Set([lowerQuery]); // Start with the query itself
+
+  // Iterate through alias groups
+  for (const key in aliases) {
+    const aliasGroup = aliases[key];
+    if (aliasGroup.includes(lowerQuery)) {
+      // If the query is part of an alias group, add all terms from that group
+      aliasGroup.forEach(term => effectiveTermsSet.add(term));
+    }
+  }
+  return Array.from(effectiveTermsSet);
+};
+
+// Define HomePageLayout outside AppContent so it can be effectively memoized.
+// It needs to receive all its dependencies as props.
+const MemoizedHomePageLayout = React.memo(function HomePageLayout({
+  selectedProduct,
+  onBackClick,
+  calculateCriticsScore,
+  filteredProducts,
+  onProductClick
+}) {
+  return (
+    <>
+      <HeroSection />
+      {selectedProduct ? (
+        <ProductDetailView
+          product={selectedProduct}
+          onBackClick={onBackClick}
+          calculateCriticsScore={calculateCriticsScore}
+        />
+      ) : (
+        <>
+          <CategoryBrowse />
+          <ProductListings
+            products={filteredProducts}
+            onProductClick={onProductClick}
+            calculateCriticsScore={calculateCriticsScore}
+          />
+          <HowItWorksSection />
+        </>
+      )}
+    </>
+  );
+});
+
 function AppContent() { // Renamed App to AppContent to use hooks from react-router-dom
   const [productsData, setProductsData] = useState({});
   const [criticWeightsData, setCriticWeightsData] = useState({});
+  const [searchAliasesData, setSearchAliasesData] = useState({}); // State for search aliases
   const [allProductsArray, setAllProductsArray] = useState([]); // Flattened array for filtering
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [availableCategories, setAvailableCategories] = useState([]);
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
 
   // State for header search functionality
   const [headerSearchQuery, setHeaderSearchQuery] = useState('');
@@ -38,9 +100,10 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   useEffect(() => {
     async function fetchData() {
       try {
-        const [productsResponse, weightsResponse] = await Promise.all([
+        const [productsResponse, weightsResponse, aliasesResponse] = await Promise.all([
           fetch('/data/products.json'), // Path from public folder
-          fetch('/data/criticWeights.json') // Path from public folder
+          fetch('/data/criticWeights.json'), // Path from public folder
+          fetch('/data/searchAliases.json') // Path to the aliases file
         ]);
 
         if (!productsResponse.ok) {
@@ -49,12 +112,17 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
         if (!weightsResponse.ok) {
           throw new Error(`HTTP error! status: ${weightsResponse.status} for criticWeights.json`);
         }
+        if (!aliasesResponse.ok) {
+          throw new Error(`HTTP error! status: ${aliasesResponse.status} for searchAliases.json`);
+        }
 
         const fetchedProducts = await productsResponse.json();
         const fetchedWeights = await weightsResponse.json();
+        const fetchedAliases = await aliasesResponse.json();
 
         setProductsData(fetchedProducts);
         setCriticWeightsData(fetchedWeights);
+        setSearchAliasesData(fetchedAliases);
 
         // Flatten products for easier filtering
         const flattened = Object.values(fetchedProducts).flat();
@@ -71,6 +139,20 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
     }
     fetchData();
   }, []); // Empty dependency array means this runs once on mount
+
+  // Effect for cookie consent
+  useEffect(() => {
+    const consentCookie = Cookies.get('userConsent');
+    if (!consentCookie) {
+      setShowCookieBanner(true);
+    } else if (consentCookie === 'accepted') {
+      // User has already consented, you can initialize cookie-dependent services here
+      console.log('Cookie consent previously accepted.');
+      // e.g., initializeAnalytics();
+    } else {
+      console.log('Cookie consent previously declined.');
+    }
+  }, []);
 
   // Apply filters whenever productsData, searchTerm, or selectedCategory changes
   useEffect(() => {
@@ -97,16 +179,32 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
     setSearchTerm(event.target.value);
   };
 
-  const handleCategoryChange = (event) => {
+  const handleCategoryChange = useCallback((event) => {
     setSelectedCategory(event.target.value);
-  };
+  }, []);
 
-  const handleProductCardClick = (product) => {
+  const handleProductCardClick = useCallback((product) => {
     setSelectedProduct(product);
+  }, []); // setSelectedProduct is stable
+
+  const handleBackToProducts = useCallback(() => {
+    setSelectedProduct(null);
+  }, []); // setSelectedProduct is stable
+
+  const handleAcceptCookieConsent = () => {
+    Cookies.set('userConsent', 'accepted', { expires: 365, path: '/' });
+    setShowCookieBanner(false);
+    // Initialize services that use cookies now
+    // e.g., initializeAnalytics();
+    console.log('User accepted cookie consent.');
   };
 
-  const handleBackToProducts = () => {
-    setSelectedProduct(null);
+  const handleDeclineCookieConsent = () => {
+    // You might still want to set a cookie to remember they declined,
+    // to avoid showing the banner on every visit.
+    Cookies.set('userConsent', 'declined', { expires: 365, path: '/' });
+    setShowCookieBanner(false);
+    console.log('User declined cookie consent.');
   };
 
   // This function is called when the search is submitted from the Header
@@ -130,47 +228,33 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 
     // Only perform filtering if allProductsArray has been populated
     if (allProductsArray.length > 0) {
-      const lowerCaseQuery = headerSearchQuery.toLowerCase();
+      const effectiveTerms = getEffectiveSearchTerms(headerSearchQuery, searchAliasesData);
+
+      if (effectiveTerms.length === 0) { // Should ideally not happen if headerSearchQuery is trimmed and not empty
+        setHeaderSearchResults([]);
+        return;
+      }
+
       const results = allProductsArray.filter(product =>
-        product.productName.toLowerCase().includes(lowerCaseQuery) ||
-        product.brand.toLowerCase().includes(lowerCaseQuery) ||
-        (product.category && product.category.toLowerCase().includes(lowerCaseQuery))
+        effectiveTerms.some(term => {
+          const productNameLower = product.productName.toLowerCase();
+          const brandLower = product.brand.toLowerCase();
+          const categoryLower = product.category ? product.category.toLowerCase() : '';
+          // const descriptionLower = product.description ? product.description.toLowerCase() : ''; // Optional: search in description
+
+          return productNameLower.includes(term) ||
+                 brandLower.includes(term) ||
+                 categoryLower.includes(term);
+                 // || descriptionLower.includes(term);
+        })
       );
       setHeaderSearchResults(results);
     } else if (headerSearchQuery.trim()) {
       // Products aren't loaded yet, but a search was made. Show empty results.
       setHeaderSearchResults([]);
     }
-  }, [headerSearchQuery, allProductsArray, location.pathname]); // Rerun when query, products, or location changes
+  }, [headerSearchQuery, allProductsArray, searchAliasesData, location.pathname]); // Rerun when query, products, aliases, or location changes
 
-  // Component for the main page content (Home)
-  const HomePageLayout = () => (
-    <>
-      <HeroSection />
-      {selectedProduct ? (
-        <ProductDetailView
-          product={selectedProduct}
-          onBackClick={handleBackToProducts}
-          calculateCriticsScore={calculateCriticsScore}
-        />
-      ) : (
-        <>
-          <SearchAndFilter
-            searchTerm={searchTerm}
-            onSearchChange={handleSearchChange}
-            selectedCategory={selectedCategory}
-            onCategoryChange={handleCategoryChange}
-            categories={availableCategories}
-          />
-          <ProductListings
-            products={filteredProducts}
-            onProductClick={handleProductCardClick}
-            calculateCriticsScore={calculateCriticsScore}
-          />
-        </>
-      )}
-    </>
-  );
 
   const isCurrentPageHome = location.pathname === '/';
 
@@ -180,7 +264,17 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 
       <main>
         <Routes>
-          <Route path="/" element={<HomePageLayout />} />
+          <Route 
+            path="/" 
+            element={
+              <MemoizedHomePageLayout
+                selectedProduct={selectedProduct}
+                onBackClick={handleBackToProducts}
+                calculateCriticsScore={calculateCriticsScore}
+                filteredProducts={filteredProducts}
+                onProductClick={handleProductCardClick}
+              />} 
+          />
           <Route
             path="/search"
             element={
@@ -192,10 +286,27 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
               />
             }
           />
-          {/* You might want a dedicated route for ProductDetailView if accessed directly via URL */}
-          {/* <Route path="/product/:productId" element={<ProductDetailView ... />} /> */}
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route 
+            path="/product/:productNameSlug" 
+            element={
+              <ProductPage 
+                allProducts={allProductsArray} 
+                calculateCriticsScore={calculateCriticsScore} 
+              />
+            } 
+          />
         </Routes>
+        {/* Footer is outside main but part of the overall page structure */}
       </main>
+      <Footer />
+      {showCookieBanner && (
+        <CookieConsentBanner
+          onAccept={handleAcceptCookieConsent}
+          onDecline={handleDeclineCookieConsent}
+        />
+      )}
     </div>
   );
 }

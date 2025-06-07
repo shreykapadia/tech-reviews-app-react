@@ -23,15 +23,27 @@ header {
     to { opacity: 1; }
 }
 
+/* Apply fade-in by default */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Reduce or disable animation if user prefers */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up {
+    animation: none;
+    opacity: 1; /* Ensure visibility if animation is removed */
+    transform: none; /* Reset transform if animation is removed */
+  }
+}
+
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
-}
-
+/* Apply fade-in-up by default */
 .animate-fade-in-up {
     animation: fadeInUp 0.8s ease-out forwards;
 }
@@ -51,19 +63,20 @@ header {
   font-weight: 700;
 }
 
-.score-good {
-  background-color: #d1fae5;
-  color: #059669;
-}
-
 .score-avg {
-  background-color: #fee2e2;
-  color: #ef4444;
+  background-color: #fee2e2; /* Light Red */
+  color: #b91c1c; /* Darker Red for better contrast */
 }
 
 .score-excellent {
-  background-color: #dbeafe;
-  color: #2563eb;
+  background-color: #dcfce7; /* Light Green */
+  color: #047857; /* Dark Green */
+}
+
+.score-good {
+  /* Let's use an amber/yellow for "good" */
+  background-color: #fef3c7; /* Light Amber/Yellow */
+  color: #b45309; /* Dark Amber/Orange */
 }
 
 .score-badge-lg {
@@ -117,4 +130,14 @@ details .content {
   border-bottom-left-radius: 0.75rem;
   border-bottom-right-radius: 0.75rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Utility for multi-line text clamping */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  /* Fallback for non-webkit browsers (optional, less effective) */
+  /* max-height: calc(2 * 1.25em); /* Assuming line-height is around 1.25em, adjust as needed */
 }
