@@ -21,6 +21,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24247538/apple-iphone-16-pro-review"
+        },
+        {
           "publication": "CNET",
           "score": 9.2,
           "scale": "out of 10",
@@ -37,6 +43,36 @@
           "score": 4.0,
           "scale": "out of 5 stars",
           "link": "https://www.pcmag.com/reviews/apple-iphone-16-pro?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "Engadget",
+          "score": 93,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/iphone-16-pro-and-pro-max-review-apple-focuses-on-cameras-and-customization-120052459.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/iphones/apple-iphone-16-pro-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/apple-iphone-16-pro-and-iphone-16-pro-max/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/iphone-16-pro-review/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/apple-iphone-16-pro"
         }
       ],
       "audienceRating": "4.7/5",
@@ -76,9 +112,9 @@
       "criticReviews": [
         {
           "publication": "The Verge",
-          "score": 8.5,
+          "score": 8.0,
           "scale": "out of 10",
-          "link": "https://example.com/theverge-iphone16"
+          "link": "https://www.theverge.com/24247479/apple-iphone-16-plus-review-camera-control-screen-battery"
         },
         {
           "publication": "PCMag",
@@ -97,6 +133,36 @@
           "score": 4.5,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/phones/iphone/iphone-16-review"
+        },
+        {
+          "publication": "Engadget",
+          "score": 90,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/apple-iphone-16-and-iphone-16-plus-review-closing-the-gap-to-the-pro-120050824.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/iphones/apple-iphone-16-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/apple-iphone-16-and-iphone-16-plus/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/iphone-16-review/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/apple-iphone-16"
         }
       ],
       "audienceRating": "4.5/5",
@@ -135,6 +201,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24225221/google-pixel-9-pro-xl-review-ai-gemini-screen-battery-camera"
+        },
+        {
           "publication": "CNET",
           "score": 8.0,
           "scale": "out of 10",
@@ -142,15 +214,9 @@
         },
         {
           "publication": "Engadget",
-          "score": 90,
+          "score": 94,
           "scale": "percent",
-          "link": "https://example.com/engadget-pixel9pro"
-        },
-        {
-          "publication": "Ars Technica",
-          "score": 8.8,
-          "scale": "out of 10",
-          "link": "https://example.com/arstechnica-pixel9pro"
+          "link": "https://www.engadget.com/mobile/smartphones/pixel-9-pro-and-pixel-9-pro-xl-review-superb-cameras-with-a-side-of-gemini-ai-170055834.html"
         },
         {
           "publication": "PCMag",
@@ -163,6 +229,24 @@
           "score": 4.5,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/phones/google-pixel-phones/google-pixel-9-pro-review"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/google-pixel-phones/google-pixel-9-pro-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/google-pixel-9-pixel-9-pro-and-pixel-9-pro-xl/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/google-pixel-9-pro-review/"
         }
       ],
       "audienceRating": "4.6/5",
@@ -202,16 +286,16 @@
       },
       "criticReviews": [
         {
-          "publication": "Tom's Guide",
-          "score": 4.0,
-          "scale": "out of 5 stars",
-          "link": "https://example.com/tomsguide-pixel9"
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24232480/google-pixel-9-review-screen-camera-battery"
         },
         {
           "publication": "Wired",
-          "score": 8.2,
+          "score": 9.0,
           "scale": "out of 10",
-          "link": "https://example.com/wired-pixel9"
+          "link": "https://www.wired.com/review/google-pixel-9-pixel-9-pro-and-pixel-9-pro-xl/"
         },
         {
           "publication": "PCMag",
@@ -230,6 +314,24 @@
           "score": 4.0,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/phones/google-pixel-phones/google-pixel-9-review"
+        },
+        {
+          "publication": "Engadget",
+          "score": 91,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/google-pixel-9-review-the-go-to-android-smartphone-133005548.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/google-pixel-phones/google-pixel-9-review"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/google-pixel-9-review/"
         }
       ],
       "audienceRating": "4.4/5",
@@ -268,6 +370,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/reviews/604154/samsung-galaxy-s25-ultra-review-ai-screen-battery"
+        },
+        {
           "publication": "CNET",
           "score": 9.2,
           "scale": "out of 10",
@@ -284,6 +392,36 @@
           "score": 4.5,
           "scale": "out of 5 stars",
           "link": "https://www.pcmag.com/reviews/samsung-galaxy-s25-ultra?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "Engadget",
+          "score": 89,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/samsung-galaxy-s25-ultra-review-too-much-ai-not-enough-ultra-140022798.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s25-ultra-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/samsung-galaxy-s25-s25-plus-and-s25-ultra/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/samsung-galaxy-s25-ultra-review/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/smartphones-tablets/samsung-galaxy-s25-ultra"
         }
       ],
       "audienceRating": "4.8/5",
@@ -322,6 +460,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/reviews/610404/samsung-galaxy-s25-plus-review-screen-battery-camera"
+        },
+        {
           "publication": "TechRadar",
           "score": 4.0,
           "scale": "out of 5 stars",
@@ -338,6 +482,30 @@
           "score": 9.1,
           "scale": "out of 10",
           "link": "https://www.cnet.com/tech/mobile/galaxy-s25-and-s25-plus-review-ai-thats-enjoyable-without-being-overwhelming/"
+        },
+        {
+          "publication": "Engadget",
+          "score": 82,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/samsung-galaxy-s25-review-170040665.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/samsung-phones/galaxy-s25-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/samsung-galaxy-s25-s25-plus-and-s25-ultra/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/samsung-galaxy-s25-review/"
         }
       ],
       "audienceRating": "4.6/5",
@@ -378,6 +546,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/reviews/627186/apple-macbook-air-m4-13-15-inch-2025-laptop-review"
+        },
+        {
           "publication": "PCMag",
           "score": 4.0,
           "scale": "out of 5 stars",
@@ -394,6 +568,36 @@
           "score": 4.5,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/computing/macbooks/apple-macbook-air-13-inch-m4"
+        },
+        {
+          "publication": "Engadget",
+          "score": 92,
+          "scale": "percent",
+          "link": "https://www.engadget.com/computing/laptops/apple-macbook-air-m4-13-inch-and-15-inch-review-minimal-upgrades-at-a-much-better-price-130002570.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/apple/macbook-air-13-m4-2025"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/laptops/macbook-air-m4-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/macbook-air-13-inch-2025/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 10.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/apple-macbook-air-13-m4-review/"
         }
       ],
       "audienceRating": "4.8/5",
@@ -434,9 +638,9 @@
       "criticReviews": [
         {
           "publication": "The Verge",
-          "score": 9.2,
+          "score": 9.0,
           "scale": "out of 10",
-          "link": "https://example.com/theverge-mbprom4"
+          "link": "https://www.theverge.com/24289831/apple-macbook-pro-m4-review-14-2024-laptop-specs-benchmarks"
         },
         {
           "publication": "PCMag",
@@ -455,6 +659,36 @@
           "score": 4.5,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/computing/macbooks/apple-macbook-pro-14-inch-m4-2024"
+        },
+        {
+          "publication": "Engadget",
+          "score": 92,
+          "scale": "percent",
+          "link": "https://www.engadget.com/computing/laptops/apple-macbook-pro-14-inch-and-16-inch-review-2024-brace-yourself-for-m4-speed-140057584.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/apple/macbook-pro-14-2024"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/macbooks/macbook-pro-m4-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/apple-macbook-pro-16-inch-2024/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/apple-macbook-pro-m4-review/"
         }
       ],
       "audienceRating": "4.9/5",
@@ -493,6 +727,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/2024/6/25/24185462/microsoft-surface-laptop-7th-edition-review"
+        },
+        {
           "publication": "PCMag",
           "score": 3.5,
           "scale": "out of 5 stars",
@@ -502,13 +742,7 @@
           "publication": "Engadget",
           "score": 88,
           "scale": "percent",
-          "link": "https://example.com/engadget-sl7"
-        },
-        {
-          "publication": "Ars Technica",
-          "score": 8.5,
-          "scale": "out of 10",
-          "link": "https://example.com/arstechnica-sl7"
+          "link": "https://www.engadget.com/microsoft-surface-laptop-7-review-success-at-last-120056125.html"
         },
         {
           "publication": "CNET",
@@ -521,6 +755,30 @@
           "score": 5.0,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/computing/windows-laptops/microsoft-surface-laptop-7-review-makes-me-believe-in-the-surface-series-again"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/microsoft/surface-laptop-7th-edition-15-2024"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/laptops/microsoft-surface-laptop-7-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/microsoft-surface-laptop-7th-edition-2024/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/microsoft-surface-laptop-7-review/"
         }
       ],
       "audienceRating": "4.3/5",
@@ -560,6 +818,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": null,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/2024/6/14/24178083/dell-xps-14-2024-review"
+        },
+        {
           "publication": "PCMag",
           "score": 3.5,
           "scale": "out of 5 stars",
@@ -567,15 +831,15 @@
         },
         {
           "publication": "Tom's Guide",
-          "score": 4.5,
+          "score": 4.0,
           "scale": "out of 5 stars",
-          "link": "https://example.com/tomsguide-xps14"
+          "link": "https://www.tomsguide.com/computing/laptops/dell-xps-14"
         },
         {
           "publication": "Wired",
-          "score": 8.9,
+          "score": 7.0,
           "scale": "out of 10",
-          "link": "https://example.com/wired-xps14"
+          "link": "https://www.wired.com/review/dell-xps-14-and-6/"
         },
         {
           "publication": "CNET",
@@ -588,6 +852,24 @@
           "score": 4.5,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/computing/windows-laptops/microsoft-surface-laptop-7-review-makes-me-believe-in-the-surface-series-again"
+        },
+        {
+          "publication": "Engadget",
+          "score": 84,
+          "scale": "percent",
+          "link": "https://www.engadget.com/dell-xps-13-and-xps-14-review-2024-gorgeous-laptops-with-usability-quirks-130010912.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.1,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/dell/xps-14-2024"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/dell-xps-14-review/"
         }
       ],
       "audienceRating": "4.6/5",
@@ -627,6 +909,12 @@
       },
       "criticReviews": [
         {
+          "publication": "The Verge",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/22264792/hp-spectre-x360-14-laptop-stylus-oled-review-price-specs-features"
+        },
+        {
           "publication": "PCMag",
           "score": 4.0,
           "scale": "out of 5 stars",
@@ -643,6 +931,36 @@
           "score": null,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/pro/hp-spectre-x360-14-2024-review"
+        },
+        {
+          "publication": "Engadget",
+          "score": 88,
+          "scale": "percent",
+          "link": "https://www.engadget.com/hp-spectre-x360-14-review-2024-keeping-the-2-in-1-laptop-dream-alive-140045823.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.3,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/hp/spectre-x360-14-2024"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomshardware.com/laptops/ultrabooks-ultraportables/hp-spectre-x360-14-2024-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/hp-spectre-x360-14-2024/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/hp-spectre-x360-14-2024-review/"
         }
       ],
       "audienceRating": "4.5/5",
@@ -689,15 +1007,15 @@
         },
         {
           "publication": "RTINGS.com",
-          "score": 9.3,
+          "score": 8.6,
           "scale": "out of 10",
-          "link": "https://example.com/rtings-s95d"
+          "link": "https://www.rtings.com/tv/reviews/samsung/s95d-oled"
         },
         {
           "publication": "FlatpanelsHD",
-          "score": 9.5,
-          "scale": "out of 10",
-          "link": "https://example.com/flatpanelshd-s95d"
+          "score": 87,
+          "scale": "percent",
+          "link": "https://www.flatpanelshd.com/review.php?subaction=showfull&id=1726124369"
         },
         {
           "publication": "CNET",
@@ -710,6 +1028,30 @@
           "score": 5.0,
           "scale": "out of 5 stars",
           "link": "https://www.techradar.com/televisions/samsung-s95d-review"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/tvs/oled-tvs/samsung-s95d-oled-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/samsung-s95d-qd-oled/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/home-theater/samsung-s95d-qd-oled-tv-review-2024/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/samsung-qe65s95d"
         }
       ],
       "audienceRating": "4.8/5",
@@ -756,20 +1098,45 @@
           "publication": "What Hi-Fi?",
           "score": 5,
           "scale": "out of 5 stars",
-          "link": "https://example.com/whathifi-g4"
+          "link": "https://www.whathifi.com/reviews/apple-iphone-16-pro"
         },
         {
           "publication": "TechRadar",
-          "score": 4.8,
+          "score": 5.0,
           "scale": "out of 5 stars",
-          "link": "https://example.com/techradar-g4"
+          "link": "https://www.techradar.com/televisions/lg-g5-review"
         },
         {
           "publication": "CNET",
           "score": 8.8,
           "scale": "out of 10",
           "link": "https://www.cnet.com/tech/home-entertainment/ive-tested-over-80-tvs-and-this-lg-oled-is-the-best-one-yet/"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.9,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/tv/reviews/lg/g5-oled"
+        },
+        {
+          "publication": "FlatpanelsHD",
+          "score": 87,
+          "scale": "percent",
+          "link": "https://www.flatpanelshd.com/review.php?subaction=showfull&id=1748586137"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/lg-g5/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/tv-home-cinema/televisions/lg-g5-oled65g5"
         }
+        
       ],
       "audienceRating": "4.7/5",
       "aiProsCons": {
@@ -808,15 +1175,45 @@
       "criticReviews": [
         {
           "publication": "Digital Trends",
-          "score": 9.0,
+          "score": 10.0,
           "scale": "out of 10",
-          "link": "https://example.com/digitaltrends-a95l"
+          "link": "https://www.digitaltrends.com/home-theater/sony-bravia-a95l-qd-oled-tv-review/"
         },
         {
           "publication": "CNET",
           "score": null,
           "scale": "out of 10",
           "link": "https://www.cnet.com/tech/home-entertainment/sony-qd-oled-tv-amps-up-brightness-tones-down-reflections/"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.7,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/tv/reviews/sony/a95l-oled"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/reviews/sony-bravia-xr-a95l-qd-oled-tv"
+        },
+        {
+          "publication": "FlatpanelsHD",
+          "score": 88,
+          "scale": "percent",
+          "link": "https://www.flatpanelshd.com/review.php?subaction=showfull&id=1703134867"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/sony-a95l-oled/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/sony-a95l-xr-65a95l"
         }
       ],
       "audienceRating": "4.9/5",
@@ -829,7 +1226,7 @@
         ],
         "cons": [
           "High price",
-          "only two HDMI 2.1",
+          "Only two HDMI 2.1",
           "Not brightest OLED"
         ]
       }

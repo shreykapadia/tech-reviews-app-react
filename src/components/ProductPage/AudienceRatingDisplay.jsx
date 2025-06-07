@@ -30,7 +30,6 @@ const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) =>
     if (score === null || score === '--') return defaultColorClass;
     const numericScore = Number(score);
     if (isNaN(numericScore)) return defaultColorClass;
-
     if (numericScore >= 85) return 'text-green-600';
     if (numericScore >= 70) return 'text-yellow-600';
     if (numericScore < 70 && numericScore >=0) return 'text-red-600';

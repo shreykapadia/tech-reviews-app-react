@@ -1,15 +1,14 @@
 {
     "CNET": 1.2,
     "TechRadar": 1.1,
-    "The Verge": 1.1,
     "PCMag": 1.0,
+    "The Verge": 1.1,
     "Engadget": 1.0,
-    "Ars Technica": 0.9,
-    "Tom's Guide": 0.9,
-    "Wired": 0.8,
     "RTINGS.com": 1.2,
+    "Tom's Guide": 0.9,
     "FlatpanelsHD": 1.1,
-    "What Hi-Fi?": 1.0,
+    "Wired": 0.8,
     "Digital Trends": 0.9,
+    "What Hi-Fi?": 1.0,
     "default": 0.7
 }

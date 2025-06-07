@@ -21,8 +21,7 @@ const specDetailsMap = {
 
   // Performance
   processor: { label: 'Processor', category: 'Performance', source: 'keySpecs' },
-  ram: { label: 'RAM', category: 'Performance', source: 'keySpecs' }, // For Phones
-  memory: { label: 'Memory', category: 'Performance', source: 'keySpecs' }, // For Laptops (often 'ram' is used in keySpecs for phones)
+  ram: { label: 'RAM', category: 'Performance', source: 'keySpecs' }, // Will use keySpecs.ram or keySpecs.memory
   graphics: { label: 'Graphics', category: 'Performance', source: 'keySpecs' }, // For Laptops
   cooling: { label: 'Cooling System', category: 'Performance', source: 'keySpecs' }, // For Laptops
 
@@ -69,20 +68,26 @@ const ProductSpecifications = ({ product }) => {
         </h3>
 
         {orderedCategories.map((categoryName) => {
-          const specsForCategory = Object.entries(specDetailsMap)
-            .filter(([, detail]) => detail.category === categoryName)
+          let specsToProcess = Object.entries(specDetailsMap)
+            .filter(([, detail]) => detail.category === categoryName);
+          
+          const specsForCategory = specsToProcess
             .map(([key, detail]) => {
               let value;
               if (detail.source === 'product') {
                 value = product[key];
               } else {
-                // Handle cases where 'ram' might be used for 'memory' label or vice-versa if one is missing
-                if (key === 'memory' && !keySpecs.memory && keySpecs.ram) value = keySpecs.ram;
-                else if (key === 'ram' && !keySpecs.ram && keySpecs.memory) value = keySpecs.memory;
-                else value = keySpecs[key];
+                // For 'ram' spec, try keySpecs.ram first, then keySpecs.memory
+                // This handles the consolidation of "RAM" and "Memory"
+                if (key === 'ram') {
+                  value = keySpecs.ram || keySpecs.memory;
+                } else {
+                  value = keySpecs[key];
+                }
               }
 
-              if (value) {
+              // Ensure value is not undefined, null, or an empty string before considering it
+              if (typeof value !== 'undefined' && value !== null && String(value).trim() !== '') {
                 return { label: detail.label, value };
               } else if (detail.placeholder) {
                 // return { label: detail.label, value: detail.placeholder }; // Optionally show placeholders
