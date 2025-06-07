@@ -1,9 +1,8 @@
 // src/components/ProductPage/AudienceRatingDisplay.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { UserGroupIcon, InformationCircleIcon, StarIcon } from '@heroicons/react/24/outline'; // Outline to match HowItWorks & CriticsScore
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'; // Solid for filled stars
+import { Link } from 'react-router-dom'; // StarIcon and StarIconSolid imports removed
+import { UserGroupIcon, InformationCircleIcon } from '@heroicons/react/24/outline'; // Outline to match HowItWorks & CriticsScore
 
 const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -11,8 +10,6 @@ const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) =>
   const buttonRef = useRef(null);
 
   let scoreOutOf100 = null;
-  let scoreOutOf5 = null;
-  let maxStars = 5;
 
   if (audienceRatingString) {
     const match = audienceRatingString.match(/(\d+(\.\d+)?)\s*\/\s*(\d+)/);
@@ -20,15 +17,26 @@ const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) =>
       const score = parseFloat(match[1]);
       const scale = parseInt(match[3], 10);
       if (scale !== 0) {
-        scoreOutOf5 = score; // Assuming the string is always out of 5 for star display
-        maxStars = scale;    // Use the actual scale from the string for calculation
         scoreOutOf100 = Math.round((score / scale) * 100);
       }
     }
   }
 
   const scoreToDisplay100 = scoreOutOf100 !== null ? scoreOutOf100 : '--';
-  const reviewCountDisplay = audienceReviewCount > 0 ? `(${audienceReviewCount.toLocaleString()} reviews)` : '';
+  // const reviewCountDisplay = audienceReviewCount > 0 ? `(${audienceReviewCount.toLocaleString()} reviews)` : ''; // Removed
+
+  // Consistent score color function
+  const getScoreColor = (score, defaultColorClass = 'text-brand-secondary') => {
+    if (score === null || score === '--') return defaultColorClass;
+    const numericScore = Number(score);
+    if (isNaN(numericScore)) return defaultColorClass;
+
+    if (numericScore >= 85) return 'text-green-600';
+    if (numericScore >= 70) return 'text-yellow-600';
+    if (numericScore < 70 && numericScore >=0) return 'text-red-600';
+    return defaultColorClass;
+  };
+  const scoreColorClass = getScoreColor(scoreToDisplay100, 'text-brand-secondary');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -50,35 +58,18 @@ const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) =>
     };
   }, [isTooltipVisible]);
 
-  const renderStars = () => {
-    if (scoreOutOf5 === null) return null;
-    const fullStars = Math.floor(scoreOutOf5);
-    const halfStar = scoreOutOf5 % 1 >= 0.5; // Simplified half-star logic
-    const emptyStars = maxStars - fullStars - (halfStar ? 1 : 0);
-
-    return (
-      <div className="flex items-center text-yellow-400">
-        {[...Array(fullStars)].map((_, i) => <StarIconSolid key={`full-${i}`} className="h-4 w-4" />)}
-        {/* Basic half-star representation or could be more complex */}
-        {halfStar && <StarIconSolid key="half" className="h-4 w-4" />} 
-        {[...Array(Math.max(0, emptyStars))].map((_, i) => <StarIcon key={`empty-${i}`} className="h-4 w-4 text-gray-300" />)}
-        <span className="ml-1.5 text-xs text-gray-500">{scoreOutOf5.toFixed(1)}/{maxStars}</span>
-      </div>
-    );
-  };
 
   return (
     <div className="bg-white p-4 sm:p-5 rounded-lg shadow-md flex items-center justify-between relative border border-gray-200 animate-fade-in-up">
       <div className="flex items-center">
         <UserGroupIcon className="h-9 w-9 sm:h-10 sm:w-10 text-brand-secondary mr-3 sm:mr-4 flex-shrink-0" aria-hidden="true" />
         <div>
-          <p className="text-3xl sm:text-4xl font-bold text-brand-secondary leading-tight">
+          <p className={`text-3xl sm:text-4xl font-bold ${scoreColorClass} leading-tight`}>
             {scoreToDisplay100}
           </p>
-          <p className="text-xs sm:text-sm text-gray-600 font-medium">Audience Rating</p>
+          <p className="text-xs sm:text-sm text-gray-600 font-medium mt-0.5">Audience Rating</p>
+          {/* The div below previously held the review count, now it's empty or can be removed if no other baseline items are planned */}
           <div className="flex items-baseline mt-0.5">
-            {renderStars()}
-            {reviewCountDisplay && <p className="ml-2 text-xs text-gray-500">{reviewCountDisplay}</p>}
           </div>
         </div>
       </div>

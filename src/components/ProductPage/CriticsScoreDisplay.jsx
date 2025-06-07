@@ -11,6 +11,19 @@ const CriticsScoreDisplay = ({ criticsScore }) => {
 
   const scoreToDisplay = criticsScore !== null && criticsScore !== undefined ? Math.round(criticsScore) : '--';
 
+  // Consistent score color function
+  const getScoreColor = (score, defaultColorClass = 'text-brand-primary') => {
+    if (score === null || score === '--') return defaultColorClass;
+    const numericScore = Number(score);
+    if (isNaN(numericScore)) return defaultColorClass;
+
+    if (numericScore >= 85) return 'text-green-600';
+    if (numericScore >= 70) return 'text-yellow-600';
+    if (numericScore < 70 && numericScore >=0) return 'text-red-600';
+    return defaultColorClass;
+  };
+  const scoreColorClass = getScoreColor(scoreToDisplay, 'text-brand-primary');
+
   // Handle clicks outside of the tooltip to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,7 +50,7 @@ const CriticsScoreDisplay = ({ criticsScore }) => {
       <div className="flex items-center">
         <ShieldCheckIcon className="h-9 w-9 sm:h-10 sm:w-10 text-brand-primary mr-3 sm:mr-4 flex-shrink-0" aria-hidden="true" />
         <div>
-          <p className="text-3xl sm:text-4xl font-bold text-brand-primary leading-tight">
+          <p className={`text-3xl sm:text-4xl font-bold ${scoreColorClass} leading-tight`}>
             {scoreToDisplay}
           </p>
           <p className="text-xs sm:text-sm text-gray-600 font-medium">Critics Score</p>

@@ -8,12 +8,10 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [isHoverZoom, setIsHoverZoom] = useState(false);
   const [isTapZoom, setIsTapZoom] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const mainDisplayRef = useRef(null);
 
-  const isEffectivelyZoomed = isHoverZoom || isTapZoom;
 
   useEffect(() => {
     const items = Array.isArray(galleryItems) && galleryItems.length > 0
@@ -34,14 +32,13 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
     setSelectedItem(item);
     setCurrentIndex(index);
     setIsTapZoom(false);
-    setIsHoverZoom(false);
     setZoomPosition({ x: 50, y: 50 });
   };
 
   const navigateGallery = (direction) => {
     const newIndex = currentIndex + direction;
     if (newIndex >= 0 && newIndex < validGalleryItems.length) {
-      handleSelectItem(validGalleryItems[newIndex], newIndex);
+      handleSelectItem(validGalleryItems[newIndex], newIndex); // This will also reset zoom
     }
   };
 
@@ -53,24 +50,10 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
     setZoomPosition({ x, y });
   };
 
-  const handleMouseEnterForZoom = () => {
-    if (window.innerWidth >= 1024 && selectedItem?.type === 'image') {
-      setIsHoverZoom(true);
-    }
-  };
-
-  const handleMouseLeaveForZoom = () => {
-    if (window.innerWidth >= 1024) {
-      setIsHoverZoom(false);
-      if (!isTapZoom) setZoomPosition({ x: 50, y: 50 });
-    }
-  };
-
   const handleClickForZoom = () => {
     if (selectedItem?.type !== 'image') return;
     setIsTapZoom(prev => !prev);
-    if (window.innerWidth >= 1024) setIsHoverZoom(false); // If clicked on desktop, prioritize tap zoom
-    if (isTapZoom) setZoomPosition({ x: 50, y: 50 }); // If un-zooming
+    if (isTapZoom) setZoomPosition({ x: 50, y: 50 }); // If un-zooming (current state isTapZoom is true, meaning it was just toggled to false)
   };
 
   const getYouTubeID = (url) => {
@@ -97,9 +80,9 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
   }
 
   const mainDisplayClasses = `relative aspect-[4/3] sm:aspect-square bg-gray-100 rounded-lg shadow-lg overflow-hidden group
-    ${selectedItem?.type === 'image' && (isEffectivelyZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in')}`;
+    ${selectedItem?.type === 'image' && (isTapZoom ? 'cursor-zoom-out' : 'cursor-zoom-in')}`;
   const imageClasses = `w-full h-full object-contain transition-transform duration-200 ease-out
-    ${selectedItem?.type === 'image' && isEffectivelyZoomed ? 'scale-[1.75] sm:scale-[2]' : 'scale-100'}`;
+    ${selectedItem?.type === 'image' && isTapZoom ? 'scale-[1.75] sm:scale-[2]' : 'scale-100'}`;
 
   return (
     <div className="flex flex-col md:flex-row gap-4 sm:gap-6 animate-fade-in-up">
@@ -136,9 +119,7 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
         <div
           ref={mainDisplayRef}
           className={mainDisplayClasses}
-          onMouseMove={handleMouseMoveForZoom}
-          onMouseEnter={handleMouseEnterForZoom}
-          onMouseLeave={handleMouseLeaveForZoom}
+          onMouseMove={isTapZoom ? handleMouseMoveForZoom : undefined} // Only track mouse for zoom position if zoomed
           onClick={handleClickForZoom}
           role="figure"
           aria-label={selectedItem.alt || `${productName || 'Product'} main view`}
@@ -148,7 +129,7 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
               src={selectedItem.url}
               alt={selectedItem.alt || `${productName || 'Product'} main view`}
               className={imageClasses}
-              style={selectedItem?.type === 'image' && isEffectivelyZoomed ? { transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%` } : {}}
+              style={selectedItem?.type === 'image' && isTapZoom ? { transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%` } : {}}
             />
           ) : (
             <iframe
