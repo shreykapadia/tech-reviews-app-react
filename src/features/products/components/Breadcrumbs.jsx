@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { ChevronRightIcon } from '@heroicons/react/20/solid'; // Using solid for breadcrumb chevrons
 
-const Breadcrumbs = ({ product }) => {
+const BreadcrumbsComponent = ({ product }) => {
   if (!product) return null;
 
   const { category, productName } = product;
@@ -38,11 +38,13 @@ const Breadcrumbs = ({ product }) => {
   );
 };
 
-Breadcrumbs.propTypes = {
+BreadcrumbsComponent.propTypes = {
   product: PropTypes.shape({
     category: PropTypes.string,
     productName: PropTypes.string, // productName is now optional
   }),
 };
 
+const Breadcrumbs = React.memo(BreadcrumbsComponent);
+Breadcrumbs.displayName = 'Breadcrumbs';
 export default Breadcrumbs;

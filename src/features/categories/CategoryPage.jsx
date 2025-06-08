@@ -1,111 +1,105 @@
-// src/components/CategoryPage.jsx
-import React, { useState, useEffect, useMemo } from 'react';
+// src/features/categories/CategoryPage.jsx
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom'; // Removed useLocation as it's not used
 import { Helmet } from 'react-helmet-async';
-import Breadcrumbs from './ProductPage/Breadcrumbs'; // Assuming this can handle category-only views
-import ProductCard from './ProductCard'; // Assuming this is the new, modern vertical ProductCard
-import Header from './Header'; // Import Header
-import Footer from './Footer'; // Import Footer
-import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'; // FunnelIcon and XMarkIcon will be replaced by an inline SVG
+import Breadcrumbs from '../products/components/Breadcrumbs'; 
+import ProductCard from '../../components/ProductCard'; // Adjusted path to global ProductCard
+// FunnelIcon and XMarkIcon were imported but not used. If needed elsewhere, ensure they are correctly implemented.
 
 // --- Helper Components (assumed to be similar to SearchResultsPage) ---
 
 // FilterSection: A reusable component to wrap a filter group.
-const FilterSection = ({ title, children, className }) => (
+const FilterSection = React.memo(({ title, children, className }) => (
   <div className={`mb-6 ${className || ''}`}>
     <h3 className="text-lg font-semibold mb-3 text-gray-700 border-b border-gray-200 pb-2">
       {title}
     </h3>
     <div className="space-y-2">{children}</div>
   </div>
-);
+));
+FilterSection.displayName = 'FilterSection'; // Good for debugging
 
 // CheckboxFilter: A reusable component for checkbox-based filters.
-const CheckboxFilterItem = ({ item, isSelected, onChange, isDisabled, isCurrentCategory }) => (
-  <label
-    key={item.value}
-    className={`flex items-center space-x-2 text-sm ${
-      isDisabled ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer hover:text-brand-primary'
-    } ${isCurrentCategory ? 'font-semibold text-brand-primary' : 'text-gray-600'}`}
-  >
-    <input
-      type="checkbox"
-      className={`h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-brand-primary/50 transition-colors duration-150
-        ${isDisabled ? 'text-gray-400 bg-gray-100' : 'text-brand-primary'}
-        ${isCurrentCategory && isDisabled ? 'ring-2 ring-brand-primary ring-offset-1' : ''}
-      `}
-      value={item.value}
-      checked={isSelected}
-      onChange={(e) => !isDisabled && onChange(item.value, e.target.checked)}
-      disabled={isDisabled}
-    />
-    <span>{item.label}</span>
-  </label>
-);
+const CheckboxFilterItem = React.memo(({ item, isSelected, onChange, isDisabled, isCurrentCategory }) => (
+  // The key prop should be on the instance of CheckboxFilterItem when mapped, not inside its definition.
+  // So, <CheckboxFilterItem key={brand.value} ... /> is correct.
+  // The label itself doesn't need a key prop here.
+  <label className={`flex items-center space-x-2 text-sm ${isDisabled ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer hover:text-brand-primary'} ${isCurrentCategory ? 'font-semibold text-brand-primary' : 'text-gray-600'}`}>
+      <input
+        type="checkbox"
+        className={`h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-brand-primary/50 transition-colors duration-150 ${isDisabled ? 'text-gray-400 bg-gray-100' : 'text-brand-primary'} ${isCurrentCategory && isDisabled ? 'ring-2 ring-brand-primary ring-offset-1' : ''}`}
+        value={item.value}
+        checked={isSelected}
+        onChange={(e) => !isDisabled && onChange(item.value, e.target.checked)}
+        disabled={isDisabled}
+      />
+      <span>{item.label}</span>
+    </label>
+));
+CheckboxFilterItem.displayName = 'CheckboxFilterItem'; // Good for debugging
 
 
-function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsScore }) {
+function CategoryPage({
+  allProducts,
+  allAvailableCategories,
+  calculateCriticsScore,
+  areGlobalCategoriesLoading, // New prop to indicate if App.jsx is still loading categories
+}) {
   const { categorySlug } = useParams();
 
-  const [categoryPageIsLoading, setCategoryPageIsLoading] = useState(true);
-  const [categoryPageError, setCategoryPageError] = useState(null);
-  const [categoryDetails, setCategoryDetails] = useState(null);
-  const [productsForThisCategory, setProductsForThisCategory] = useState([]);
-  // availableCategories for the sidebar will now come from the allAvailableCategories prop
+  // Derive category details, loading, and error states using useMemo
+  const { categoryDetails, categoryPageIsLoading, categoryPageError } = useMemo(() => {
+    // Priority 1: If App.jsx indicates it's still loading categories,
+    // CategoryPage should also be in a loading state.
+    if (areGlobalCategoriesLoading) {
+      return { categoryDetails: null, categoryPageIsLoading: true, categoryPageError: null };
+    }
+
+    // At this point, App.jsx has finished its process for loading categories.
+    // Now, evaluate the provided allAvailableCategories.
+
+    // Case 1: Categories data is missing (null or undefined) after App.jsx finished loading.
+    // This could indicate an error in App.jsx or an unexpected state.
+    if (allAvailableCategories === null || allAvailableCategories === undefined) {
+      return { categoryDetails: null, categoryPageIsLoading: true, categoryPageError: null };
+    }
+    // Case 2: Parent finished loading, but there are no categories at all
+    if (allAvailableCategories.length === 0) {
+      return {
+        categoryDetails: null,
+        categoryPageIsLoading: false,
+        categoryPageError: `There are no categories available in the system.`
+      };
+    }
+    // Case 3: Categories are loaded, try to find the current one
+    const currentCategory = allAvailableCategories.find(cat => cat.slug === categorySlug);
+    if (currentCategory) {
+      return { categoryDetails: currentCategory, categoryPageIsLoading: false, categoryPageError: null };
+    } else {
+      // Case 4: Categories are loaded, but this specific one wasn't found
+      return {
+        categoryDetails: null,
+        categoryPageIsLoading: false,
+        categoryPageError: `The category "${categorySlug}" could not be found.`
+      };
+    }
+  }, [categorySlug, allAvailableCategories, areGlobalCategoriesLoading]);
+
+  // Derive products for the current category using useMemo
+  const productsForThisCategory = useMemo(() => {
+    if (!categoryDetails || !allProducts || !Array.isArray(allProducts)) {
+      return [];
+    }
+    // CRITICAL: Ensure 'product.category' in products.json EXACTLY matches 'categoryDetails.name' in categories.json (case-sensitive)
+    return allProducts.filter(product => product.category === categoryDetails.name);
+  }, [categoryDetails, allProducts]);
 
   const [activeFilters, setActiveFilters] = useState({
     brands: [],
-    // Assuming your product data might eventually have price
-    // If not, these can be removed or kept as illustrative
     minPrice: '',
     maxPrice: '',
   });
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-
-  // Effect to find current category details and set initial loading/error states
-  useEffect(() => {
-    setCategoryPageIsLoading(true);
-    setCategoryPageError(null);
-    setCategoryDetails(null); // Reset on slug change
-
-    if (allAvailableCategories && allAvailableCategories.length > 0) {
-      const currentCategory = allAvailableCategories.find(cat => cat.slug === categorySlug);
-      if (currentCategory) {
-        setCategoryDetails(currentCategory);
-        setCategoryPageIsLoading(false);
-      } else {
-        setCategoryPageError(`The category "${categorySlug}" could not be found.`);
-        setCategoryPageIsLoading(false);
-      }
-    } else if (allAvailableCategories === null || allAvailableCategories === undefined) {
-      // App.jsx is still loading categories, so CategoryPage should also wait
-      setCategoryPageIsLoading(true);
-    } else { // allAvailableCategories is an empty array, but not null/undefined
-      setCategoryPageError(`No categories available to find "${categorySlug}".`);
-      setCategoryPageIsLoading(false);
-    }
-  }, [categorySlug, allAvailableCategories]);
-
-  // Filter products when categoryDetails is available or allProducts prop changes (this effect remains largely the same)
-  useEffect(() => {
-    if (!categoryDetails || !allProducts) {
-      setProductsForThisCategory([]); // Clear products if category unknown or allProducts not ready
-      return;
-    }
-
-    // Ensure allProducts is an array before filtering
-    if (Array.isArray(allProducts)) {
-      const categorySpecificProducts = allProducts.filter(
-        // CRITICAL: Ensure 'product.category' in products.json EXACTLY matches 'categoryDetails.name' in categories.json (case-sensitive)
-        (product) => product.category === categoryDetails.name 
-      );
-      setProductsForThisCategory(categorySpecificProducts);
-    } else {
-      setProductsForThisCategory([]);
-      // console.warn("allProducts prop is not an array in CategoryPage."); // Optional warning
-    }
-  }, [categoryDetails, allProducts]);
-
 
   const availableBrands = useMemo(() => {
     // Derive brands from the base set of products for this category
@@ -115,7 +109,7 @@ function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsSco
   }, [productsForThisCategory]);
 
   const finalFilteredProducts = useMemo(() => { // Renamed to avoid confusion
-    if (!productsForThisCategory) return [];
+    if (!productsForThisCategory || productsForThisCategory.length === 0) return [];
     return productsForThisCategory.filter(product => {
       const { brands, minPrice, maxPrice } = activeFilters;
       if (brands.length > 0 && !brands.includes(product.brand)) {
@@ -130,22 +124,48 @@ function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsSco
     });
   }, [productsForThisCategory, activeFilters]);
 
-  const handleBrandFilterChange = (brand, isChecked) => {
+  const handleBrandFilterChange = useCallback((brand, isChecked) => {
     setActiveFilters(prev => ({
       ...prev,
       brands: isChecked ? [...prev.brands, brand] : prev.brands.filter(b => b !== brand),
     }));
-  };
+  }, []); // setActiveFilters is stable
 
-  const handlePriceFilterChange = (type, value) => {
+  const handlePriceFilterChange = useCallback((type, value) => {
     setActiveFilters(prev => ({ ...prev, [type]: value }));
-  };
+  }, []); // setActiveFilters is stable
   
-  const handleCategoryLinkClick = () => {
+  const handleCategoryLinkClick = useCallback(() => {
     if (isMobileFiltersOpen) {
       setIsMobileFiltersOpen(false);
     }
-  };
+  }, [isMobileFiltersOpen]); // Dependency: isMobileFiltersOpen
+
+  // Memoize FilterSidebarContent. Moved before early returns.
+  // It depends on allAvailableCategories, categorySlug, handleCategoryLinkClick,
+  // availableBrands, activeFilters.brands, and handleBrandFilterChange.
+  const FilterSidebarContent = React.useMemo(() => {
+    const SidebarContent = () => (
+      <>
+        <FilterSection title="Category" className="text-sm">
+          {allAvailableCategories && allAvailableCategories.map(cat => (
+            <Link key={cat.slug} to={`/category/${cat.slug}`} onClick={handleCategoryLinkClick} className={`block py-1.5 px-3 rounded-md transition-colors duration-150 ${categorySlug === cat.slug ? 'bg-brand-primary text-white font-semibold shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-brand-primary'}`}>
+              {cat.name}
+            </Link>
+          ))}
+        </FilterSection>
+        {availableBrands.length > 0 && (
+          <FilterSection title="Brand">
+            {availableBrands.map(brand => (<CheckboxFilterItem key={brand.value} item={brand} isSelected={activeFilters.brands.includes(brand.value)} onChange={handleBrandFilterChange} />))}
+          </FilterSection>)}
+        <FilterSection title="Price Range">
+          <div className="flex space-x-2"><input type="number" placeholder="Min" value={activeFilters.minPrice} onChange={(e) => handlePriceFilterChange('minPrice', e.target.value)} className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-brand-primary focus:border-brand-primary" aria-label="Minimum price" /><input type="number" placeholder="Max" value={activeFilters.maxPrice} onChange={(e) => handlePriceFilterChange('maxPrice', e.target.value)} className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-brand-primary focus:border-brand-primary" aria-label="Maximum price" /></div>
+          <p className="mt-2 text-xs text-gray-500">Note: Price filtering is illustrative as product data lacks price.</p>
+        </FilterSection>
+      </>);
+    SidebarContent.displayName = 'FilterSidebarContent';
+    return <SidebarContent />;
+  }, [allAvailableCategories, categorySlug, handleCategoryLinkClick, availableBrands, activeFilters.brands, activeFilters.minPrice, activeFilters.maxPrice, handleBrandFilterChange, handlePriceFilterChange]);
 
   // ----- RENDER LOGIC -----
 
@@ -161,27 +181,11 @@ function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsSco
   if (categoryPageError) { // If category fetch failed or slug invalid
     return (
       <>
-        <Header />
         <div className="container mx-auto px-4 py-8 text-center min-h-[calc(100vh-10rem)] flex flex-col justify-center items-center"> {/* Adjust min-h */}
           <h1 className="text-2xl font-semibold text-red-600 mb-4">Error Loading Category</h1>
           <p className="text-gray-700 mb-6">{categoryPageError}</p>
-          <Link to="/" className="text-brand-primary hover:underline">Go to Homepage</Link>
+          <Link to="/" className="text-brand-primary hover:underline">Return to Homepage</Link>
         </div>
-        <Footer />
-      </>
-    );
-  }
-
-  if (!categoryDetails) { // Should be caught by error, but as a safeguard
-    return (
-      <>
-        <Header />
-        <div className="container mx-auto px-4 py-8 text-center min-h-[calc(100vh-10rem)] flex flex-col justify-center items-center">
-          <h1 className="text-2xl font-semibold text-red-600 mb-4">Category Not Found</h1>
-          <p className="text-gray-700 mb-6">The requested category details could not be loaded.</p>
-          <Link to="/" className="text-brand-primary hover:underline">Go to Homepage</Link>
-        </div>
-        <Footer />
       </>
     );
   }
@@ -192,64 +196,6 @@ function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsSco
   const pageTitle = `${categoryDetails.name} - TechScore Reviews & Guides`;
   const metaDescription = `Discover the best ${categoryDetails.name} reviewed by TechScore. Compare specs, read expert reviews, and find top deals on products like ${productsForThisCategory.slice(0, 2).map(p => p.productName).join(', ')} and more.`;
   const breadcrumbData = { category: categoryDetails.name, productName: '' };
-
-
-  const FilterSidebarContent = () => (
-    <>
-      <FilterSection title="Category" className="text-sm">
-        {/* Use allAvailableCategories prop for the sidebar */}
-        {allAvailableCategories && allAvailableCategories.map(cat => (
-          <Link
-            key={cat.slug}
-            to={`/category/${cat.slug}`}
-            onClick={handleCategoryLinkClick}
-            className={`block py-1.5 px-3 rounded-md transition-colors duration-150
-              ${categorySlug === cat.slug
-                ? 'bg-brand-primary text-white font-semibold shadow-sm'
-                : 'text-gray-600 hover:bg-gray-100 hover:text-brand-primary'
-              }`}
-          >
-            {cat.name}
-          </Link>
-        ))}
-      </FilterSection>
-
-      {availableBrands.length > 0 && (
-        <FilterSection title="Brand">
-          {availableBrands.map(brand => (
-            <CheckboxFilterItem
-              key={brand.value}
-              item={brand}
-              isSelected={activeFilters.brands.includes(brand.value)}
-              onChange={handleBrandFilterChange}
-            />
-          ))}
-        </FilterSection>
-      )}
-
-      <FilterSection title="Price Range">
-        <div className="flex space-x-2">
-          <input
-            type="number"
-            placeholder="Min"
-            value={activeFilters.minPrice}
-            onChange={(e) => handlePriceFilterChange('minPrice', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-brand-primary focus:border-brand-primary"
-            aria-label="Minimum price"
-          />
-          <input
-            type="number"
-            placeholder="Max"
-            value={activeFilters.maxPrice}
-            onChange={(e) => handlePriceFilterChange('maxPrice', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-brand-primary focus:border-brand-primary"
-            aria-label="Maximum price"
-          />
-        </div>
-        <p className="mt-2 text-xs text-gray-500">Note: Price filtering is illustrative as product data lacks price.</p>
-      </FilterSection>
-    </>
-  );
 
   return (
     <>
@@ -291,7 +237,7 @@ function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsSco
               } lg:block mb-8 lg:mb-0`}
             >
               <div className="sticky top-24 space-y-6 p-4 bg-gray-50 rounded-lg shadow"> {/* Added padding and bg for clarity */}
-                <FilterSidebarContent />
+                {FilterSidebarContent}
               </div>
             </aside>
 
@@ -350,7 +296,7 @@ function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsSco
           </div>
         </div>
       </main>
-      {/* Footer is now rendered globally by App.jsx */}
+      {/* Footer is rendered globally by App.jsx as per prior comment */}
     </>
   );
 }
@@ -384,11 +330,13 @@ CategoryPage.propTypes = {
     })
   ),
   calculateCriticsScore: PropTypes.func.isRequired,
+  areGlobalCategoriesLoading: PropTypes.bool,
 };
 
 CategoryPage.defaultProps = {
   allProducts: [], // Default to an empty array
   allAvailableCategories: [], // Default to an empty array
+  areGlobalCategoriesLoading: true, // Default to true, so page shows loading until App.jsx confirms.
 };
 
 FilterSection.propTypes = {

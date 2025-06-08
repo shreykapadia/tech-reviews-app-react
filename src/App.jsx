@@ -1,82 +1,56 @@
 // src/App.jsx
-import React, { useState, useEffect, useCallback } from 'react'; // Added useLocation
+import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useLocation, useMemo
 import Cookies from 'js-cookie'; // Import js-cookie
 import { HelmetProvider } from 'react-helmet-async'; // Import HelmetProvider
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import Header from './components/Header';
-import HeroSection from './components/HeroSection';
-import SearchAndFilter from './components/SearchAndFilter';
-import ProductListings from './components/ProductListings';
-import ProductDetailView from './components/ProductDetailView';
-import CategoryBrowse from './components/CategoryBrowse'; // Import the CategoryBrowse component
-import Footer from './components/Footer'; // Import the Footer component
+import { BrowserRouter as Router, useNavigate, useLocation } from 'react-router-dom';
+import Header from './layouts/Header'; // Updated path
+import Footer from './layouts/Footer'; // Updated path
 import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/scoreCalculations';
-import PrivacyPolicyPage from './components/PrivacyPolicyPage'; // Import the Privacy Policy page
-import HowItWorksSection from './components/HowItWorksSection'; // Import the HowItWorksSection
-import CookieConsentBanner from './components/CookieConsentBanner'; // Import the CookieConsentBanner
-import TermsOfServicePage from './components/TermsOfServicePage'; // Import the Terms of Service page
-import ProductPage from './components/ProductPage'; // Import the new ProductPage component
+import PrivacyPolicyPage from './features/staticContent/PrivacyPolicyPage'; // Updated path
+import CookieConsentBanner from './components/common/CookieConsentBanner'; // Updated path
+import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; // Updated path
 
-import CategoryPage from './components/CategoryPage'; // Import the CategoryPage component
-import SearchResultsPage from './components/SearchResultsPage'; // Import the SearchResultsPage
+import AppRoutes from './routes/AppRoutes'; // Updated path
 
-import { supabase } from './supabaseClient.js'; // Import Supabase client
-import './App.css';
-import './index.css';
+import CategoryPage from './features/categories/CategoryPage'; // Updated path
+import SearchResultsPage from './features/search/SearchResultsPage'; // Updated path
+import { supabase } from './services/supabaseClient.js'; // Updated path
+import './styles/App.css';
+import './styles/index.css';
 
-// Helper function to get all related search terms for a given query
-// It now accepts aliases as an argument
-const getEffectiveSearchTerms = (query, aliases = {}) => {
+// Memoized helper to pre-process search aliases for faster lookups
+const usePreprocessedAliases = (searchAliasesData) => {
+  return useMemo(() => {
+    if (!searchAliasesData || Object.keys(searchAliasesData).length === 0) {
+      return new Map();
+    }
+    const map = new Map();
+    for (const key in searchAliasesData) {
+      const aliasGroup = searchAliasesData[key];
+      const groupSet = new Set(aliasGroup.map(term => term.toLowerCase()));
+      aliasGroup.forEach(term => {
+        // Each term maps to the entire group set
+        map.set(term.toLowerCase(), groupSet);
+      });
+    }
+    return map;
+  }, [searchAliasesData]);
+};
+
+// Optimized helper function to get all related search terms
+const getEffectiveSearchTerms = (query, preprocessedAliasesMap) => {
   const lowerQuery = query.toLowerCase().trim();
   if (!lowerQuery) return [];
 
-  let effectiveTermsSet = new Set([lowerQuery]); // Start with the query itself
+  const aliasGroupSet = preprocessedAliasesMap.get(lowerQuery);
 
-  // Iterate through alias groups
-  for (const key in aliases) {
-    const aliasGroup = aliases[key];
-    if (aliasGroup.includes(lowerQuery)) {
-      // If the query is part of an alias group, add all terms from that group
-      aliasGroup.forEach(term => effectiveTermsSet.add(term));
-    }
+  if (aliasGroupSet) {
+    // If the query is part of an alias group, return all terms from that group
+    // Ensure the original query term is also included (it should be by map construction)
+    return Array.from(new Set([...aliasGroupSet, lowerQuery]));
   }
-  return Array.from(effectiveTermsSet);
+  return [lowerQuery]; // Query itself if not part of any alias group
 };
-
-// Define HomePageLayout outside AppContent so it can be effectively memoized.
-// It needs to receive all its dependencies as props.
-const MemoizedHomePageLayout = React.memo(function HomePageLayout({
-  selectedProduct,
-  onBackClick,
-  calculateCriticsScore,
-  allProductsArray, // Changed from filteredProducts to allProductsArray for ProductListings
-  availableCategories, // Pass availableCategories for CategoryBrowse
-  onProductClick
-}) {
-  return (
-    <>
-      <HeroSection />
-      {selectedProduct ? (
-        <ProductDetailView
-          product={selectedProduct}
-          onBackClick={onBackClick}
-          calculateCriticsScore={calculateCriticsScore}
-        />
-      ) : (
-        <>
-          {/* Pass availableCategories to CategoryBrowse */}
-          <CategoryBrowse categoriesData={availableCategories} />
-          <ProductListings
-            products={allProductsArray} // ProductListings should get all products for its own randomization
-            // onProductClick={onProductClick} // onProductClick is not used by ProductListings directly
-            calculateCriticsScore={calculateCriticsScore}
-          />
-          <HowItWorksSection />
-        </>
-      )}
-    </>
-  );
-});
 
 function AppContent() { // Renamed App to AppContent to use hooks from react-router-dom
   const [productsData, setProductsData] = useState({});
@@ -85,16 +59,21 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const [allProductsArray, setAllProductsArray] = useState([]); // Flattened array for filtering
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(''); // This state triggers filtering
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(''); // For debounced filtering
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [availableCategories, setAvailableCategories] = useState([]);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const [isAppDataLoading, setIsAppDataLoading] = useState(true); // New state for global data loading
 
   // State for header search functionality
   const [headerSearchQuery, setHeaderSearchQuery] = useState('');
   const [headerSearchResults, setHeaderSearchResults] = useState(null);
   const navigate = useNavigate(); 
   const location = useLocation(); // Hook to get current location
+
+  // Preprocess search aliases
+  const preprocessedAliases = usePreprocessedAliases(searchAliasesData);
 
   // Create a memoized version of calculateCriticsScore that depends on criticWeightsData
   const calculateCriticsScore = useCallback((reviews) => {
@@ -104,27 +83,37 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   // Fetch data on component mount
   useEffect(() => {
     async function fetchData() {
-      console.log("Fetching data from Supabase...");
+      setIsAppDataLoading(true); // Explicitly set loading to true at the start
+      // console.log("Fetching data from Supabase and local files..."); // Consider removing for prod
       try {
-        // Fetch products with their category name and critic reviews
-        // This assumes you have a 'categories' table and 'critic_reviews' table
-        // and 'products' table has a 'category_id' FK to 'categories.id'
-        // and 'critic_reviews' table has a 'product_id' FK to 'products.id'
-        const { data: fetchedProducts, error: productsError } = await supabase
-          .from('products')
-          .select(`
-            *,
-            categories ( name ), 
-            critic_reviews ( * )
-          `);
+        // Parallelize fetching from Supabase and local JSON files
+        const [
+          productsResponse,
+          categoriesResponse,
+          weightsFileResponse, // Renamed to avoid conflict with fetchedWeights
+          aliasesFileResponse  // Renamed to avoid conflict with fetchedAliases
+        ] = await Promise.all([
+          supabase
+            .from('products')
+            .select(`
+              *,
+              categories ( name ), 
+              critic_reviews ( * )
+            `),
+          supabase
+            .from('categories')
+            .select('*') // Fetch all columns for categories
+            .order('name', { ascending: true }),
+          fetch('/data/criticWeights.json'),
+          fetch('/data/searchAliases.json')
+        ]);
 
-        if (productsError) {
-          console.error("Supabase products error:", productsError);
-          throw productsError;
+        // Process Products
+        if (productsResponse.error) {
+          console.error("Supabase products error:", productsResponse.error);
+          throw productsResponse.error;
         }
-
-        // Process fetched products to match the structure your app expects
-        // (e.g., adding category name directly to product object)
+        const fetchedProducts = productsResponse.data || []; // Ensure it's an array
         const processedProducts = fetchedProducts.map(p => ({
           ...p,
           productName: p.product_name, // Map snake_case from DB to camelCase if needed
@@ -134,65 +123,51 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
           audienceRating: p.audience_rating,
           audienceReviewCount: p.audience_review_count,
           aiProsCons: p.ai_pros_cons,
-          category: p.categories?.name || 'Unknown', // Add category name
-          criticReviews: p.critic_reviews || [],    // Ensure criticReviews is an array
-          // Supabase returns critic_reviews as a nested array, App expects product.criticReviews
+          category: p.categories?.name || 'Unknown',
+          criticReviews: p.critic_reviews || [],
         }));
-        
         setAllProductsArray(processedProducts);
-
-        // Reconstruct productsData (object keyed by category name) if still needed
-        // Or adapt components to use allProductsArray and filter by category name
         const productsByCategory = processedProducts.reduce((acc, product) => {
           const categoryName = product.category;
-          if (!acc[categoryName]) {
-            acc[categoryName] = [];
-          }
+          if (!acc[categoryName]) acc[categoryName] = [];
           acc[categoryName].push(product);
           return acc;
         }, {});
         setProductsData(productsByCategory);
 
-        // Fetch categories for the filter dropdown (if not already derived)
-        const { data: fetchedCategories, error: categoriesError } = await supabase
-          .from('categories')
-          .select('*') // Fetch all columns for categories
-          .order('name', { ascending: true });
-
-        if (categoriesError) throw categoriesError;
-        // Process categories to ensure consistent naming (e.g., camelCase)
+        // Process Categories
+        if (categoriesResponse.error) {
+          console.error("Supabase categories error:", categoriesResponse.error);
+          throw categoriesResponse.error;
+        }
+        const fetchedCategories = categoriesResponse.data || []; // Ensure it's an array
         const processedCategories = fetchedCategories.map(cat => ({
           id: cat.id,
           name: cat.name,
           slug: cat.slug,
           iconImageUrl: cat.icon_image_url, // Map from snake_case
           ariaLabel: cat.aria_label,       // Map from snake_case
-          // Add any other fields CategoryBrowse or CategoryPage might need
         }));
         setAvailableCategories(processedCategories);
 
-        // Keep fetching criticWeights and searchAliases from local JSON for now
-        // These could also be moved to Supabase tables later
-        const [weightsResponse, aliasesResponse] = await Promise.all([
-          fetch('/data/criticWeights.json'),
-          fetch('/data/searchAliases.json')
-        ]);
-
-        if (!weightsResponse.ok) throw new Error(`HTTP error! status: ${weightsResponse.status} for criticWeights.json`);
-        if (!aliasesResponse.ok) throw new Error(`HTTP error! status: ${aliasesResponse.status} for searchAliases.json`);
+        // Process Local JSON files
+        if (!weightsFileResponse.ok) throw new Error(`HTTP error! status: ${weightsFileResponse.status} for criticWeights.json`);
+        if (!aliasesFileResponse.ok) throw new Error(`HTTP error! status: ${aliasesFileResponse.status} for searchAliases.json`);
         
-        const fetchedWeights = await weightsResponse.json();
-        const fetchedAliases = await aliasesResponse.json();
+        const fetchedWeights = await weightsFileResponse.json();
+        const fetchedAliases = await aliasesFileResponse.json();
         setCriticWeightsData(fetchedWeights);
         setSearchAliasesData(fetchedAliases);
 
       } catch (error) {
         console.error("Error fetching or parsing data:", error);
         // You might want to set an error state here to display to the user
+      } finally {
+        setIsAppDataLoading(false); // Set loading to false after fetching or if an error occurred
       }
     }
     fetchData();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   // Effect for cookie consent
   useEffect(() => {
@@ -202,13 +177,12 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
     } else if (consentCookie === 'accepted') {
       // User has already consented, you can initialize cookie-dependent services here
       console.log('Cookie consent previously accepted.');
-      // e.g., initializeAnalytics();
     } else {
       console.log('Cookie consent previously declined.');
     }
   }, []);
 
-  // Apply filters whenever productsData, searchTerm, or selectedCategory changes
+  // Apply filters whenever productsData, debouncedSearchTerm, or selectedCategory changes
   useEffect(() => {
     let productsToFilter = [];
 
@@ -222,20 +196,32 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 
     const filtered = productsToFilter.filter(product => {
       const matchesSearchTerm =
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+        product.productName.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        product.brand.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
       return matchesSearchTerm;
     });
     setFilteredProducts(filtered);
-  }, [productsData, allProductsArray, searchTerm, selectedCategory]); // Dependencies for filtering effect
+  }, [productsData, allProductsArray, debouncedSearchTerm, selectedCategory]);
 
+  // Debounce effect for searchTerm
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300); // Adjust debounce delay as needed (e.g., 300-500ms)
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  // Called by input fields directly
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleCategoryChange = useCallback((event) => {
     setSelectedCategory(event.target.value);
-  }, []);
+  }, []); // setSelectedCategory is stable
 
   const handleProductCardClick = useCallback((product) => {
     setSelectedProduct(product);
@@ -248,14 +234,11 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const handleAcceptCookieConsent = () => {
     Cookies.set('userConsent', 'accepted', { expires: 365, path: '/' });
     setShowCookieBanner(false);
-    // Initialize services that use cookies now
-    // e.g., initializeAnalytics();
     console.log('User accepted cookie consent.');
   };
 
   const handleDeclineCookieConsent = () => {
-    // You might still want to set a cookie to remember they declined,
-    // to avoid showing the banner on every visit.
+    // Set a cookie to remember they declined
     Cookies.set('userConsent', 'declined', { expires: 365, path: '/' });
     setShowCookieBanner(false);
     console.log('User declined cookie consent.');
@@ -263,8 +246,8 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 
   // This function is called when the search is submitted from the Header
   const handleHeaderSearchSubmit = (query) => {
-    setHeaderSearchQuery(query); // Update the search query state
-    navigate('/search');         // Navigate to the search results page
+    setHeaderSearchQuery(query); 
+    navigate('/search');
   };
 
   // useEffect to calculate search results when headerSearchQuery or allProductsArray changes
@@ -282,7 +265,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 
     // Only perform filtering if allProductsArray has been populated
     if (allProductsArray.length > 0) {
-      const effectiveTerms = getEffectiveSearchTerms(headerSearchQuery, searchAliasesData);
+      const effectiveTerms = getEffectiveSearchTerms(headerSearchQuery, preprocessedAliases);
 
       if (effectiveTerms.length === 0) { // Should ideally not happen if headerSearchQuery is trimmed and not empty
         setHeaderSearchResults([]);
@@ -307,7 +290,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
       // Products aren't loaded yet, but a search was made. Show empty results.
       setHeaderSearchResults([]);
     }
-  }, [headerSearchQuery, allProductsArray, searchAliasesData, location.pathname]); // Rerun when query, products, aliases, or location changes
+  }, [headerSearchQuery, allProductsArray, preprocessedAliases, location.pathname]);
 
 
   const isCurrentPageHome = location.pathname === '/';
@@ -315,55 +298,27 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   return (
     <div className="bg-brand-light-gray font-sans antialiased text-brand-text">
       <Header onSearchSubmit={handleHeaderSearchSubmit} isHomePage={isCurrentPageHome} />
-
+      {/* 
+        Pass `handleSearchChange` and `searchTerm` to components that need live input for the main filter,
+        e.g., if MemoizedHomePageLayout has its own search bar for the `filteredProducts`.
+        The Header's search bar uses `onSearchSubmit` for a different purpose (global search navigation).
+      */}
       <main>
-        <Routes>
-          <Route 
-            path="/" 
-            element={
-              <MemoizedHomePageLayout
-                selectedProduct={selectedProduct}
-                onBackClick={handleBackToProducts}
-                calculateCriticsScore={calculateCriticsScore} // For ProductDetailView
-                allProductsArray={allProductsArray} // For ProductListings
-                availableCategories={availableCategories} // For CategoryBrowse
-                onProductClick={handleProductCardClick}
-              />} 
-          />
-          <Route
-            path="/search"
-            element={
-              <SearchResultsPage
-                searchTerm={headerSearchQuery}
-                searchResults={headerSearchResults}
-                // onProductClick={handleProductCardClick} // ProductCard handles its own navigation
-                calculateCriticsScore={calculateCriticsScore}
-              />
-            }
-          />
-          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-          <Route 
-            path="/product/:productNameSlug" 
-            element={
-              <ProductPage 
-                allProducts={allProductsArray} 
-                calculateCriticsScore={calculateCriticsScore} 
-              />
-            } 
-          />
-          <Route
-            path="/category/:categorySlug"
-            element={
-              <CategoryPage
-                allProducts={allProductsArray}
-                allAvailableCategories={availableCategories} // Pass all categories
-                calculateCriticsScore={calculateCriticsScore}
-              />
-            }
-          />
-        </Routes>
-        {/* Footer is outside main but part of the overall page structure */}
+        <AppRoutes
+          selectedProduct={selectedProduct}
+          onBackClick={handleBackToProducts}
+          calculateCriticsScore={calculateCriticsScore}
+          allProductsArray={allProductsArray}
+          availableCategories={availableCategories}
+          onProductClick={handleProductCardClick} // Passed to AppRoutes, then to MemoizedHomePageLayout
+          headerSearchQuery={headerSearchQuery} // For SearchResultsPage
+          headerSearchResults={headerSearchResults} // For SearchResultsPage
+          isAppDataLoading={isAppDataLoading} // Global loading state
+          // Props for main content filtering (if MemoizedHomePageLayout needs them)
+          // searchTerm={searchTerm} // The live input value
+          // onSearchChange={handleSearchChange} // The handler to update live input
+          // filteredProducts={filteredProducts} // The debounced, filtered list
+        />
       </main>
       <Footer />
       {showCookieBanner && (

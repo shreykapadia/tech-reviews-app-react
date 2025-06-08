@@ -1,6 +1,6 @@
 // src/components/SearchResultsPage.jsx
 import React, { useState, useEffect, useMemo } from 'react';
-import ProductCard from './ProductCard'; // Import ProductCard
+import ProductCard from '../../components/ProductCard'; // Corrected path to global ProductCard
 
 function SearchResultsPage({
   searchTerm,

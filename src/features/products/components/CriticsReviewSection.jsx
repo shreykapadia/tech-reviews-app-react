@@ -2,10 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { ChatBubbleLeftEllipsisIcon, ArrowRightIcon, StarIcon } from '@heroicons/react/24/outline';
-import { normalizeScore } from '../../utils/scoreCalculations'; // Assuming path is correct
-
-const ScoreBreakdownBar = ({ percentage, colorClass, label }) => (
+import { ChatBubbleLeftEllipsisIcon, ArrowRightIcon, StarIcon } from '@heroicons/react/24/outline'; // Corrected: Added missing import for StarIcon
+import { normalizeScore } from '../../../utils/scoreCalculations'; // Corrected path
+const ScoreBreakdownBarInternal = ({ percentage, colorClass, label }) => (
   <div className="flex items-center mb-1.5">
     <div className="w-20 text-xs text-gray-600 capitalize">{label}</div>
     <div className="flex-1 bg-gray-200 rounded-full h-3 sm:h-3.5 overflow-hidden mr-2">
@@ -17,8 +16,9 @@ const ScoreBreakdownBar = ({ percentage, colorClass, label }) => (
     <div className="w-10 text-xs text-gray-700 font-medium">{percentage.toFixed(0)}%</div>
   </div>
 );
+    const ScoreBreakdownBar = React.memo(ScoreBreakdownBarInternal);
 
-const CriticsReviewSection = ({ product }) => {
+const CriticsReviewSectionComponent = ({ product }) => {
   if (!product || !product.criticReviews || product.criticReviews.length === 0) {
     return null;
   }
@@ -153,7 +153,7 @@ const CriticsReviewSection = ({ product }) => {
   );
 };
 
-CriticsReviewSection.propTypes = {
+CriticsReviewSectionComponent.propTypes = {
   product: PropTypes.shape({
     productName: PropTypes.string.isRequired,
     criticReviews: PropTypes.arrayOf(PropTypes.shape({
@@ -169,4 +169,6 @@ CriticsReviewSection.propTypes = {
   }).isRequired,
 };
 
+const CriticsReviewSection = React.memo(CriticsReviewSectionComponent);
+CriticsReviewSection.displayName = 'CriticsReviewSection';
 export default CriticsReviewSection;

@@ -2,8 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { PlayCircleIcon, PhotoIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-
-const ProductImageGallery = ({ galleryItems, productName }) => {
+const ProductImageGalleryComponent = ({ galleryItems, productName }) => {
   const [validGalleryItems, setValidGalleryItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -169,7 +168,7 @@ const ProductImageGallery = ({ galleryItems, productName }) => {
   );
 };
 
-ProductImageGallery.propTypes = {
+ProductImageGalleryComponent.propTypes = {
   galleryItems: PropTypes.arrayOf(
     PropTypes.shape({
       type: PropTypes.oneOf(['image', 'video']).isRequired,
@@ -181,9 +180,11 @@ ProductImageGallery.propTypes = {
   productName: PropTypes.string,
 };
 
-ProductImageGallery.defaultProps = {
+ProductImageGalleryComponent.defaultProps = {
   galleryItems: [],
   productName: 'Product',
 };
 
+const ProductImageGallery = React.memo(ProductImageGalleryComponent);
+ProductImageGallery.displayName = 'ProductImageGallery';
 export default ProductImageGallery;

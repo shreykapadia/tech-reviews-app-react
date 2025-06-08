@@ -1,7 +1,7 @@
 // src/components/ProductListings.jsx
-import React, { useState, useEffect } from 'react';
-import ProductCard from './ProductCard'; // Assuming ProductCard is in its own file
-import Carousel from './Carousel';
+import React, { useState, useEffect } from 'react'; // Corrected: Added missing import for React
+import ProductCard from '../../../components/ProductCard'; // Corrected path to global ProductCard
+import Carousel from '../../../components/common/Carousel'; // Corrected path to global Carousel
 
 // Helper function to shuffle an array (Fisher-Yates shuffle)
 function shuffleArray(array) {

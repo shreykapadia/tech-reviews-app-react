@@ -3,13 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
-const ProsConsSummary = ({ aiProsCons }) => {
+const ProsConsSummaryComponent = ({ aiProsCons }) => {
   if (!aiProsCons || (!aiProsCons.pros?.length && !aiProsCons.cons?.length)) {
     return null; // Don't render if no pros or cons
   }
 
   const { pros = [], cons = [] } = aiProsCons;
-
   const ListItem = ({ children, type }) => {
     const IconComponent = type === 'pro' ? CheckCircleIcon : XCircleIcon;
     const iconColor = type === 'pro' ? 'text-green-600' : 'text-red-600';
@@ -59,15 +58,17 @@ const ProsConsSummary = ({ aiProsCons }) => {
   );
 };
 
-ProsConsSummary.propTypes = {
+ProsConsSummaryComponent.propTypes = {
   aiProsCons: PropTypes.shape({
     pros: PropTypes.arrayOf(PropTypes.string),
     cons: PropTypes.arrayOf(PropTypes.string),
   }),
 };
 
-ProsConsSummary.defaultProps = {
+ProsConsSummaryComponent.defaultProps = {
   aiProsCons: { pros: [], cons: [] },
 };
 
+const ProsConsSummary = React.memo(ProsConsSummaryComponent);
+ProsConsSummary.displayName = 'ProsConsSummary';
 export default ProsConsSummary;
