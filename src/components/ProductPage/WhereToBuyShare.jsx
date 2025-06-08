@@ -1,42 +1,71 @@
 // src/components/ProductPage/WhereToBuyShare.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { ShareIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { ShareIcon, ShoppingCartIcon, StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline'; // For empty stars
+import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid'; // For filled stars
 
 const BESTBUY_API_KEY = import.meta.env.VITE_BESTBUY_API_KEY;
 
+// Updated RetailerLink to include a "Shop Now" button
 const RetailerLink = ({ retailer }) => (
-  <a
-    href={retailer.url}
-    target="_blank"
-    rel="noopener noreferrer sponsored"
-    className="flex items-center justify-between p-3 sm:p-4 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-all duration-200 group"
-  >
-    <div className="flex items-center">
+  <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+    <div className="flex items-center w-full sm:w-auto mb-3 sm:mb-0">
       {retailer.logo && (
-        <img src={retailer.logo} alt={`${retailer.name} logo`} className="h-8 w-8 sm:h-10 sm:w-10 mr-3 sm:mr-4 object-contain flex-shrink-0" />
+        <img src={retailer.logo} alt={`${retailer.name} logo`} className="h-10 w-10 sm:h-12 sm:w-12 mr-3 sm:mr-4 object-contain flex-shrink-0" />
       )}
-      <div>
-        <span className="font-semibold text-sm sm:text-base text-brand-text group-hover:text-brand-primary">
+      <div className="flex-grow">
+        <span className="font-semibold text-base sm:text-lg text-brand-text">
           {retailer.name}
         </span>
         {retailer.priceInfo && (
-          <div className="text-xs text-gray-600 mt-0.5">
+          <div className="text-sm text-gray-600 mt-0.5">
             {retailer.priceInfo.salePrice < retailer.priceInfo.regularPrice && (
-              <span className="text-red-600 font-bold mr-1.5">${retailer.priceInfo.salePrice.toFixed(2)}</span>
+              <span className="text-red-600 font-bold mr-1.5 text-base">${retailer.priceInfo.salePrice.toFixed(2)}</span>
             )}
-            <span className={`${retailer.priceInfo.salePrice < retailer.priceInfo.regularPrice ? 'line-through text-gray-500' : 'text-gray-700 font-semibold'}`}>
+            <span className={`${retailer.priceInfo.salePrice < retailer.priceInfo.regularPrice ? 'line-through text-gray-500 text-xs' : 'text-gray-700 font-semibold text-base'}`}>
               ${retailer.priceInfo.regularPrice.toFixed(2)}
             </span>
           </div>
         )}
+        {!retailer.priceInfo && retailer.pricePlaceholder && (
+          <p className="text-sm text-gray-500 mt-0.5">{retailer.pricePlaceholder}</p>
+        )}
+        {/* Customer Rating Display */}
+        {retailer.ratingInfo && (
+          <div className="flex items-center mt-1 text-xs text-gray-500">
+            <div className="flex items-center mr-1">
+              {[...Array(5)].map((_, i) => {
+                const ratingValue = retailer.ratingInfo.average || 0;
+                if (ratingValue >= i + 1) {
+                  return <StarSolidIcon key={i} className="h-3.5 w-3.5 text-yellow-400" />;
+                } else if (ratingValue >= i + 0.5) {
+                  // Optional: half-star logic can be added here if desired
+                  return <StarOutlineIcon key={i} className="h-3.5 w-3.5 text-yellow-400" />; // Simple fallback for now
+                }
+                return <StarOutlineIcon key={i} className="h-3.5 w-3.5 text-gray-300" />;
+              })}
+            </div>
+            <span className="mr-1">{retailer.ratingInfo.average ? retailer.ratingInfo.average.toFixed(1) : '-'}</span>
+            {typeof retailer.ratingInfo.count === 'number' && (
+              <span>({retailer.ratingInfo.count.toLocaleString()} reviews)</span>
+            )}
+          </div>
+        )}
       </div>
     </div>
-    <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400 group-hover:text-brand-primary transition-colors" />
-  </a>
+    <a
+      href={retailer.url}
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      className="w-full sm:w-auto flex-shrink-0 px-4 py-2 sm:px-5 sm:py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-md hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-all duration-200 flex items-center justify-center group"
+    >
+      Shop Now
+      <ShoppingCartIcon className="h-4 w-4 ml-2 opacity-80 group-hover:opacity-100 transition-opacity" />
+    </a>
+  </div>
 );
 
-const WhereToBuyShare = ({ product, productPageUrl }) => {
+const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }) => {
   const [bestBuyData, setBestBuyData] = useState(null);
   const [isLoadingBestBuy, setIsLoadingBestBuy] = useState(false);
   const [bestBuyError, setBestBuyError] = useState(null);
@@ -51,7 +80,8 @@ const WhereToBuyShare = ({ product, productPageUrl }) => {
         setBestBuyData(null); // Clear previous product's data
         try {
           const response = await fetch(
-            `https://api.bestbuy.com/v1/products(sku=${bestBuySku})?apiKey=${BESTBUY_API_KEY}&show=name,sku,regularPrice,salePrice,url,addToCartUrl,image&format=json`
+            // Use the proxied path. Your Vite dev server will forward this.
+            `/bestbuy-api/v1/products(sku=${bestBuySku})?apiKey=${BESTBUY_API_KEY}&show=name,sku,regularPrice,salePrice,url,addToCartUrl,image,customerReviewAverage,customerReviewCount&format=json`
           );
           if (!response.ok) {
             throw new Error(`Best Buy API request failed: ${response.status}`);
@@ -76,6 +106,69 @@ const WhereToBuyShare = ({ product, productPageUrl }) => {
     }
   }, [bestBuySku]);
 
+  // Memoize allRetailers to stabilize its reference and optimize calculations
+  const allRetailers = useMemo(() => {
+    const baseRetailers = [...retailersData]; // Start with any static retailers from product data
+
+    if (bestBuyData) {
+      baseRetailers.unshift({ // Add Best Buy to the top if data is available
+        name: 'Best Buy',
+        url: bestBuyData.url || '#', // Fallback URL
+        logo: bestBuyData.image || '/images/retailer-logos/bestbuy.svg',
+        priceInfo: {
+          regularPrice: bestBuyData.regularPrice,
+          salePrice: bestBuyData.salePrice,
+        },
+        ratingInfo: {
+          average: bestBuyData.customerReviewAverage,
+          count: bestBuyData.customerReviewCount,
+          scale: 5, // Best Buy's average is out of 5
+        },
+      });
+    } else if (bestBuySku) { // If SKU exists but no data yet (e.g. loading/error)
+      baseRetailers.unshift({
+          name: 'Best Buy',
+          url: '#',
+          logo: '/images/retailer-logos/bestbuy.svg',
+          pricePlaceholder: isLoadingBestBuy ? 'Checking price...' : 'Price unavailable',
+          ratingInfo: { // Placeholder while loading or if error
+              average: null,
+              count: null,
+          }
+      });
+    }
+
+    // Add static placeholders for Amazon and Walmart if not already present
+    if (!baseRetailers.find(r => r.name === 'Amazon')) {
+      baseRetailers.push({
+        name: 'Amazon',
+        url: '#', // Replace with actual or search URL
+        logo: '/images/retailer-logos/amazon.svg', // Provide this logo
+        pricePlaceholder: 'Check price',
+        ratingInfo: { average: 4.6, count: 1, scale: 5 }
+      });
+    }
+    if (!baseRetailers.find(r => r.name === 'Walmart')) {
+      baseRetailers.push({
+        name: 'Walmart',
+        url: '#', // Replace with actual or search URL
+        logo: '/images/retailer-logos/walmart.svg', // Provide this logo
+        pricePlaceholder: 'Check price',
+        ratingInfo: { average: 4.2, count: 1, scale: 5 }
+      });
+    }
+    return baseRetailers;
+  }, [retailersData, bestBuyData, bestBuySku, isLoadingBestBuy]);
+
+  useEffect(() => {
+    if (typeof onRetailerReviewDataUpdate === 'function' && allRetailers.length > 0) {
+      const reviewData = allRetailers
+        .filter(r => r.ratingInfo && r.ratingInfo.average !== undefined && r.ratingInfo.count !== undefined)
+        .map(r => ({ ...r.ratingInfo, retailerName: r.name, scale: r.ratingInfo.scale || 5 })); // Assume scale 5 if not specified
+      onRetailerReviewDataUpdate(reviewData);
+    }
+  }, [allRetailers, onRetailerReviewDataUpdate]); // Rerun when allRetailers changes
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -97,23 +190,10 @@ const WhereToBuyShare = ({ product, productPageUrl }) => {
     }
   };
 
-  const allRetailers = [...retailersData];
-  if (bestBuyData) {
-    allRetailers.unshift({ // Add Best Buy to the top
-      name: 'Best Buy',
-      url: bestBuyData.url,
-      logo: bestBuyData.image || '/images/retailer-logos/bestbuy.svg', // Provide a fallback Best Buy logo
-      priceInfo: {
-        regularPrice: bestBuyData.regularPrice,
-        salePrice: bestBuyData.salePrice,
-      },
-    });
-  }
-
   return (
     <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 animate-fade-in-up">
       <div className="flex justify-between items-center mb-4 sm:mb-5">
-        <h3 className="text-xl sm:text-2xl font-semibold text-brand-primary font-serif">Where to Buy</h3>
+        <h3 className="text-xl sm:text-2xl font-semibold text-brand-primary font-serif">Find Best Deals</h3>
         <button
           onClick={handleShare}
           className="flex items-center text-sm text-gray-600 hover:text-brand-primary p-2 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-1"
@@ -124,8 +204,9 @@ const WhereToBuyShare = ({ product, productPageUrl }) => {
         </button>
       </div>
 
-      {isLoadingBestBuy && <p className="text-sm text-gray-500 py-2">Loading Best Buy price...</p>}
-      {bestBuyError && !isLoadingBestBuy && <p className="text-sm text-red-500 py-2">Could not load Best Buy price: {bestBuyError}</p>}
+      {/* Best Buy specific loading/error can be integrated into its placeholder or removed if placeholders handle it */}
+      {/* {isLoadingBestBuy && !allRetailers.find(r=>r.name==='Best Buy')?.priceInfo && <p className="text-sm text-gray-500 py-2">Loading Best Buy price...</p>} */}
+      {bestBuyError && !isLoadingBestBuy && !bestBuyData && <p className="text-sm text-red-500 py-2 text-center">Could not load Best Buy price: {bestBuyError}</p>}
 
       {allRetailers.length > 0 ? (
         <div className="space-y-3">
@@ -136,6 +217,10 @@ const WhereToBuyShare = ({ product, productPageUrl }) => {
       ) : (
         !isLoadingBestBuy && <p className="text-sm text-gray-500">No purchasing options available at the moment.</p>
       )}
+
+      <p className="text-xs text-gray-500 mt-6 pt-4 border-t border-gray-200">
+        Disclosure: We may earn a commission from purchases made through these links. Prices and availability are subject to change.
+      </p>
     </div>
   );
 };
@@ -148,9 +233,16 @@ WhereToBuyShare.propTypes = {
       name: PropTypes.string.isRequired,
       url: PropTypes.string.isRequired,
       logo: PropTypes.string, // URL to the retailer's logo
+      pricePlaceholder: PropTypes.string, // e.g., "Check Price" or "Price unavailable"
+      ratingInfo: PropTypes.shape({
+        average: PropTypes.number,
+        count: PropTypes.number,
+        scale: PropTypes.number, // e.g. 5 for a 5-star scale
+      }),
     })),
   }).isRequired,
   productPageUrl: PropTypes.string.isRequired,
+  onRetailerReviewDataUpdate: PropTypes.func.isRequired,
 };
 
 export default WhereToBuyShare;

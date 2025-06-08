@@ -4,26 +4,13 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'; // StarIcon and StarIconSolid imports removed
 import { UserGroupIcon, InformationCircleIcon } from '@heroicons/react/24/outline'; // Outline to match HowItWorks & CriticsScore
 
-const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) => {
+const AudienceRatingDisplay = ({ scoreOutOf100, reviewCount }) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const tooltipRef = useRef(null);
   const buttonRef = useRef(null);
 
-  let scoreOutOf100 = null;
-
-  if (audienceRatingString) {
-    const match = audienceRatingString.match(/(\d+(\.\d+)?)\s*\/\s*(\d+)/);
-    if (match) {
-      const score = parseFloat(match[1]);
-      const scale = parseInt(match[3], 10);
-      if (scale !== 0) {
-        scoreOutOf100 = Math.round((score / scale) * 100);
-      }
-    }
-  }
-
   const scoreToDisplay100 = scoreOutOf100 !== null ? scoreOutOf100 : '--';
-  // const reviewCountDisplay = audienceReviewCount > 0 ? `(${audienceReviewCount.toLocaleString()} reviews)` : ''; // Removed
+  const reviewCountDisplay = reviewCount > 0 ? `(${reviewCount.toLocaleString()} reviews)` : '(No reviews yet)';
 
   // Consistent score color function
   const getScoreColor = (score, defaultColorClass = 'text-brand-secondary') => {
@@ -66,8 +53,8 @@ const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) =>
           <p className={`text-3xl sm:text-4xl font-bold ${scoreColorClass} leading-tight`}>
             {scoreToDisplay100}
           </p>
-          <p className="text-xs sm:text-sm text-gray-600 font-medium mt-0.5">Audience Rating</p>
-          {/* The div below previously held the review count, now it's empty or can be removed if no other baseline items are planned */}
+          <p className="text-xs sm:text-sm text-gray-600 font-medium mt-0.5">Audience Score</p>
+          <p className="text-xs text-gray-500 mt-0.5">{reviewCountDisplay}</p>
           <div className="flex items-baseline mt-0.5">
           </div>
         </div>
@@ -104,13 +91,13 @@ const AudienceRatingDisplay = ({ audienceRatingString, audienceReviewCount }) =>
 };
 
 AudienceRatingDisplay.propTypes = {
-  audienceRatingString: PropTypes.string, // e.g., "4.7/5"
-  audienceReviewCount: PropTypes.number,
+  scoreOutOf100: PropTypes.number, // Direct score from 0-100
+  reviewCount: PropTypes.number,   // Total number of reviews
 };
 
 AudienceRatingDisplay.defaultProps = {
-  audienceRatingString: null,
-  audienceReviewCount: 0,
+  scoreOutOf100: null,
+  reviewCount: 0,
 };
 
 export default AudienceRatingDisplay;

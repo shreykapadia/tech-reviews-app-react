@@ -1,5 +1,5 @@
 // src/components/ProductPage.jsx
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -24,6 +24,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retailerReviewData, setRetailerReviewData] = useState([]);
 
   useEffect(() => {
     if (productNameSlug && allProducts.length > 0) {
@@ -49,18 +50,62 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
     return null;
   }, [product, calculateCriticsScore]);
 
-  const audienceScoreOutOf100 = useMemo(() => {
-    if (product && product.audienceRating) {
+  const { combinedAudienceScoreOutOf100, combinedAudienceReviewCount } = useMemo(() => {
+    let totalWeightedScore = 0;
+    let totalReviews = 0;
+
+    // Process original product audience rating
+    if (product?.audienceRating && product?.audienceReviewCount > 0) {
       const match = product.audienceRating.match(/(\d+(\.\d+)?)\s*\/\s*(\d+)/);
       if (match) {
         const score = parseFloat(match[1]);
         const scale = parseInt(match[3], 10);
-        if (scale !== 0) return Math.round((score / scale) * 100);
+        if (scale !== 0) {
+          const score100 = (score / scale) * 100;
+          totalWeightedScore += score100 * product.audienceReviewCount;
+          totalReviews += product.audienceReviewCount;
+        }
       }
     }
-    return null;
-  }, [product]);
 
+    // Process retailer review data
+    retailerReviewData.forEach(retailer => {
+      if (retailer.average && retailer.count > 0) {
+        const scale = retailer.scale || 5; // Assume 5 if not provided
+        const score100 = (retailer.average / scale) * 100;
+        totalWeightedScore += score100 * retailer.count;
+        totalReviews += retailer.count;
+      }
+    });
+
+    if (totalReviews === 0) {
+      return { combinedAudienceScoreOutOf100: null, combinedAudienceReviewCount: 0 };
+    }
+
+    const finalCombinedScore = Math.round(totalWeightedScore / totalReviews);
+    return { combinedAudienceScoreOutOf100: finalCombinedScore, combinedAudienceReviewCount: totalReviews };
+  }, [product, retailerReviewData]);
+
+  const handleRetailerReviewDataUpdate = useCallback((data) => {
+    setRetailerReviewData(prevData => {
+      // Check if data has meaningfully changed
+      if (prevData.length !== data.length) {
+        return data; // Length changed, definitely update
+      }
+
+      // Compare content of each item
+      const hasChanged = data.some((newItem, index) => {
+        const oldItem = prevData[index];
+        if (!oldItem) return true; // Should not happen if lengths are same
+        return oldItem.retailerName !== newItem.retailerName ||
+               oldItem.average !== newItem.average ||
+               oldItem.count !== newItem.count ||
+               oldItem.scale !== newItem.scale;
+      });
+
+      return hasChanged ? data : prevData; // Only update if content changed
+    });
+  }, []); // Empty dependency array: setRetailerReviewData is stable
 
   if (loading) {
     return (
@@ -105,14 +150,14 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
       "@type": "Brand",
       "name": product.brand
     },
-    ...(criticsScoreValue !== null || audienceScoreOutOf100 !== null ? {
+    ...(criticsScoreValue !== null || combinedAudienceScoreOutOf100 !== null ? {
       "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": criticsScoreValue !== null ? criticsScoreValue : audienceScoreOutOf100, // Prioritize critics or use audience
+        "ratingValue": criticsScoreValue !== null ? criticsScoreValue : combinedAudienceScoreOutOf100, // Prioritize critics or use audience
         "bestRating": "100",
         "worstRating": "0",
-        "ratingCount": (product.criticReviews?.length || 0) + (product.audienceReviewCount || 0 || placeholderUserReviews.length), // Example count
-        "reviewCount": (product.criticReviews?.length || 0) + (product.audienceReviewCount || 0 || placeholderUserReviews.length)
+        "ratingCount": (product.criticReviews?.length || 0) + combinedAudienceReviewCount,
+        "reviewCount": (product.criticReviews?.length || 0) + combinedAudienceReviewCount
       }
     } : {}),
     // "review": product.criticReviews?.map(r => ({ // Can be extensive
@@ -147,8 +192,8 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
               <ProductTitleBrand productName={product.productName} brand={product.brand} />
               <CriticsScoreDisplay criticsScore={criticsScoreValue} />
               <AudienceRatingDisplay
-                audienceRatingString={product.audienceRating}
-                audienceReviewCount={product.audienceReviewCount || placeholderUserReviews.length} // Use placeholder if actual count not in JSON
+                scoreOutOf100={combinedAudienceScoreOutOf100}
+                reviewCount={combinedAudienceReviewCount}
               />
               <ProsConsSummary aiProsCons={product.aiProsCons} />
             </div>
@@ -162,6 +207,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
           <div className="mb-8 sm:mb-10">
                <WhereToBuyShare
                   product={product} // Pass the whole product object
+                  onRetailerReviewDataUpdate={handleRetailerReviewDataUpdate}
                   productPageUrl={productPageUrl}
               />
           </div>
@@ -182,8 +228,5 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
     </HelmetProvider>
   );
 };
-
-// Placeholder for data not in products.json, used in AudienceRatingDisplay and Schema
-const placeholderUserReviews = [1,2,3]; // Just to get a count
 
 export default ProductPage;
