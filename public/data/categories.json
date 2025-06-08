@@ -2,19 +2,19 @@
     {
         "name": "Smartphones",
         "slug": "smartphones",
-        "iconPlaceholder": "📱",
+        "iconImageUrl": "/images/categories/smartphone.webp",
         "ariaLabel": "Browse Smartphones category"
     },
     {
         "name": "Laptops",
         "slug": "laptops",
-        "iconPlaceholder": "💻",
+        "iconImageUrl": "/images/categories/laptop.webp",
         "ariaLabel": "Browse Laptops category"
     },
     {
         "name": "TVs",
         "slug": "tvs",
-        "iconPlaceholder": "📺",
+        "iconImageUrl": "/images/categories/tvs.webp",
         "ariaLabel": "Browse TVs category"
     }
 

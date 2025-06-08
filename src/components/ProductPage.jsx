@@ -161,9 +161,8 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
           {/* Where to Buy - might be part of hero or its own section */}
           <div className="mb-8 sm:mb-10">
                <WhereToBuyShare
-                  retailersData={product.retailersData} // Assuming this might be added to products.json
+                  product={product} // Pass the whole product object
                   productPageUrl={productPageUrl}
-                  productName={product.productName}
               />
           </div>
 

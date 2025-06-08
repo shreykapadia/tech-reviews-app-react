@@ -47,22 +47,18 @@ const CategoryBrowse = React.memo(function CategoryBrowse() {
                 className="group bg-white rounded-xl shadow-lg p-4 sm:p-6 transform hover:scale-105 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 flex flex-col items-center justify-center text-center aspect-square"
                 // aspect-square ensures the card is a square, good for consistent tap targets
               >
-                {/* 
-                  Icon/Image Placeholder:
-                  Replace this div with your actual icon component or <img> tag.
-                  For SVGs, you might use them inline or as a component.
-                  Example for an <img>: 
-                  <img src={`/path/to/icons/${category.slug}.svg`} alt="" className="h-12 w-12 sm:h-16 sm:h-16 text-blue-500 mb-3 sm:mb-4 group-hover:text-blue-600 transition-colors" />
-                  The alt="" is empty because the link's aria-label describes the purpose.
-                  If the icon itself conveys unique information not in the text, provide descriptive alt text.
-                */}
-                <div 
-                  aria-hidden="true" // Hide from screen readers as text label is sufficient
-                  className="flex items-center justify-center h-12 w-12 sm:h-16 sm:w-16 text-3xl sm:text-4xl text-blue-500 mb-3 sm:mb-4 group-hover:text-blue-600 transition-colors"
-                >
-                  {category.iconPlaceholder}
-                </div>
-                <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 group-hover:text-gray-900">
+                {category.iconImageUrl ? (
+                  <img
+                    src={category.iconImageUrl}
+                    alt="" // Alt text is empty as the link's aria-label describes the purpose.
+                         // If the icon conveys unique info, provide descriptive alt text here.
+                    aria-hidden="true" 
+                    className="h-24 w-24 sm:h-32 sm:w-32 object-contain mb-3 sm:mb-4 group-hover:opacity-80 transition-opacity"
+                  />
+                ) : (
+                  <div aria-hidden="true" className="h-24 w-24 sm:h-32 sm:w-32 bg-gray-200 rounded-md mb-3 sm:mb-4 flex items-center justify-center text-gray-400 text-4xl">?</div>
+                )}
+                <span className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 group-hover:text-gray-900">
                   {category.name}
                 </span>
               </a>
