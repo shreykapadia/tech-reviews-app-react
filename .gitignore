@@ -23,6 +23,18 @@ dist-ssr
 *.sln
 *.sw?
 *.env
+# Files related to Supabase configuration/keys (as per your request)
 WM_IO_my_rsa_key_pair
-*.pem
-*.prm
+WM_IO_private_key.pem
+WM_IO_private_key.prm
+WM_IO_public_key.pem
+
+# Recommended: General Supabase environment variables files
+# It's a best practice to store your Supabase URL, anon key, service_role key,
+# JWT secret, and other sensitive credentials in .env files.
+# Ensure these .env files are listed in .gitignore.
+.env
+*.env
+.env.*
+supabase/.env
+supabase/functions/.env
