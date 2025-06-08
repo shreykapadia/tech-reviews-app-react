@@ -1,30 +1,13 @@
 // src/components/CategoryBrowse.jsx
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-
-const CategoryBrowse = React.memo(function CategoryBrowse() {
-  const [categoriesData, setCategoriesData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch('/data/categories.json'); // Path from public folder
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setCategoriesData(data);
-      } catch (e) {
-        console.error("Failed to fetch categories:", e);
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchCategories();
-  }, []); // Empty dependency array means this runs once on mount
+// CategoryBrowse now receives categoriesData as a prop
+const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLoading, error }) {
+  // isLoading and error can also be passed as props if App.jsx manages global loading/error states
+  // For this example, we'll derive them based on categoriesData prop.
+  const effectiveIsLoading = isLoading === undefined ? !categoriesData || categoriesData.length === 0 : isLoading;
+  const effectiveError = error;
 
   return (
     <section className="py-8 sm:py-12 md:py-16 bg-gray-50 animate-fade-in-up">
@@ -33,15 +16,15 @@ const CategoryBrowse = React.memo(function CategoryBrowse() {
           Browse by Product Type
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-          {loading && <p className="col-span-full text-center text-gray-500">Loading categories...</p>}
-          {error && <p className="col-span-full text-center text-red-500">Error loading categories: {error}</p>}
-          {!loading && !error && categoriesData.length === 0 && (
+          {effectiveIsLoading && !effectiveError && <p className="col-span-full text-center text-gray-500">Loading categories...</p>}
+          {effectiveError && <p className="col-span-full text-center text-red-500">Error loading categories: {String(effectiveError)}</p>}
+          {!effectiveIsLoading && !effectiveError && categoriesData.length === 0 && (
             <p className="col-span-full text-center text-gray-500">No categories found.</p>
           )}
-          {!loading && !error && categoriesData.length > 0 && (
+          {!effectiveIsLoading && !effectiveError && categoriesData.length > 0 && (
             categoriesData.map((category) => (
               <a
-                key={category.slug}
+                key={category.id || category.slug} // Prefer category.id if available, fallback to slug
                 href={`/category/${category.slug}`} // Updated URL to match CategoryPage route
                 aria-label={category.ariaLabel}
                 className="group bg-white rounded-xl shadow-lg p-4 sm:p-6 transform hover:scale-105 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 flex flex-col items-center justify-center text-center aspect-square"
@@ -70,6 +53,21 @@ const CategoryBrowse = React.memo(function CategoryBrowse() {
   );
 });
 
+CategoryBrowse.propTypes = {
+  categoriesData: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Add id prop type
+    slug: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    iconImageUrl: PropTypes.string,
+    ariaLabel: PropTypes.string,
+  })),
+  isLoading: PropTypes.bool, // Optional: if App.jsx passes its loading state
+  error: PropTypes.any,     // Optional: if App.jsx passes its error state
+};
+CategoryBrowse.defaultProps = {
+  // id will be required by the shape, so no default needed here for it
+  categoriesData: [],
+};
 export default CategoryBrowse;
 
 /*

@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { ShareIcon, ShoppingCartIcon, StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline'; // For empty stars
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid'; // For filled stars
 
-const BESTBUY_API_KEY = import.meta.env.VITE_BESTBUY_API_KEY;
+// Comment out the API key to prevent API calls and usage of limits
+// const BESTBUY_API_KEY = import.meta.env.VITE_BESTBUY_API_KEY;
 
 // Updated RetailerLink to include a "Shop Now" button
 const RetailerLink = ({ retailer }) => (
@@ -73,6 +74,9 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
   const { productName, bestBuySku, retailersData = [] } = product;
 
   useEffect(() => {
+    // Define BESTBUY_API_KEY here to check its existence locally within the hook
+    // This ensures that if it's commented out globally, the fetch won't proceed.
+    const BESTBUY_API_KEY = import.meta.env.VITE_BESTBUY_API_KEY;
     if (bestBuySku && BESTBUY_API_KEY) {
       const fetchBestBuyPrice = async () => {
         setIsLoadingBestBuy(true);

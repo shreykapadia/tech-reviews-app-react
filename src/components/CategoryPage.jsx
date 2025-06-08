@@ -42,14 +42,14 @@ const CheckboxFilterItem = ({ item, isSelected, onChange, isDisabled, isCurrentC
 );
 
 
-function CategoryPage({ allProducts, calculateCriticsScore }) {
+function CategoryPage({ allProducts, allAvailableCategories, calculateCriticsScore }) {
   const { categorySlug } = useParams();
 
-  const [categoryPageIsLoading, setCategoryPageIsLoading] = useState(true); // Renamed for clarity
-  const [categoryPageError, setCategoryPageError] = useState(null); // Renamed for clarity
+  const [categoryPageIsLoading, setCategoryPageIsLoading] = useState(true);
+  const [categoryPageError, setCategoryPageError] = useState(null);
   const [categoryDetails, setCategoryDetails] = useState(null);
-  const [productsForThisCategory, setProductsForThisCategory] = useState([]); // Renamed for clarity
-  const [availableCategories, setAvailableCategories] = useState([]); // For sidebar filter
+  const [productsForThisCategory, setProductsForThisCategory] = useState([]);
+  // availableCategories for the sidebar will now come from the allAvailableCategories prop
 
   const [activeFilters, setActiveFilters] = useState({
     brands: [],
@@ -60,36 +60,31 @@ function CategoryPage({ allProducts, calculateCriticsScore }) {
   });
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-  // Fetch categories data for names and validation
+  // Effect to find current category details and set initial loading/error states
   useEffect(() => {
     setCategoryPageIsLoading(true);
     setCategoryPageError(null);
     setCategoryDetails(null); // Reset on slug change
 
-    fetch('/data/categories.json')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load category definitions.');
-        return res.json();
-      })
-      .then(data => {
-        setAvailableCategories(data); // For the sidebar filter
-        const currentCategory = data.find(cat => cat.slug === categorySlug);
-        if (currentCategory) {
-          setCategoryDetails(currentCategory);
-        } else {
-          setCategoryPageError(`The category "${categorySlug}" could not be found.`);
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching categories.json:", err);
-        setCategoryPageError(err.message || "Could not load category information.");
-      })
-      .finally(() => {
+    if (allAvailableCategories && allAvailableCategories.length > 0) {
+      const currentCategory = allAvailableCategories.find(cat => cat.slug === categorySlug);
+      if (currentCategory) {
+        setCategoryDetails(currentCategory);
         setCategoryPageIsLoading(false);
-      });
-  }, [categorySlug]);
+      } else {
+        setCategoryPageError(`The category "${categorySlug}" could not be found.`);
+        setCategoryPageIsLoading(false);
+      }
+    } else if (allAvailableCategories === null || allAvailableCategories === undefined) {
+      // App.jsx is still loading categories, so CategoryPage should also wait
+      setCategoryPageIsLoading(true);
+    } else { // allAvailableCategories is an empty array, but not null/undefined
+      setCategoryPageError(`No categories available to find "${categorySlug}".`);
+      setCategoryPageIsLoading(false);
+    }
+  }, [categorySlug, allAvailableCategories]);
 
-  // Filter products when categoryDetails is available or allProducts prop changes
+  // Filter products when categoryDetails is available or allProducts prop changes (this effect remains largely the same)
   useEffect(() => {
     if (!categoryDetails || !allProducts) {
       setProductsForThisCategory([]); // Clear products if category unknown or allProducts not ready
@@ -200,8 +195,8 @@ function CategoryPage({ allProducts, calculateCriticsScore }) {
   const FilterSidebarContent = () => (
     <>
       <FilterSection title="Category" className="text-sm">
-        {/* Use availableCategories fetched in Effect 1 */}
-        {availableCategories.map(cat => (
+        {/* Use allAvailableCategories prop for the sidebar */}
+        {allAvailableCategories && allAvailableCategories.map(cat => (
           <Link
             key={cat.slug}
             to={`/category/${cat.slug}`}
@@ -375,13 +370,23 @@ CategoryPage.propTypes = {
       criticReviews: PropTypes.array,
       // ... other product properties
     })
-  ), // Can be null or undefined initially if App is still loading, or an empty array.
-     // App.jsx initializes to [], so it should always be an array.
+  ),
+  allAvailableCategories: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.any, // Supabase ID type
+      name: PropTypes.string.isRequired,
+      slug: PropTypes.string.isRequired,
+      iconImageUrl: PropTypes.string,
+      ariaLabel: PropTypes.string,
+      // other category properties from Supabase
+    })
+  ),
   calculateCriticsScore: PropTypes.func.isRequired,
 };
 
 CategoryPage.defaultProps = {
   allProducts: [], // Default to an empty array
+  allAvailableCategories: [], // Default to an empty array
 };
 
 FilterSection.propTypes = {

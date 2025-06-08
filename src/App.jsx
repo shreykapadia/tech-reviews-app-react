@@ -20,6 +20,7 @@ import ProductPage from './components/ProductPage'; // Import the new ProductPag
 import CategoryPage from './components/CategoryPage'; // Import the CategoryPage component
 import SearchResultsPage from './components/SearchResultsPage'; // Import the SearchResultsPage
 
+import { supabase } from './supabaseClient.js'; // Import Supabase client
 import './App.css';
 import './index.css';
 
@@ -48,7 +49,8 @@ const MemoizedHomePageLayout = React.memo(function HomePageLayout({
   selectedProduct,
   onBackClick,
   calculateCriticsScore,
-  filteredProducts,
+  allProductsArray, // Changed from filteredProducts to allProductsArray for ProductListings
+  availableCategories, // Pass availableCategories for CategoryBrowse
   onProductClick
 }) {
   return (
@@ -62,10 +64,11 @@ const MemoizedHomePageLayout = React.memo(function HomePageLayout({
         />
       ) : (
         <>
-          <CategoryBrowse />
+          {/* Pass availableCategories to CategoryBrowse */}
+          <CategoryBrowse categoriesData={availableCategories} />
           <ProductListings
-            products={filteredProducts}
-            onProductClick={onProductClick}
+            products={allProductsArray} // ProductListings should get all products for its own randomization
+            // onProductClick={onProductClick} // onProductClick is not used by ProductListings directly
             calculateCriticsScore={calculateCriticsScore}
           />
           <HowItWorksSection />
@@ -77,7 +80,7 @@ const MemoizedHomePageLayout = React.memo(function HomePageLayout({
 
 function AppContent() { // Renamed App to AppContent to use hooks from react-router-dom
   const [productsData, setProductsData] = useState({});
-  const [criticWeightsData, setCriticWeightsData] = useState({});
+  const [criticWeightsData, setCriticWeightsData] = useState({}); // Keep for now, or move to Supabase
   const [searchAliasesData, setSearchAliasesData] = useState({}); // State for search aliases
   const [allProductsArray, setAllProductsArray] = useState([]); // Flattened array for filtering
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -101,38 +104,87 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   // Fetch data on component mount
   useEffect(() => {
     async function fetchData() {
+      console.log("Fetching data from Supabase...");
       try {
-        const [productsResponse, weightsResponse, aliasesResponse] = await Promise.all([
-          fetch('/data/products.json'), // Path from public folder
-          fetch('/data/criticWeights.json'), // Path from public folder
-          fetch('/data/searchAliases.json') // Path to the aliases file
+        // Fetch products with their category name and critic reviews
+        // This assumes you have a 'categories' table and 'critic_reviews' table
+        // and 'products' table has a 'category_id' FK to 'categories.id'
+        // and 'critic_reviews' table has a 'product_id' FK to 'products.id'
+        const { data: fetchedProducts, error: productsError } = await supabase
+          .from('products')
+          .select(`
+            *,
+            categories ( name ), 
+            critic_reviews ( * )
+          `);
+
+        if (productsError) {
+          console.error("Supabase products error:", productsError);
+          throw productsError;
+        }
+
+        // Process fetched products to match the structure your app expects
+        // (e.g., adding category name directly to product object)
+        const processedProducts = fetchedProducts.map(p => ({
+          ...p,
+          productName: p.product_name, // Map snake_case from DB to camelCase if needed
+          imageURL: p.image_url,
+          keySpecs: p.key_specs,
+          bestBuySku: p.best_buy_sku,
+          audienceRating: p.audience_rating,
+          audienceReviewCount: p.audience_review_count,
+          aiProsCons: p.ai_pros_cons,
+          category: p.categories?.name || 'Unknown', // Add category name
+          criticReviews: p.critic_reviews || [],    // Ensure criticReviews is an array
+          // Supabase returns critic_reviews as a nested array, App expects product.criticReviews
+        }));
+        
+        setAllProductsArray(processedProducts);
+
+        // Reconstruct productsData (object keyed by category name) if still needed
+        // Or adapt components to use allProductsArray and filter by category name
+        const productsByCategory = processedProducts.reduce((acc, product) => {
+          const categoryName = product.category;
+          if (!acc[categoryName]) {
+            acc[categoryName] = [];
+          }
+          acc[categoryName].push(product);
+          return acc;
+        }, {});
+        setProductsData(productsByCategory);
+
+        // Fetch categories for the filter dropdown (if not already derived)
+        const { data: fetchedCategories, error: categoriesError } = await supabase
+          .from('categories')
+          .select('*') // Fetch all columns for categories
+          .order('name', { ascending: true });
+
+        if (categoriesError) throw categoriesError;
+        // Process categories to ensure consistent naming (e.g., camelCase)
+        const processedCategories = fetchedCategories.map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug,
+          iconImageUrl: cat.icon_image_url, // Map from snake_case
+          ariaLabel: cat.aria_label,       // Map from snake_case
+          // Add any other fields CategoryBrowse or CategoryPage might need
+        }));
+        setAvailableCategories(processedCategories);
+
+        // Keep fetching criticWeights and searchAliases from local JSON for now
+        // These could also be moved to Supabase tables later
+        const [weightsResponse, aliasesResponse] = await Promise.all([
+          fetch('/data/criticWeights.json'),
+          fetch('/data/searchAliases.json')
         ]);
 
-        if (!productsResponse.ok) {
-          throw new Error(`HTTP error! status: ${productsResponse.status} for products.json`);
-        }
-        if (!weightsResponse.ok) {
-          throw new Error(`HTTP error! status: ${weightsResponse.status} for criticWeights.json`);
-        }
-        if (!aliasesResponse.ok) {
-          throw new Error(`HTTP error! status: ${aliasesResponse.status} for searchAliases.json`);
-        }
-
-        const fetchedProducts = await productsResponse.json();
+        if (!weightsResponse.ok) throw new Error(`HTTP error! status: ${weightsResponse.status} for criticWeights.json`);
+        if (!aliasesResponse.ok) throw new Error(`HTTP error! status: ${aliasesResponse.status} for searchAliases.json`);
+        
         const fetchedWeights = await weightsResponse.json();
         const fetchedAliases = await aliasesResponse.json();
-
-        setProductsData(fetchedProducts);
         setCriticWeightsData(fetchedWeights);
         setSearchAliasesData(fetchedAliases);
-
-        // Flatten products for easier filtering
-        const flattened = Object.values(fetchedProducts).flat();
-        setAllProductsArray(flattened);
-
-        // Get unique categories for filter dropdown
-        const categories = Object.keys(fetchedProducts).sort();
-        setAvailableCategories(categories);
 
       } catch (error) {
         console.error("Error fetching or parsing data:", error);
@@ -272,8 +324,9 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
               <MemoizedHomePageLayout
                 selectedProduct={selectedProduct}
                 onBackClick={handleBackToProducts}
-                calculateCriticsScore={calculateCriticsScore}
-                filteredProducts={filteredProducts}
+                calculateCriticsScore={calculateCriticsScore} // For ProductDetailView
+                allProductsArray={allProductsArray} // For ProductListings
+                availableCategories={availableCategories} // For CategoryBrowse
                 onProductClick={handleProductCardClick}
               />} 
           />
@@ -283,7 +336,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
               <SearchResultsPage
                 searchTerm={headerSearchQuery}
                 searchResults={headerSearchResults}
-                onProductClick={handleProductCardClick} // Assuming you want to open ProductDetailView from search results too
+                // onProductClick={handleProductCardClick} // ProductCard handles its own navigation
                 calculateCriticsScore={calculateCriticsScore}
               />
             }
@@ -304,6 +357,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
             element={
               <CategoryPage
                 allProducts={allProductsArray}
+                allAvailableCategories={availableCategories} // Pass all categories
                 calculateCriticsScore={calculateCriticsScore}
               />
             }
