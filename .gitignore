@@ -23,3 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 *.env
+WM_IO_my_rsa_key_pair
+*.pem
+*.prm
