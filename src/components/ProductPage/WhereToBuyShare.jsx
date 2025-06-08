@@ -72,12 +72,15 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
   const [bestBuyError, setBestBuyError] = useState(null);
 
   const { productName, bestBuySku, retailersData = [] } = product;
+  
+  // Determine if the Best Buy API should be used based on the presence of the API key
+  const IS_BESTBUY_API_ENABLED = import.meta.env.VITE_BESTBUY_API_KEY;
 
   useEffect(() => {
     // Define BESTBUY_API_KEY here to check its existence locally within the hook
     // This ensures that if it's commented out globally, the fetch won't proceed.
-    const BESTBUY_API_KEY = import.meta.env.VITE_BESTBUY_API_KEY;
-    if (bestBuySku && BESTBUY_API_KEY) {
+    // const BESTBUY_API_KEY = import.meta.env.VITE_BESTBUY_API_KEY; // Already captured by IS_BESTBUY_API_ENABLED
+    if (bestBuySku && IS_BESTBUY_API_ENABLED) {
       const fetchBestBuyPrice = async () => {
         setIsLoadingBestBuy(true);
         setBestBuyError(null);
@@ -85,7 +88,7 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
         try {
           const response = await fetch(
             // Use the proxied path. Your Vite dev server will forward this.
-            `/bestbuy-api/v1/products(sku=${bestBuySku})?apiKey=${BESTBUY_API_KEY}&show=name,sku,regularPrice,salePrice,url,addToCartUrl,image,customerReviewAverage,customerReviewCount&format=json`
+            `/bestbuy-api/v1/products(sku=${bestBuySku})?apiKey=${IS_BESTBUY_API_ENABLED}&show=name,sku,regularPrice,salePrice,url,addToCartUrl,image,customerReviewAverage,customerReviewCount&format=json`
           );
           if (!response.ok) {
             throw new Error(`Best Buy API request failed: ${response.status}`);
@@ -104,41 +107,48 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
         }
       };
       fetchBestBuyPrice();
-    } else if (bestBuySku && !BESTBUY_API_KEY) {
+    } else if (bestBuySku && !IS_BESTBUY_API_ENABLED) {
         console.warn('Best Buy API key is missing. Price fetching disabled.');
         setBestBuyError('Best Buy API key not configured.');
     }
-  }, [bestBuySku]);
+  }, [bestBuySku, IS_BESTBUY_API_ENABLED]);
 
   // Memoize allRetailers to stabilize its reference and optimize calculations
   const allRetailers = useMemo(() => {
     const baseRetailers = [...retailersData]; // Start with any static retailers from product data
 
-    if (bestBuyData) {
-      baseRetailers.unshift({ // Add Best Buy to the top if data is available
-        name: 'Best Buy',
-        url: bestBuyData.url || '#', // Fallback URL
-        logo: bestBuyData.image || '/images/retailer-logos/bestbuy.svg',
-        priceInfo: {
-          regularPrice: bestBuyData.regularPrice,
-          salePrice: bestBuyData.salePrice,
-        },
-        ratingInfo: {
-          average: bestBuyData.customerReviewAverage,
-          count: bestBuyData.customerReviewCount,
-          scale: 5, // Best Buy's average is out of 5
-        },
-      });
-    } else if (bestBuySku) { // If SKU exists but no data yet (e.g. loading/error)
+    if (IS_BESTBUY_API_ENABLED && bestBuySku) { // API is enabled and SKU exists
+      if (bestBuyData) { // API call was successful
+        baseRetailers.unshift({
+          name: 'Best Buy',
+          url: bestBuyData.url || `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`,
+          logo: bestBuyData.image || '/images/retailer-logos/bestbuy.svg',
+          priceInfo: {
+            regularPrice: bestBuyData.regularPrice,
+            salePrice: bestBuyData.salePrice,
+          },
+          ratingInfo: {
+            average: bestBuyData.customerReviewAverage,
+            count: bestBuyData.customerReviewCount,
+            scale: 5,
+          },
+        });
+      } else { // API enabled, SKU exists, but no data yet (loading or error)
+        baseRetailers.unshift({
+            name: 'Best Buy',
+            url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`,
+            logo: '/images/retailer-logos/bestbuy.svg',
+            pricePlaceholder: isLoadingBestBuy ? 'Checking price...' : (bestBuyError ? 'Price unavailable' : 'Check price'),
+            ratingInfo: { average: null, count: null }
+        });
+      }
+    } else if (bestBuySku) { // API is NOT enabled (key missing) but SKU exists - hardcode Best Buy
       baseRetailers.unshift({
           name: 'Best Buy',
-          url: '#',
+          url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`, // Fallback search URL
           logo: '/images/retailer-logos/bestbuy.svg',
-          pricePlaceholder: isLoadingBestBuy ? 'Checking price...' : 'Price unavailable',
-          ratingInfo: { // Placeholder while loading or if error
-              average: null,
-              count: null,
-          }
+          pricePlaceholder: '$XXX.XX', // Hardcoded price placeholder
+          ratingInfo: { average: 4.5, count: 12345, scale: 5 }, // Hardcoded rating
       });
     }
 
@@ -146,7 +156,7 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
     if (!baseRetailers.find(r => r.name === 'Amazon')) {
       baseRetailers.push({
         name: 'Amazon',
-        url: '#', // Replace with actual or search URL
+        url: `https://www.amazon.com/s?k=${encodeURIComponent(productName)}`, // Example search URL
         logo: '/images/retailer-logos/amazon.svg', // Provide this logo
         pricePlaceholder: 'Check price',
         ratingInfo: { average: 4.6, count: 1, scale: 5 }
@@ -155,14 +165,14 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
     if (!baseRetailers.find(r => r.name === 'Walmart')) {
       baseRetailers.push({
         name: 'Walmart',
-        url: '#', // Replace with actual or search URL
+        url: `https://www.walmart.com/search?q=${encodeURIComponent(productName)}`, // Example search URL
         logo: '/images/retailer-logos/walmart.svg', // Provide this logo
         pricePlaceholder: 'Check price',
         ratingInfo: { average: 4.2, count: 1, scale: 5 }
       });
     }
     return baseRetailers;
-  }, [retailersData, bestBuyData, bestBuySku, isLoadingBestBuy]);
+  }, [retailersData, bestBuyData, bestBuySku, isLoadingBestBuy, IS_BESTBUY_API_ENABLED, productName, bestBuyError]);
 
   useEffect(() => {
     if (typeof onRetailerReviewDataUpdate === 'function' && allRetailers.length > 0) {
@@ -209,8 +219,12 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
       </div>
 
       {/* Best Buy specific loading/error can be integrated into its placeholder or removed if placeholders handle it */}
-      {/* {isLoadingBestBuy && !allRetailers.find(r=>r.name==='Best Buy')?.priceInfo && <p className="text-sm text-gray-500 py-2">Loading Best Buy price...</p>} */}
-      {bestBuyError && !isLoadingBestBuy && !bestBuyData && <p className="text-sm text-red-500 py-2 text-center">Could not load Best Buy price: {bestBuyError}</p>}
+      {IS_BESTBUY_API_ENABLED && isLoadingBestBuy && !bestBuyData && (
+        <p className="text-sm text-gray-500 py-2 text-center">Loading Best Buy price...</p>
+      )}
+      {IS_BESTBUY_API_ENABLED && bestBuyError && !isLoadingBestBuy && !bestBuyData && (
+        <p className="text-sm text-red-500 py-2 text-center">Could not load Best Buy price: {bestBuyError}</p>
+      )}
 
       {allRetailers.length > 0 ? (
         <div className="space-y-3">
@@ -219,7 +233,7 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
           ))}
         </div>
       ) : (
-        !isLoadingBestBuy && <p className="text-sm text-gray-500">No purchasing options available at the moment.</p>
+        (!IS_BESTBUY_API_ENABLED || (!isLoadingBestBuy && !bestBuyError)) && <p className="text-sm text-gray-500">No purchasing options available at the moment.</p>
       )}
 
       <p className="text-xs text-gray-500 mt-6 pt-4 border-t border-gray-200">

@@ -4,6 +4,8 @@ import { useParams, Link } from 'react-router-dom'; // Removed useLocation as it
 import { Helmet } from 'react-helmet-async';
 import Breadcrumbs from './ProductPage/Breadcrumbs'; // Assuming this can handle category-only views
 import ProductCard from './ProductCard'; // Assuming this is the new, modern vertical ProductCard
+import Header from './Header'; // Import Header
+import Footer from './Footer'; // Import Footer
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'; // FunnelIcon and XMarkIcon will be replaced by an inline SVG
 
 // --- Helper Components (assumed to be similar to SearchResultsPage) ---
