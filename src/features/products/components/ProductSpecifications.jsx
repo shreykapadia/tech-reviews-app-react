@@ -7,32 +7,40 @@ const specDetailsMap = {
   // General
   brand: { label: 'Brand', category: 'General', source: 'product' },
   productName: { label: 'Model Name', category: 'General', source: 'product' },
-  category: { label: 'Product Type', category: 'General', source: 'product' },
-  operatingSystem: { label: 'Operating System', category: 'General', source: 'keySpecs', placeholder: 'Varies by model' }, // Example, not in current JSON
-  features: { label: 'Key Features', category: 'General', source: 'keySpecs' }, // e.g., S Pen, Anti-Reflection Screen
-  design: { label: 'Design Highlights', category: 'General', source: 'keySpecs' }, // e.g., Compact Design
-  build: { label: 'Build Quality', category: 'General', source: 'keySpecs' }, // e.g., Premium Build
+  category: { label: 'Product Type', category: 'General', source: 'product' }, // From main product object
+  operatingSystem: { label: 'Operating System', category: 'General', source: 'keySpecs' },
+  formFactor: { label: 'Form Factor', category: 'General', source: 'keySpecs' }, // For Laptops
+  // features: { label: 'Key Features', category: 'General', source: 'keySpecs' }, // Example, if present in keySpecs
+  // design: { label: 'Design Highlights', category: 'General', source: 'keySpecs' }, // Example, if present in keySpecs
+  // build: { label: 'Build Quality', category: 'General', source: 'keySpecs' }, // Example, if present in keySpecs
 
   // Display
   screenSize: { label: 'Screen Size', category: 'Display', source: 'keySpecs' },
-  resolution: { label: 'Resolution', category: 'Display', source: 'keySpecs' }, // Primarily for TVs
-  displayTech: { label: 'Display Technology', category: 'Display', source: 'keySpecs' }, // e.g., ProMotion, Liquid Retina, PixelSense
-  refreshRate: { label: 'Refresh Rate', category: 'Display', source: 'keySpecs' }, // Primarily for TVs
+  resolution: { label: 'Resolution', category: 'Display', source: 'keySpecs' },
+  displayTech: { label: 'Display Technology', category: 'Display', source: 'keySpecs' },
+  refreshRate: { label: 'Refresh Rate (Hz)', category: 'Display', source: 'keySpecs' },
+  touchScreen: { label: 'Touch Screen', category: 'Display', source: 'keySpecs' }, // For Laptops
+  displayPanelType: { label: 'Display Panel Type', category: 'Display', source: 'keySpecs' }, // For TVs
+  displayBacklighting: { label: 'Display Backlighting', category: 'Display', source: 'keySpecs' }, // For TVs
+  peakBrightness_nits: { label: 'Peak Brightness (nits)', category: 'Display', source: 'keySpecs' }, // For TVs
 
   // Performance
   processor: { label: 'Processor', category: 'Performance', source: 'keySpecs' },
-  ram: { label: 'RAM', category: 'Performance', source: 'keySpecs' }, // Will use keySpecs.ram or keySpecs.memory
-  graphics: { label: 'Graphics', category: 'Performance', source: 'keySpecs' }, // For Laptops
-  cooling: { label: 'Cooling System', category: 'Performance', source: 'keySpecs' }, // For Laptops
+  processorOptions: { label: 'Processor Options', category: 'Performance', source: 'keySpecs' }, // For Laptops
+  ram: { label: 'RAM (GB)', category: 'Performance', source: 'keySpecs' },
+  dedicatedGraphics: { label: 'Dedicated Graphics', category: 'Performance', source: 'keySpecs' }, // For Laptops (replaces 'graphics')
+  // cooling: { label: 'Cooling System', category: 'Performance', source: 'keySpecs' }, // Example, if present in keySpecs
 
   // Camera (Primarily for Smartphones)
-  camera: { label: 'Main Camera System', category: 'Camera', source: 'keySpecs' },
+  cameraSpecs_MP: { label: 'Camera System (MP)', category: 'Camera', source: 'keySpecs' }, // Replaces 'camera'
 
   // Storage
-  storage: { label: 'Storage Capacity', category: 'Storage', source: 'keySpecs' },
+  storage: { label: 'Storage', category: 'Storage', source: 'keySpecs' },
 
   // Battery & Power
-  battery: { label: 'Battery', category: 'Battery & Power', source: 'keySpecs' },
+  batteryCapacity: { label: 'Battery Capacity (mAh)', category: 'Battery & Power', source: 'keySpecs' }, // For Smartphones
+  batteryCapacity_Wh: { label: 'Battery Capacity (Wh)', category: 'Battery & Power', source: 'keySpecs' }, // For Laptops
+  ratedBatteryLife: { label: 'Rated Battery Life (hours)', category: 'Battery & Power', source: 'keySpecs' }, // For Smartphones
 
   // Audio (Primarily for TVs)
   audio: { label: 'Audio System', category: 'Audio', source: 'keySpecs' },
@@ -60,12 +68,47 @@ const ProductSpecifications = ({ product }) => {
 
   const { keySpecs = {} } = product;
 
+  // Calculate starting retail price
+  let startingPrice = null;
+  const retailPriceData = keySpecs?.retailPrice;
+
+  if (typeof retailPriceData === 'number') {
+    startingPrice = retailPriceData;
+  } else if (Array.isArray(retailPriceData) && retailPriceData.length > 0) {
+    const prices = retailPriceData.map(item => {
+      if (typeof item === 'number') {
+        return item;
+      }
+      // Handles cases like [{ screenSize: "13", price: 999 }, ...]
+      if (typeof item === 'object' && item !== null && typeof item.price === 'number') {
+        return item.price;
+      }
+      return Infinity; // Ignore items not in expected format to ensure Math.min works correctly
+    }).filter(price => typeof price === 'number'); // Ensure only numbers are considered for Math.min
+
+    if (prices.length > 0) {
+      startingPrice = Math.min(...prices);
+    }
+  }
+
   return (
     <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Full Specifications
         </h3>
+
+        {/* Display Starting Retail Price */}
+        {startingPrice !== null && (
+          <div className="mb-6 sm:mb-8">
+            <p className="text-lg sm:text-xl font-semibold text-gray-700">
+              Starting Retail Price:
+              <span className="ml-2 text-xl sm:text-2xl font-bold text-brand-accent">
+                ${startingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+            </p>
+          </div>
+        )}
 
         {orderedCategories.map((categoryName) => {
           let specsToProcess = Object.entries(specDetailsMap)
@@ -77,13 +120,7 @@ const ProductSpecifications = ({ product }) => {
               if (detail.source === 'product') {
                 value = product[key];
               } else {
-                // For 'ram' spec, try keySpecs.ram first, then keySpecs.memory
-                // This handles the consolidation of "RAM" and "Memory"
-                if (key === 'ram') {
-                  value = keySpecs.ram || keySpecs.memory;
-                } else {
-                  value = keySpecs[key];
-                }
+                value = keySpecs[key]; // Simplified: directly access key from keySpecs
               }
 
               // Ensure value is not undefined, null, or an empty string before considering it
@@ -109,7 +146,12 @@ const ProductSpecifications = ({ product }) => {
                 {specsForCategory.map((spec) => (
                   <div key={spec.label} className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 items-baseline">
                     <dt className="text-sm font-medium text-gray-600 sm:col-span-4 md:col-span-3">{spec.label}:</dt>
-                    <dd className="text-sm text-brand-text sm:col-span-8 md:col-span-9">{String(spec.value)}</dd>
+                    <dd className="text-sm text-brand-text sm:col-span-8 md:col-span-9">
+                      {Array.isArray(spec.value)
+                        ? spec.value.join(' / ') // Join array values with ' / '
+                        : String(spec.value)
+                      }
+                    </dd>
                   </div>
                 ))}
               </dl>

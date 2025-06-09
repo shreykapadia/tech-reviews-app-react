@@ -62,7 +62,7 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
         className={
           isCarousel
             ? "relative w-full h-56 bg-white px-6 pt-6" // Carousel: Changed bg-gray-100 to bg-white
-            : "relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-100" // Default, ensure square on mobile
+            : "relative w-24 sm:w-32 flex-shrink-0 bg-gray-100" // Default: Removed fixed height (h-24 sm:h-32) to allow vertical stretching
         }
       >
         <img
@@ -70,7 +70,7 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
           alt={product.productName}
           className={`
             w-full h-full 
-            ${isCarousel ? "object-contain group-hover:scale-105 transition-transform duration-300 rounded-md" : "object-cover"}
+            ${isCarousel ? "object-contain group-hover:scale-105 transition-transform duration-300 rounded-md" : "object-contain"}
           `}
           loading="lazy" // Criterion II.5
         />
