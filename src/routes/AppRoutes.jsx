@@ -79,9 +79,13 @@ function AppRoutes({
         />
         <Route
         path="/tech-finder"
-        element={<TechFinderPage />}
+        element={
+          <TechFinderPage
+            availableCategories={availableCategories}
+            isAppDataLoading={isAppDataLoading}
+          />}
       />
-  {/* Footer can be here if it's part of the layout for all routes */}
+  {/* The main Footer component is typically rendered outside the Routes, in App.jsx or a Layout component */}
       <Route
           path="/category/:categorySlug" element={(
             <>
