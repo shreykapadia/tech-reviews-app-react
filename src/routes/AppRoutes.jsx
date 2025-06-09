@@ -11,6 +11,7 @@ const PrivacyPolicyPage = lazy(() => import('../features/staticContent/PrivacyPo
 const ProductPage = lazy(() => import('../features/products/ProductPage'));
 const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
 const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
+const TechFinderPage = React.lazy(() => import('../features/techFinder/TechFinderPage'));
 
 function AppRoutes({
   // Props for HomePage
@@ -77,8 +78,12 @@ function AppRoutes({
           element={<ProductPage allProducts={allProductsArray} calculateCriticsScore={calculateCriticsScore} />}
         />
         <Route
-          path="/category/:categorySlug"
-          element={(
+        path="/tech-finder"
+        element={<TechFinderPage />}
+      />
+  {/* Footer can be here if it's part of the layout for all routes */}
+      <Route
+          path="/category/:categorySlug" element={(
             <>
               {/* This console.log executes if React Router matches this route and starts rendering the element */}
               {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')}
