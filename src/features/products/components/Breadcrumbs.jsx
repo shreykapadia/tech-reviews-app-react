@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { ChevronRightIcon } from '@heroicons/react/20/solid'; // Using solid for breadcrumb chevrons
+import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
 const BreadcrumbsComponent = ({ crumbs }) => {
   if (!crumbs || crumbs.length === 0) {

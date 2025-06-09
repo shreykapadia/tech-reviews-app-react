@@ -2,21 +2,21 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import Breadcrumbs from './components/Breadcrumbs'; // Corrected path
-import ProductTitleBrand from './components/ProductTitleBrand'; // Corrected path
-import ProductImageGallery from './components/ProductImageGallery'; // Corrected path
-import CriticsScoreDisplay from './components/CriticsScoreDisplay'; // Corrected path
-import AudienceRatingDisplay from './components/AudienceRatingDisplay'; // Corrected path
-import ProsConsSummary from './components/ProsConsSummary'; // Corrected path
-import WhereToBuyShare from './components/WhereToBuyShare'; // Corrected path
-import ProductSpecifications from './components/ProductSpecifications'; // Corrected path
-import CriticsReviewSection from './components/CriticsReviewSection'; // Corrected path
-import AudienceReviewSection from './components/AudienceReviewSection'; // Corrected path
-import FeatureSpecificInsights from './components/FeatureSpecificInsights'; // Corrected path
-import CompareSimilarProducts from './components/CompareSimilarProducts'; // Corrected path
-import RelatedArticles from './components/RelatedArticles'; // Corrected path
+import Breadcrumbs from './components/Breadcrumbs'; 
+import ProductTitleBrand from './components/ProductTitleBrand'; 
+import ProductImageGallery from './components/ProductImageGallery'; 
+import CriticsScoreDisplay from './components/CriticsScoreDisplay'; 
+import AudienceRatingDisplay from './components/AudienceRatingDisplay'; 
+import ProsConsSummary from './components/ProsConsSummary'; 
+import WhereToBuyShare from './components/WhereToBuyShare'; 
+import ProductSpecifications from './components/ProductSpecifications'; 
+import CriticsReviewSection from './components/CriticsReviewSection'; 
+import AudienceReviewSection from './components/AudienceReviewSection'; 
+import FeatureSpecificInsights from './components/FeatureSpecificInsights'; 
+import CompareSimilarProducts from './components/CompareSimilarProducts'; 
+import RelatedArticles from './components/RelatedArticles'; 
 
-import { normalizeScore } from '../../utils/scoreCalculations'; // Corrected path
+import { normalizeScore } from '../../utils/scoreCalculations'; 
 
 const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   const { productNameSlug } = useParams();
