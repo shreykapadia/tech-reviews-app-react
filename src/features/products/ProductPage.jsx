@@ -138,6 +138,18 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   const productPageUrl = window.location.href;
   const metaDescription = product.description ? product.description.substring(0, 160) : `Find reviews, scores, and specifications for ${product.productName}. TechScore helps you decide.`;
 
+  // Prepare breadcrumbs data
+  const categorySlug = product.category ? product.category.toLowerCase().replace(/\s+/g, '-') : 'unknown-category';
+  const productPageCrumbs = [
+    { label: 'Home', path: '/' },
+    { label: 'Categories', path: '/categories' },
+  ];
+  if (product.category) {
+    productPageCrumbs.push({ label: product.category, path: `/category/${categorySlug}` });
+  }
+  productPageCrumbs.push({ label: product.productName }); // Current page, no path
+
+
   // Schema Markup
   const schema = {
     "@context": "https://schema.org",
@@ -178,7 +190,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
       {/* Add a wrapper div with top padding to account for the fixed header */}
       <div className="pt-16 md:pt-20">
-        <Breadcrumbs product={product} />
+        <Breadcrumbs crumbs={productPageCrumbs} />
 
         {/* Adjust top padding of this container to py-6 sm:py-8 for consistent spacing after breadcrumbs */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

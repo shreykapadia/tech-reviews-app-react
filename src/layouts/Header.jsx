@@ -263,9 +263,9 @@ function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubm
               {/* Desktop Navigation */}
               <nav className="hidden md:block">
                  <ul className={`flex flex-row space-x-6 lg:space-x-8 text-lg font-medium items-center ${navLinkColorClass}`}>
-                    <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</a></li>
-                    <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Products</a></li>
-                    <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>About</a></li>
+                    <li><Link to="/" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</Link></li>
+                    <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
+                    {/* Consider adding an "About" link if you have an About page */}
                  </ul>
               </nav>
           </div>
@@ -286,9 +286,10 @@ function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubm
         }`}
       >
           <ul className="flex flex-col px-4 space-y-4 text-brand-text text-lg font-medium items-center">
-            <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</a></li>
-            <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Products</a></li>
-            <li><a href="#" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>About</a></li>
+            <li><Link to="/" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</Link></li>
+            <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
+            <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
+            {/* Consider adding an "About" link if you have an About page */}
           </ul>
       </nav>
     </header>

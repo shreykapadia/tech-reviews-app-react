@@ -60,10 +60,15 @@ function CategoryPage({
 
     // Case 1: Categories data is missing (null or undefined) after App.jsx finished loading.
     // This could indicate an error in App.jsx or an unexpected state.
-    if (allAvailableCategories === null || allAvailableCategories === undefined) {
-      return { categoryDetails: null, categoryPageIsLoading: true, categoryPageError: null };
+    if (!allAvailableCategories) { // Checks for null or undefined
+      return {
+        categoryDetails: null,
+        categoryPageIsLoading: false, // Loading is done, but data is bad
+        categoryPageError: "Critical: `allAvailableCategories` prop is null or undefined after global loading finished."
+      };
     }
     // Case 2: Parent finished loading, but there are no categories at all
+    // This check is now more robust as allAvailableCategories is confirmed to be at least an empty array.
     if (allAvailableCategories.length === 0) {
       return {
         categoryDetails: null,
@@ -80,7 +85,7 @@ function CategoryPage({
       return {
         categoryDetails: null,
         categoryPageIsLoading: false,
-        categoryPageError: `The category "${categorySlug}" could not be found.`
+        categoryPageError: `The category "${categorySlug}" could not be found. Available slugs: [${allAvailableCategories.map(c => c.slug).join(', ')}]`
       };
     }
   }, [categorySlug, allAvailableCategories, areGlobalCategoriesLoading]);
@@ -171,31 +176,41 @@ function CategoryPage({
 
   if (categoryPageIsLoading) { // Primary loading state for fetching category details
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
-        <p className="ml-4 text-lg">Loading category...</p>
-      </div>
+      <>
+        {console.log(`CategoryPage (${categorySlug}): Rendering loading state. areGlobalCategoriesLoading: ${areGlobalCategoriesLoading}`)}
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
+          <p className="ml-4 text-lg">Loading category...</p>
+        </div>
+      </>
     );
   }
 
   if (categoryPageError) { // If category fetch failed or slug invalid
     return (
       <>
+        {console.log(`CategoryPage (${categorySlug}): Rendering error state. Error: "${categoryPageError}". allAvailableCategories count: ${allAvailableCategories?.length}`)}
         <div className="container mx-auto px-4 py-8 text-center min-h-[calc(100vh-10rem)] flex flex-col justify-center items-center"> {/* Adjust min-h */}
           <h1 className="text-2xl font-semibold text-red-600 mb-4">Error Loading Category</h1>
           <p className="text-gray-700 mb-6">{categoryPageError}</p>
           <Link to="/" className="text-brand-primary hover:underline">Return to Homepage</Link>
+          <Link to="/categories" className="mt-2 text-brand-primary hover:underline">View All Categories</Link>
         </div>
       </>
     );
   }
 
-  // At this point, categoryDetails is loaded and valid.
-  // Now, display content based on products.
-
   const pageTitle = `${categoryDetails.name} - TechScore Reviews & Guides`;
   const metaDescription = `Discover the best ${categoryDetails.name} reviewed by TechScore. Compare specs, read expert reviews, and find top deals on products like ${productsForThisCategory.slice(0, 2).map(p => p.productName).join(', ')} and more.`;
-  const breadcrumbData = { category: categoryDetails.name, productName: '' };
+  
+  const categoryPageCrumbs = [
+    { label: 'Home', path: '/' },
+    { label: 'Categories', path: '/categories' } // Link to the All Categories page
+  ];
+
+  console.log(`CategoryPage (${categorySlug}): Rendering main content. categoryDetails:`, categoryDetails, "categoryPageCrumbs:", categoryPageCrumbs);
+  // At this point, categoryDetails is loaded and valid.
+  // Now, display content based on products.
 
   return (
     <>
@@ -205,7 +220,7 @@ function CategoryPage({
         <link rel="canonical" href={`https://www.techscore.com/category/${categorySlug}`} />
       </Helmet>
       <main className="pt-16 md:pt-20"> {/* Adjust for fixed header height */}
-        <Breadcrumbs product={breadcrumbData} />
+        <Breadcrumbs crumbs={categoryPageCrumbs} />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-brand-text mb-6 sm:mb-8 font-serif">
             {categoryDetails.name}

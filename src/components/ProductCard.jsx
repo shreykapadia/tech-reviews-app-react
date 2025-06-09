@@ -137,9 +137,6 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
             </span>
             <span className={`text-gray-500 ${isCarousel ? "text-xs mt-0.5" : "ml-0.5"}`}>Audience</span>
             {/* Audience review count - omitted for carousel for simplicity (Criterion IV.3), shown for default */}
-            {!isCarousel && product.audienceReviewCount > 0 && (
-              <span className="text-gray-400 text-xs ml-0.5">({product.audienceReviewCount.toLocaleString()})</span>
-            )}
           </div>
         </div>
       </div>

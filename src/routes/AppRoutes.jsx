@@ -10,7 +10,7 @@ const TermsOfServicePage = lazy(() => import('../features/staticContent/TermsOfS
 const PrivacyPolicyPage = lazy(() => import('../features/staticContent/PrivacyPolicyPage'));
 const ProductPage = lazy(() => import('../features/products/ProductPage'));
 const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
-
+const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
 
 function AppRoutes({
   // Props for HomePage
@@ -52,6 +52,15 @@ function AppRoutes({
           }
         />
         <Route
+          path="/categories"
+          element={
+            <AllCategoriesPage
+              availableCategories={availableCategories}
+              areGlobalCategoriesLoading={isAppDataLoading}
+            />
+          }
+        />
+        <Route
           path="/search"
           element={
             <SearchResultsPage
@@ -69,14 +78,18 @@ function AppRoutes({
         />
         <Route
           path="/category/:categorySlug"
-          element={
-            <CategoryPage
-              allProducts={allProductsArray}
-              allAvailableCategories={availableCategories}
-              calculateCriticsScore={calculateCriticsScore}
-              areGlobalCategoriesLoading={isAppDataLoading}
-            />
-          }
+          element={(
+            <>
+              {/* This console.log executes if React Router matches this route and starts rendering the element */}
+              {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')}
+              <CategoryPage
+                allProducts={allProductsArray}
+                allAvailableCategories={availableCategories}
+                calculateCriticsScore={calculateCriticsScore}
+                areGlobalCategoriesLoading={isAppDataLoading}
+              />
+            </>
+          )}
         />
       </Routes>
     </Suspense>

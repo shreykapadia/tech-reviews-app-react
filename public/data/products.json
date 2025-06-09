@@ -1,0 +1,1248 @@
+{
+  "Smartphones": [
+    {
+      "productName": "iPhone 16 Pro",
+      "brand": "Apple",
+      "category": "Smartphones",
+      "imageURL": "/images/products/iphone16pro.webp",
+      "description": "The iPhone 16 Pro from Apple redefines mobile excellence with its A18 Pro Chip, stunning 6.3-inch ProMotion OLED display, and a revolutionary 48MP main camera system, delivering unparalleled performance and photographic capabilities.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/iphone16pro.webp", "alt": "iPhone 16 Pro front view" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "iPhone 16 Pro detail view" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "iPhone 16 Pro in hand" }
+      ],
+      "keySpecs": {
+        "screenSize": "6.3\" ProMotion OLED",
+        "processor": "A18 Pro Chip",
+        "ram": "8GB RAM",
+        "storage": "256GB Storage",
+        "camera": "48MP Main Camera",
+        "battery": "All-Day Battery"
+      },
+      "bestBuySku": "6443470",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24247538/apple-iphone-16-pro-review"
+        },
+        {
+          "publication": "CNET",
+          "score": 9.2,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/mobile/apple-iphone-16-pro-and-pro-max-review-compelling-upgrade-with-my-favorite-iphone-feature-in-years/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/phones/iphone/iphone-16-pro-review"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/apple-iphone-16-pro?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "Engadget",
+          "score": 93,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/iphone-16-pro-and-pro-max-review-apple-focuses-on-cameras-and-customization-120052459.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/iphones/apple-iphone-16-pro-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/apple-iphone-16-pro-and-iphone-16-pro-max/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/iphone-16-pro-review/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/apple-iphone-16-pro"
+        }
+      ],
+      "audienceRating": "4.7/5",
+      "aiProsCons": {
+        "pros": [
+          "Great battery",
+          "Powerful",
+          "Excellent cameras",
+          "Premium design"
+        ],
+        "cons": [
+          "High price",
+          "AI features delayed",
+          "Minimal design changes"
+        ]
+      }
+    },
+    {
+      "productName": "iPhone 16",
+      "brand": "Apple",
+      "category": "Smartphones",
+      "imageURL": "/images/products/iPhone16.webp",
+      "description": "Experience the perfect blend of power and style with the Apple iPhone 16, featuring the A18 Chip, a vibrant 6.1-inch Super Retina XDR display, and an upgraded 48MP main camera for capturing life's moments in stunning detail.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/iPhone16.webp", "alt": "iPhone 16 front view" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "iPhone 16 side view" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "iPhone 16 camera detail" }
+      ],
+      "keySpecs": {
+        "screenSize": "6.1\" Super Retina XDR",
+        "processor": "A18 Chip",
+        "ram": "6GB RAM",
+        "storage": "128GB Storage",
+        "camera": "48MP Main Camera",
+        "battery": "Improved Battery Life"
+      },
+      "bestBuySku": "6418077",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24247479/apple-iphone-16-plus-review-camera-control-screen-battery"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/apple-iphone-16?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "CNET",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/mobile/apple-iphone-16-and-16-plus-review-little-improvements-add-up/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/phones/iphone/iphone-16-review"
+        },
+        {
+          "publication": "Engadget",
+          "score": 90,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/apple-iphone-16-and-iphone-16-plus-review-closing-the-gap-to-the-pro-120050824.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/iphones/apple-iphone-16-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/apple-iphone-16-and-iphone-16-plus/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/iphone-16-review/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/apple-iphone-16"
+        }
+      ],
+      "audienceRating": "4.5/5",
+      "aiProsCons": {
+        "pros": [
+          "Fresh design",
+          "Strong performance",
+          "Good cameras",
+          "Improved display"
+        ],
+        "cons": [
+          "No ProMotion",
+          "Limited base storage",
+          "Iterative update"
+        ]
+      }
+    },
+    {
+      "productName": "Pixel 9 Pro",
+      "brand": "Google",
+      "category": "Smartphones",
+      "imageURL": "/images/products/pixel9pro.webp",
+      "description": "Google's Pixel 9 Pro sets a new standard for smart photography and AI integration, powered by the Tensor G4 Chip, a brilliant 6.7-inch LTPO OLED display, and an advanced AI camera system for breathtaking images and intelligent features.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/pixel9pro.webp", "alt": "Pixel 9 Pro front view" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Pixel 9 Pro camera array" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Pixel 9 Pro screen detail" }
+      ],
+      "keySpecs": {
+        "screenSize": "6.7\" LTPO OLED",
+        "processor": "Tensor G4 Chip",
+        "ram": "12GB RAM",
+        "storage": "256GB Storage",
+        "camera": "Advanced AI Camera",
+        "battery": "Long Battery Life"
+      },
+      "bestBuySku": "6587887",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24225221/google-pixel-9-pro-xl-review-ai-gemini-screen-battery-camera"
+        },
+        {
+          "publication": "CNET",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/mobile/pixel-9-pro-xl-review-2-months-later-googles-phone-still-rocks/"
+        },
+        {
+          "publication": "Engadget",
+          "score": 94,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/pixel-9-pro-and-pixel-9-pro-xl-review-superb-cameras-with-a-side-of-gemini-ai-170055834.html"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/google-pixel-9-pro?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/phones/google-pixel-phones/google-pixel-9-pro-review"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/google-pixel-phones/google-pixel-9-pro-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/google-pixel-9-pixel-9-pro-and-pixel-9-pro-xl/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/google-pixel-9-pro-review/"
+        }
+      ],
+      "audienceRating": "4.6/5",
+      "aiProsCons": {
+        "pros": [
+          "New design",
+          "Top cameras",
+          "Integrated AI",
+          "Long software support"
+        ],
+        "cons": [
+          "Some AI costs",
+          "Not raw power king",
+          "Heat issues",
+          "Heavy"
+        ]
+      }
+    },
+    {
+      "productName": "Pixel 9",
+      "brand": "Google",
+      "category": "Smartphones",
+      "imageURL": "/images/products/pixel9.webp",
+      "description": "The Google Pixel 9 offers a compact yet powerful smartphone experience, driven by the Tensor G4 Chip. It features a crisp 6.2-inch OLED display and a smart dual-camera system, all wrapped in a sleek, modern design.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/pixel9.webp", "alt": "Pixel 9 front view" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Pixel 9 back view" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Pixel 9 lifestyle shot" }
+      ],
+      "keySpecs": {
+        "screenSize": "6.2\" OLED",
+        "processor": "Tensor G4 Chip",
+        "ram": "8GB RAM",
+        "storage": "128GB Storage",
+        "camera": "Dual Camera",
+        "design": "Compact Design"
+      },
+      "bestBuySku": "6587819",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24232480/google-pixel-9-review-screen-camera-battery"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/google-pixel-9-pixel-9-pro-and-pixel-9-pro-xl/"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/google-pixel-9?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "CNET",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/mobile/google-pixel-9-review-chock-full-of-ai-but-thats-not-what-makes-it-great/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/phones/google-pixel-phones/google-pixel-9-review"
+        },
+        {
+          "publication": "Engadget",
+          "score": 91,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/google-pixel-9-review-the-go-to-android-smartphone-133005548.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/google-pixel-phones/google-pixel-9-review"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/google-pixel-9-review/"
+        }
+      ],
+      "audienceRating": "4.4/5",
+      "aiProsCons": {
+        "pros": [
+          "Sleek redesign",
+          "Excellent cameras",
+          "Smart AI",
+          "Good performance"
+        ],
+        "cons": [
+          "Limited storage",
+          "some AI features Pro-only",
+          "No telephoto"
+        ]
+      }
+    },
+    {
+      "productName": "Galaxy S25 Ultra",
+      "brand": "Samsung",
+      "category": "Smartphones",
+      "imageURL": "/images/products/s25ultra.webp",
+      "description": "Samsung's Galaxy S25 Ultra is the pinnacle of mobile innovation, boasting a Snapdragon 8 Gen 4 processor, a massive 6.8-inch Dynamic AMOLED 2X display, a groundbreaking 200MP camera, and integrated S Pen functionality for ultimate productivity and creativity.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/s25ultra.webp", "alt": "Galaxy S25 Ultra with S Pen" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Galaxy S25 Ultra camera module" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Galaxy S25 Ultra display" }
+      ],
+      "keySpecs": {
+        "screenSize": "6.8\" Dynamic AMOLED 2X",
+        "processor": "Snapdragon 8 Gen 4",
+        "ram": "12GB RAM",
+        "storage": "512GB Storage",
+        "camera": "200MP Camera",
+        "features": "S Pen"
+      },
+      "bestBuySku": "6612727",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/reviews/604154/samsung-galaxy-s25-ultra-review-ai-screen-battery"
+        },
+        {
+          "publication": "CNET",
+          "score": 9.2,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/mobile/galaxy-s25-ultra-review-greatest-phone-screen-ever-and-lets-not-talk-about-the-ai/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/phones/samsung-galaxy-phones/samsung-galaxy-s25-ultra-review"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/samsung-galaxy-s25-ultra?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "Engadget",
+          "score": 89,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/samsung-galaxy-s25-ultra-review-too-much-ai-not-enough-ultra-140022798.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/samsung-phones/samsung-galaxy-s25-ultra-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/samsung-galaxy-s25-s25-plus-and-s25-ultra/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/samsung-galaxy-s25-ultra-review/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/smartphones-tablets/samsung-galaxy-s25-ultra"
+        }
+      ],
+      "audienceRating": "4.8/5",
+      "aiProsCons": {
+        "pros": [
+          "Top Android",
+          "Exceptional cameras",
+          "Vibrant display",
+          "Powerful"
+        ],
+        "cons": [
+          "Very expensive",
+          "AI incremental",
+          "Similar design"
+        ]
+      }
+    },
+    {
+      "productName": "Samsung Galaxy S25",
+      "brand": "Samsung",
+      "category": "Smartphones",
+      "imageURL": "/images/products/galaxys25.webp",
+      "description": "The Samsung Galaxy S25 combines sleek design with powerful performance, featuring the Snapdragon 8 Gen 4 processor, a vibrant 6.2-inch Dynamic AMOLED 2X display, and a versatile triple camera system, making it a premium compact choice.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/galaxys25.webp", "alt": "Samsung Galaxy S25 front" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Samsung Galaxy S25 angled view" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Samsung Galaxy S25 back panel" }
+      ],
+      "keySpecs": {
+        "screenSize": "6.2\" Dynamic AMOLED 2X",
+        "processor": "Snapdragon 8 Gen 4",
+        "ram": "8GB RAM",
+        "storage": "128GB Storage",
+        "camera": "Triple Camera",
+        "design": "Sleek Design"
+      },
+      "bestBuySku": "6612706",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/reviews/610404/samsung-galaxy-s25-plus-review-screen-battery-camera"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/phones/samsung-galaxy-phones/samsung-galaxy-s25-review"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/samsung-galaxy-s25?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "CNET",
+          "score": 9.1,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/mobile/galaxy-s25-and-s25-plus-review-ai-thats-enjoyable-without-being-overwhelming/"
+        },
+        {
+          "publication": "Engadget",
+          "score": 82,
+          "scale": "percent",
+          "link": "https://www.engadget.com/mobile/smartphones/samsung-galaxy-s25-review-170040665.html"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/phones/samsung-phones/galaxy-s25-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/samsung-galaxy-s25-s25-plus-and-s25-ultra/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/mobile/samsung-galaxy-s25-review/"
+        }
+      ],
+      "audienceRating": "4.6/5",
+      "aiProsCons": {
+        "pros": [
+          "Premium compact device",
+          "Good performance",
+          "Decent cameras",
+          "Improved display"
+        ],
+        "cons": [
+          "Fewer Ultra features",
+          "Iterative design",
+          "Limited reviews"
+        ]
+      }
+    }
+  ],
+  "Laptop": [
+    {
+      "productName": "MacBook Air M4",
+      "brand": "Apple",
+      "category": "Laptops",
+      "imageURL": "/images/products/macbookair.webp",
+      "description": "Apple's MacBook Air with the M4 chip (13-inch) delivers exceptional performance and incredible battery life in an impossibly thin and light design, featuring a stunning Liquid Retina display and fanless operation for silent efficiency.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/macbookair.webp", "alt": "MacBook Air M4 open" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "MacBook Air M4 side profile" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "MacBook Air M4 keyboard detail" }
+      ],
+      "keySpecs": {
+        "screenSize": "13.6\" Liquid Retina",
+        "processor": "M4 Chip",
+        "memory": "8GB Unified Memory",
+        "storage": "256GB SSD",
+        "cooling": "Fanless Design",
+        "battery": "Up to 18 hrs battery"
+      },
+      "bestBuySku": "6565862",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/reviews/627186/apple-macbook-air-m4-13-15-inch-2025-laptop-review"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/apple-macbook-air-13-inch-2025-m4?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "CNET",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/computing/m4-macbook-air-review-13-inch-2025/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/computing/macbooks/apple-macbook-air-13-inch-m4"
+        },
+        {
+          "publication": "Engadget",
+          "score": 92,
+          "scale": "percent",
+          "link": "https://www.engadget.com/computing/laptops/apple-macbook-air-m4-13-inch-and-15-inch-review-minimal-upgrades-at-a-much-better-price-130002570.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/apple/macbook-air-13-m4-2025"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/laptops/macbook-air-m4-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/macbook-air-13-inch-2025/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 10.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/apple-macbook-air-13-m4-review/"
+        }
+      ],
+      "audienceRating": "4.8/5",
+      "aiProsCons": {
+        "pros": [
+          "Extreme performance",
+          "Thin/light",
+          "Long battery",
+          "Great display"
+        ],
+        "cons": [
+          "60Hz display",
+          "Few ports",
+          "No fan (sustained load)",
+          "Gpu minor gains"
+        ]
+      }
+    },
+    {
+      "productName": "MacBook Pro M4",
+      "brand": "Apple",
+      "category": "Laptops",
+      "imageURL": "/images/products/macbookpro.webp",
+      "description": "Unleash professional-grade power with the Apple MacBook Pro M4 (14-inch), equipped with the M4 Pro chip, a breathtaking Liquid Retina XDR display with ProMotion, and extended battery life for demanding creative workflows.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/macbookpro.webp", "alt": "MacBook Pro M4 open" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "MacBook Pro M4 screen detail" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "MacBook Pro M4 ports" }
+      ],
+      "keySpecs": {
+        "screenSize": "14.2\" Liquid Retina XDR",
+        "processor": "M4 Pro Chip",
+        "memory": "18GB Unified Memory",
+        "storage": "512GB SSD",
+        "displayTech": "ProMotion",
+        "battery": "Up to 22 hrs battery"
+      },
+      "bestBuySku": "6602748",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/24289831/apple-macbook-pro-m4-review-14-2024-laptop-specs-benchmarks"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/apple-macbook-pro-14-inch-2024-m4?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "CNET",
+          "score": null,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/computing/apple-m4-macbook-pro-review-faster-than-ever-and-the-matte-option-wows/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/computing/macbooks/apple-macbook-pro-14-inch-m4-2024"
+        },
+        {
+          "publication": "Engadget",
+          "score": 92,
+          "scale": "percent",
+          "link": "https://www.engadget.com/computing/laptops/apple-macbook-pro-14-inch-and-16-inch-review-2024-brace-yourself-for-m4-speed-140057584.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/apple/macbook-pro-14-2024"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/macbooks/macbook-pro-m4-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/apple-macbook-pro-16-inch-2024/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/apple-macbook-pro-m4-review/"
+        }
+      ],
+      "audienceRating": "4.9/5",
+      "aiProsCons": {
+        "pros": [
+          "Pro-level performance",
+          "Stunning display",
+          "Great battery",
+          "Good ports"
+        ],
+        "cons": [
+          "High price",
+          "Unchanged design",
+          "No touchscreen"
+        ]
+      }
+    },
+    {
+      "productName": "Surface Laptop 7",
+      "brand": "Microsoft",
+      "category": "Laptops",
+      "imageURL": "/images/products/surface7.webp",
+      "description": "The Microsoft Surface Laptop 7 (13.5-inch) combines elegant design with next-generation performance, featuring the Snapdragon X Elite processor, a vibrant PixelSense display, and all-day battery life for seamless productivity on Windows.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/surface7.webp", "alt": "Surface Laptop 7 open" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Surface Laptop 7 angled view" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Surface Laptop 7 keyboard and trackpad" }
+      ],
+      "keySpecs": {
+        "screenSize": "13.5\" PixelSense",
+        "processor": "Snapdragon X Elite",
+        "ram": "16GB RAM",
+        "storage": "512GB SSD",
+        "design": "Slim Design",
+        "battery": "All-Day Battery"
+      },
+      "bestBuySku": "6582818",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/2024/6/25/24185462/microsoft-surface-laptop-7th-edition-review"
+        },
+        {
+          "publication": "PCMag",
+          "score": 3.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/microsoft-surface-laptop-2024-13-inch?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "Engadget",
+          "score": 88,
+          "scale": "percent",
+          "link": "https://www.engadget.com/microsoft-surface-laptop-7-review-success-at-last-120056125.html"
+        },
+        {
+          "publication": "CNET",
+          "score": 8.4,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/computing/microsoft-surface-laptop-7-review-a-macbook-air-rival-arrives/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/computing/windows-laptops/microsoft-surface-laptop-7-review-makes-me-believe-in-the-surface-series-again"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/microsoft/surface-laptop-7th-edition-15-2024"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/laptops/microsoft-surface-laptop-7-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/microsoft-surface-laptop-7th-edition-2024/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/microsoft-surface-laptop-7-review/"
+        }
+      ],
+      "audienceRating": "4.3/5",
+      "aiProsCons": {
+        "pros": [
+          "Premium design",
+          "Class-leading battery",
+          "Strong performance",
+          "Great touchpad"
+        ],
+        "cons": [
+          "No OLED",
+          "Costly upgrades",
+          "ARM app limits",
+          "No discrete GPU"
+        ]
+      }
+    },
+    {
+      "productName": "Dell XPS 14",
+      "brand": "Dell",
+      "category": "Laptops",
+      "imageURL": "/images/products/xps14.webp",
+      "description": "Dell's XPS 14 is a masterclass in premium laptop design, offering a stunning 14.5-inch OLED display, powerful Intel Core Ultra 7 processing, and optional NVIDIA RTX graphics, all housed in a sleek and minimalist chassis.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/xps14.webp", "alt": "Dell XPS 14 front" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Dell XPS 14 display detail" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Dell XPS 14 side view" }
+      ],
+      "keySpecs": {
+        "screenSize": "14.5\" OLED",
+        "processor": "Intel Core Ultra 7",
+        "ram": "16GB RAM",
+        "storage": "1TB SSD",
+        "graphics": "NVIDIA RTX 4060",
+        "build": "Premium Build"
+      },
+      "bestBuySku": "6575150",
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": null,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/2024/6/14/24178083/dell-xps-14-2024-review"
+        },
+        {
+          "publication": "PCMag",
+          "score": 3.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/dell-xps-14-9440?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/computing/laptops/dell-xps-14"
+        },
+        {
+          "publication": "Wired",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/dell-xps-14-and-6/"
+        },
+        {
+          "publication": "CNET",
+          "score": 8.1,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/computing/dell-xps-14-9440-review-solid-premium-laptop-that-may-be-a-bit-too-minimalistic/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/computing/windows-laptops/microsoft-surface-laptop-7-review-makes-me-believe-in-the-surface-series-again"
+        },
+        {
+          "publication": "Engadget",
+          "score": 84,
+          "scale": "percent",
+          "link": "https://www.engadget.com/dell-xps-13-and-xps-14-review-2024-gorgeous-laptops-with-usability-quirks-130010912.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.1,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/dell/xps-14-2024"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 7.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/dell-xps-14-review/"
+        }
+      ],
+      "audienceRating": "4.6/5",
+      "aiProsCons": {
+        "pros": [
+          "Stunning design",
+          "Gorgeous OLED",
+          "Haptic trackpad",
+          "Strong performance"
+        ],
+        "cons": [
+          "RAM soldered",
+          "Few ports",
+          "Touch buttons frustrating",
+          "Hard to open"
+        ]
+      }
+    },
+    {
+      "productName": "HP Spectre x360 14",
+      "brand": "HP",
+      "category": "Laptops",
+      "imageURL": "/images/products/spectre14.webp",
+      "description": "The HP Spectre x360 14 is a versatile 2-in-1 convertible laptop, featuring a gorgeous 14-inch OLED touchscreen, Intel Core Ultra 7 processor, and long battery life, perfect for creative professionals and on-the-go productivity.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/spectre14.webp", "alt": "HP Spectre x360 14 in laptop mode" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "HP Spectre x360 14 in tablet mode" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "HP Spectre x360 14 hinge detail" }
+      ],
+      "keySpecs": {
+        "screenSize": "14\" OLED Touch",
+        "processor": "Intel Core Ultra 7",
+        "ram": "16GB RAM",
+        "storage": "1TB SSD",
+        "design": "Convertible Design",
+        "battery": "Long Battery Life"
+      },
+      "criticReviews": [
+        {
+          "publication": "The Verge",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.theverge.com/22264792/hp-spectre-x360-14-laptop-stylus-oled-review-price-specs-features"
+        },
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/hp-spectre-x360-14-2024?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "CNET",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/computing/hp-spectre-x360-14-2024-review-meteor-lake-arrives-in-style/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": null,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/pro/hp-spectre-x360-14-2024-review"
+        },
+        {
+          "publication": "Engadget",
+          "score": 88,
+          "scale": "percent",
+          "link": "https://www.engadget.com/hp-spectre-x360-14-review-2024-keeping-the-2-in-1-laptop-dream-alive-140045823.html"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.3,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/laptop/reviews/hp/spectre-x360-14-2024"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomshardware.com/laptops/ultrabooks-ultraportables/hp-spectre-x360-14-2024-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/hp-spectre-x360-14-2024/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/computing/hp-spectre-x360-14-2024-review/"
+        }
+      ],
+      "audienceRating": "4.5/5",
+      "aiProsCons": {
+        "pros": [
+          "Gorgeous OLED",
+          "Strong performance",
+          "Long battery",
+          "Versatile 2-in-1"
+        ],
+        "cons": [
+          "Pricey",
+          "No discrete GPU",
+          "Limited ports",
+          "Keyboard quirks"
+        ]
+      }
+    }
+  ],
+  "TV": [
+    {
+      "productName": "Samsung S95D",
+      "brand": "Samsung",
+      "category": "TVs",
+      "imageURL": "/images/products/s95d.webp",
+      "description": "Samsung's S95D QD-OLED delivers breathtaking picture quality with its advanced anti-reflection screen, vibrant colors, deep blacks, and a 144Hz refresh rate for an immersive viewing and gaming experience.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/s95d.webp", "alt": "Samsung S95D TV front view" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Samsung S95D TV screen detail" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Samsung S95D TV side view" }
+      ],
+      "keySpecs": {
+        "screenSize": "65\" QD-OLED",
+        "resolution": "4K Resolution",
+        "refreshRate": "144Hz Refresh Rate",
+        "features": "Anti-Reflection Screen, Smart TV Features"
+      },
+      "bestBuySku": "6576559",
+      "criticReviews": [
+        {
+          "publication": "PCMag",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/samsung-65-inch-s95d-4k-oled-tv?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.6,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/tv/reviews/samsung/s95d-oled"
+        },
+        {
+          "publication": "FlatpanelsHD",
+          "score": 87,
+          "scale": "percent",
+          "link": "https://www.flatpanelshd.com/review.php?subaction=showfull&id=1726124369"
+        },
+        {
+          "publication": "CNET",
+          "score": 8.6,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/home-entertainment/samsung-s95d-oled-tv-the-best-picture-quality-bright-room-or-dark/"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/televisions/samsung-s95d-review"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/tvs/oled-tvs/samsung-s95d-oled-review"
+        },
+        {
+          "publication": "Wired",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/samsung-s95d-qd-oled/"
+        },
+        {
+          "publication": "Digital Trends",
+          "score": 8.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/home-theater/samsung-s95d-qd-oled-tv-review-2024/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/samsung-qe65s95d"
+        }
+      ],
+      "audienceRating": "4.8/5",
+      "aiProsCons": {
+        "pros": [
+          "Excellent anti-glare",
+          "Stunning QD-OLED picture",
+          "High peak brightness",
+          "144Hz for gaming"
+        ],
+        "cons": [
+          "High price",
+          "Clunky OS",
+          "Short cords",
+          "Tricky setup"
+        ]
+      }
+    },
+    {
+      "productName": "LG G5",
+      "brand": "LG",
+      "category": "TVs",
+      "imageURL": "/images/products/lgg5.webp",
+      "description": "The LG G5 OLED evo TV offers an exceptionally bright and vibrant picture with its Brightness Booster Max technology and stunning Gallery Design that mounts flush to your wall, perfect for cinephiles and gamers alike.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/lgg5.webp", "alt": "LG G5 OLED evo TV front" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "LG G5 OLED evo TV wall mounted" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "LG G5 OLED evo TV remote" }
+      ],
+      "keySpecs": {
+        "screenSize": "65\" OLED evo",
+        "resolution": "4K Resolution",
+        "refreshRate": "120Hz Refresh Rate",
+        "features": "Brightness Booster Max, Gallery Design"
+      },
+      "bestBuySku": "6621810",
+      "criticReviews": [
+        {
+          "publication": "PCMag",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.pcmag.com/reviews/lg-65-inch-evo-g5-oled-tv?test_uuid=02LlF0iWKsilxYTJVF8uH5y&test_variant=B"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/apple-iphone-16-pro"
+        },
+        {
+          "publication": "TechRadar",
+          "score": 5.0,
+          "scale": "out of 5 stars",
+          "link": "https://www.techradar.com/televisions/lg-g5-review"
+        },
+        {
+          "publication": "CNET",
+          "score": 8.8,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/home-entertainment/ive-tested-over-80-tvs-and-this-lg-oled-is-the-best-one-yet/"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.9,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/tv/reviews/lg/g5-oled"
+        },
+        {
+          "publication": "FlatpanelsHD",
+          "score": 87,
+          "scale": "percent",
+          "link": "https://www.flatpanelshd.com/review.php?subaction=showfull&id=1748586137"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/lg-g5/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/tv-home-cinema/televisions/lg-g5-oled65g5"
+        }
+        
+      ],
+      "audienceRating": "4.7/5",
+      "aiProsCons": {
+        "pros": [
+          "Very bright OLED",
+          "Exceptional picture",
+          "Outstanding for gaming",
+          "Flush mount"
+        ],
+        "cons": [
+          "Very expensive",
+          "WebOS ads",
+          "Less brightness than expected",
+          "No stand"
+        ]
+      }
+    },
+    {
+      "productName": "Sony BRAVIA A95L",
+      "brand": "Sony",
+      "category": "TVs",
+      "imageURL": "/images/products/a95l.webp",
+      "description": "Sony's BRAVIA A95L QD-OLED combines stunning QD-OLED picture quality with the intelligent Cognitive Processor XR and Acoustic Surface Audio+ for a deeply immersive and realistic home entertainment experience, powered by Google TV.",
+      "gallery": [
+        { "type": "image", "url": "/images/products/a95l.webp", "alt": "Sony BRAVIA A95L front view" },
+        { "type": "image", "url": "/images/placeholder_gallery_1.webp", "alt": "Sony BRAVIA A95L screen texture" },
+        { "type": "image", "url": "/images/placeholder_gallery_2.webp", "alt": "Sony BRAVIA A95L stand detail" }
+      ],
+      "keySpecs": {
+        "screenSize": "65\" QD-OLED",
+        "resolution": "4K Resolution",
+        "processor": "Cognitive Processor XR",
+        "audio": "Acoustic Surface Audio+",
+        "smartTV": "Google TV"
+      },
+      "bestBuySku": "6553384",
+      "criticReviews": [
+        {
+          "publication": "Digital Trends",
+          "score": 10.0,
+          "scale": "out of 10",
+          "link": "https://www.digitaltrends.com/home-theater/sony-bravia-a95l-qd-oled-tv-review/"
+        },
+        {
+          "publication": "CNET",
+          "score": null,
+          "scale": "out of 10",
+          "link": "https://www.cnet.com/tech/home-entertainment/sony-qd-oled-tv-amps-up-brightness-tones-down-reflections/"
+        },
+        {
+          "publication": "RTINGS.com",
+          "score": 8.7,
+          "scale": "out of 10",
+          "link": "https://www.rtings.com/tv/reviews/sony/a95l-oled"
+        },
+        {
+          "publication": "Tom's Guide",
+          "score": 4.5,
+          "scale": "out of 5 stars",
+          "link": "https://www.tomsguide.com/reviews/sony-bravia-xr-a95l-qd-oled-tv"
+        },
+        {
+          "publication": "FlatpanelsHD",
+          "score": 88,
+          "scale": "percent",
+          "link": "https://www.flatpanelshd.com/review.php?subaction=showfull&id=1703134867"
+        },
+        {
+          "publication": "Wired",
+          "score": 9.0,
+          "scale": "out of 10",
+          "link": "https://www.wired.com/review/sony-a95l-oled/"
+        },
+        {
+          "publication": "What Hi-Fi?",
+          "score": 5,
+          "scale": "out of 5 stars",
+          "link": "https://www.whathifi.com/reviews/sony-a95l-xr-65a95l"
+        }
+      ],
+      "audienceRating": "4.9/5",
+      "aiProsCons": {
+        "pros": [
+          "Qd-oled picture",
+          "Excellent processing",
+          "Great for gaming",
+          "Google TV"
+        ],
+        "cons": [
+          "High price",
+          "Only two HDMI 2.1",
+          "Not brightest OLED"
+        ]
+      }
+    }
+  ]
+}
