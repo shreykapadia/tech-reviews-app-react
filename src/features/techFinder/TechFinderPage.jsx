@@ -2,407 +2,22 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
-import ProductCard from '../../components/ProductCard'; // For displaying results
-
-// --- Question Data Structure ---
-// This would typically come from a config file or API
-const questionnaires = {
-  Smartphones: [
-    {
-      id: 'smartphone-os',
-      text: 'Which operating system do you prefer?',
-      type: 'radio',
-      productField: 'keySpecs.Operating System', // Direct check in logic
-      options: [
-        { label: 'iOS (Apple iPhone)', value: 'iOS' },
-        { label: 'Android (Google, Samsung, etc.)', value: 'Android' },
-        { label: 'No preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'smartphone-performance',
-      text: 'How important is raw speed and performance?',
-      type: 'radio',
-      // No direct productField, complex logic on keySpecs.Processor
-      options: [
-        { label: 'Basic Usage (social media, browsing, light apps)', value: 'basic_performance_sm' },
-        { label: 'Everyday Multitasking (smooth general use, some gaming)', value: 'everyday_multitasking_sm' },
-        { label: 'Demanding Apps/Gaming (heavy gaming, video editing)', value: 'demanding_apps_sm' },
-        { label: 'Absolute Top-Tier (latest flagships, maximum power)', value: 'top_tier_sm' },
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'smartphone-camera-priority',
-      text: 'What kind of photos and videos do you primarily want to capture?',
-      type: 'radio',
-      // No direct productField, complex logic on keySpecs.Camera, productName
-      options: [
-        { label: 'Just the basics (QR codes, occasional snaps)', value: 'camera_basics_sm' },
-        { label: 'Good quality for everyday memories', value: 'camera_everyday_sm' },
-        { label: 'Top-notch photography/videography (pro-level features)', value: 'camera_top_notch_sm' },
-        { label: 'Not a major concern', value: 'any' },
-      ],
-    },
-    {
-      id: 'smartphone-battery-life',
-      text: "How long do you need your smartphone's battery to last?",
-      type: 'radio',
-      // No direct productField, complex logic on keySpecs.Battery or keySpecs.ratedBatteryLife
-      options: [
-        { label: 'Light Use (charge every night is fine, ~10-14 hours)', value: 'battery_light_sm' },
-        { label: 'Moderate Use (get through a full day, ~15-20 hours)', value: 'battery_moderate_sm' },
-        { label: 'Heavy Use (power user, need it to last, 20+ hours)', value: 'battery_heavy_sm' },
-        { label: 'Not a major concern', value: 'any' },
-      ],
-    },
-    {
-      id: 'smartphone-storage',
-      text: 'How much internal storage do you need?',
-      type: 'radio',
-      // productField: 'keySpecs.Storage' (custom parsing, use existing parseStorage)
-      options: [
-        { label: 'Basic (64GB-128GB - for light users, cloud storage)', value: 'storage_128gb_sm' },
-        { label: 'Standard (256GB - good for most users)', value: 'storage_256gb_sm' },
-        { label: 'Large (512GB - for many apps, photos, videos)', value: 'storage_512gb_sm' },
-        { label: 'Very Large (1TB+ - for power users, extensive media)', value: 'storage_1tb_plus_sm' },
-        { label: 'Any amount is fine', value: 'any' },
-      ],
-    },
-    {
-      id: 'smartphone-screen-size',
-      text: 'What is your preferred screen size for the smartphone?',
-      type: 'radio',
-      // productField: 'keySpecs.Screen Size' (custom parsing, use existing parseScreenSize)
-      options: [
-        { label: 'Compact (Under 6.0 inches - easier one-handed use)', value: 'screen_compact_sm' },
-        { label: 'Medium (6.0 to 6.4 inches - balanced size)', value: 'screen_medium_sm' },
-        { label: 'Large (6.5 inches and above - immersive viewing)', value: 'screen_large_sm' },
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'smartphone-brand-preference',
-      text: 'Do you have a preferred smartphone brand?',
-      type: 'radio',
-      productField: 'brand',
-      options: [
-        { label: 'Any Brand', value: 'any' },
-        { label: 'Apple', value: 'Apple' },
-        { label: 'Samsung', value: 'Samsung' },
-        { label: 'Google', value: 'Google' },
-        { label: 'OnePlus', value: 'OnePlus' },
-      ],
-    },
-    {
-      id: 'smartphone-budget',
-      text: 'What is your approximate budget for a new smartphone?',
-      type: 'radio',
-      options: [
-        { label: 'Under $300 (Budget-friendly)', value: 'budget_under300_sm' },
-        { label: '$300 - $600 (Mid-range)', value: 'budget_300_600_sm' },
-        { label: '$600 - $900 (Upper Mid-range / Older Flagship)', value: 'budget_600_900_sm' },
-        { label: 'Over $900 (Premium / Latest Flagship)', value: 'budget_over900_sm' },
-        { label: 'Any Budget', value: 'any' },
-      ],
-    },
-  ],
-  Laptops: [
-    {
-      id: 'laptop-primary-use',
-      text: 'What will you primarily use this laptop for?',
-      type: 'radio',
-      // No direct productField, complex logic
-      options: [
-        { label: 'General Use (web, email, office)', value: 'general_use' },
-        { label: 'Productivity/Work (demanding office apps, multitasking)', value: 'productivity_work' },
-        { label: 'Gaming', value: 'gaming' },
-        { label: 'Creative Work (design, video editing)', value: 'creative_work' },
-        { label: 'Student Use (notes, research, portability)', value: 'student_use' },
-        { label: 'Any of the above / Not sure', value: 'any' },
-      ],
-    },
-    {
-      id: 'laptop-performance-level',
-      text: 'How powerful do you need your laptop to be for smooth performance?',
-      type: 'radio',
-      // No direct productField, complex logic
-      options: [
-        { label: 'Basic (web browsing, email, light document editing)', value: 'basic_performance' },
-        { label: 'Good (smooth multitasking, office applications, some photo editing)', value: 'good_performance' },
-        { label: 'High (demanding applications, moderate gaming, video editing)', value: 'high_performance' },
-        { label: 'Max Performance (heavy gaming, professional creative work, complex tasks)', value: 'max_performance' },
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'laptop-storage-needs',
-      text: 'How much space do you need for files, photos, and software?',
-      type: 'radio',
-      // productField: 'keySpecs.Storage' (custom parsing)
-      options: [
-        { label: 'Light (256GB or less - for cloud users or minimal local storage)', value: 'storage_256gb_less' },
-        { label: 'Medium (512GB - good for most users)', value: 'storage_512gb' },
-        { label: 'Large (1TB - for large media files, many apps)', value: 'storage_1tb' },
-        { label: 'Very Large (2TB+ - for professionals, extensive libraries)', value: 'storage_2tb_plus' },
-        { label: 'Any amount is fine', value: 'any' },
-      ],
-    },
-    {
-      id: 'laptop-portability-form-factor',
-      text: "What's most important for portability and versatility?",
-      type: 'radio',
-      // productField: 'keySpecs.Screen Size', 'keySpecs.Design', etc. (custom parsing)
-      options: [
-        { label: 'Ultra-Portable (Thin & light, typically <14" screen)', value: 'ultra_portable' },
-        { label: 'Balanced (Good mix of screen size and portability, 14"-15" screen)', value: 'balanced_portability' },
-        { label: 'Large Screen (More immersive, desktop replacement style, >15" screen)', value: 'large_screen_portability' },
-        { label: '2-in-1 / Tablet Mode (Versatile, often with touchscreen)', value: '2_in_1_convertible' },
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'laptop-brand-preference',
-      text: 'Do you have a preferred laptop brand?',
-      type: 'radio',
-      productField: 'brand',
-      options: [ // These could be dynamically populated from available laptop brands
-        { label: 'Any Brand', value: 'any' },
-        { label: 'Apple', value: 'Apple' },
-        { label: 'Dell', value: 'Dell' },
-        { label: 'HP', value: 'HP' },
-        { label: 'Lenovo', value: 'Lenovo' },
-        { label: 'Microsoft', value: 'Microsoft' },
-        { label: 'Asus', value: 'Asus' },
-        { label: 'Acer', value: 'Acer' },
-        // Add other common brands
-      ],
-    },
-    {
-      id: 'laptop-budget',
-      text: 'What is your approximate budget for a new laptop?',
-      type: 'radio',
-      // productField: 'retailPrice' (custom parsing)
-      options: [
-        { label: 'Under $500', value: 'under500' },
-        { label: '$500 - $800', value: '500-800' },
-        { label: '$800 - $1200', value: '800-1200' },
-        { label: '$1200 - $1800', value: '1200-1800' },
-        { label: 'Over $1800', value: 'over1800' },
-        { label: 'Any Budget', value: 'any' },
-      ],
-    },
-  ],
-  TVs: [
-    {
-      id: 'tv-size', // Existing
-      text: 'What screen size are you considering for your TV?',
-      type: 'radio',
-      // productField: 'keySpecs.Screen Size', // Custom logic in useEffect
-      options: [
-        { label: 'Medium (40-55 inch)', value: '55-inch' }, // Value might need to be more flexible for matching
-        { label: 'Large (60-70 inch)', value: '65-inch' },
-        { label: 'Extra Large (75+ inch)', value: '75-inch' },
-        { label: 'Flexible on size', value: 'any' },
-      ],
-    },
-    {
-      id: 'tv-resolution', // Existing
-      text: 'Which display resolution are you looking for?',
-      type: 'radio',
-      // productField: 'keySpecs.Resolution', // Custom logic in useEffect
-      options: [
-        { label: '4K UHD (Great for most content)', value: '4K UHD' },
-        { label: '8K UHD (Future-proof, premium)', value: '8K UHD' },
-        { label: 'HD/Full HD (Budget options)', value: 'Full HD' },
-        { label: 'Any resolution', value: 'any' },
-      ],
-    },
-    {
-      id: 'tv-color-vibrancy',
-      text: 'How colorful and vibrant do you want your TV\'s display to be?',
-      type: 'radio',
-      // productField: 'keySpecs.displayPanelType', // Custom logic
-      options: [
-        { label: 'Standard Colors', value: 'standard_colors' }, // "LED/LCD"
-        { label: 'Rich Colors', value: 'rich_colors' }, // "QLED" or "OLED"
-        { label: 'Most Vibrant Colors', value: 'most_vibrant_colors' }, // "OLED (QD-OLED)"
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'tv-contrast-level',
-      text: 'How important are deep blacks and bright whites for dynamic contrast?',
-      type: 'radio',
-      // productField: 'keySpecs.displayBacklighting', // Custom logic
-      options: [
-        { label: 'Good Contrast', value: 'good_contrast' }, // "Direct Lit" or "Edge Lit"
-        { label: 'Excellent Contrast', value: 'excellent_contrast' }, // "Full Array Local Dimming"
-        { label: 'Perfect Contrast', value: 'perfect_contrast' }, // "OLED" or "Mini-LED"
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'tv-viewing-environment',
-      text: 'Where will you be watching your TV mostly?',
-      type: 'radio',
-      // Custom logic using peakBrightness_nits, displayPanelType, displayBacklighting
-      options: [
-        { label: 'Bright Room (e.g., living room with windows)', value: 'bright_room' },
-        { label: 'Dim/Dark Room (e.g., dedicated home theater)', value: 'dark_room' },
-        { label: 'Mixed Lighting Conditions', value: 'any' },
-      ],
-    },
-    {
-      id: 'tv-motion-smoothness',
-      text: 'How important is smooth motion for sports or gaming?',
-      type: 'radio',
-      // productField: 'keySpecs.refreshRate', // Custom logic
-      options: [
-        { label: 'Very Important (120Hz+ for ultra-smoothness)', value: 'very_important_motion' }, // >= 120Hz
-        { label: 'Not Important (Standard 60Hz or less is fine)', value: 'not_important_motion' }, // <= 60Hz
-        { label: 'No strong preference', value: 'any' },
-      ],
-    },
-    {
-      id: 'tv-brand-preference',
-      text: 'Do you have a preferred TV brand?',
-      type: 'radio', // Or 'select' if many brands
-      productField: 'brand', // Can use generic logic if options are direct brand names
-      options: [ // These should ideally be populated dynamically from available TV brands
-        { label: 'Any Brand', value: 'any' },
-        { label: 'Samsung', value: 'Samsung' },
-        { label: 'LG', value: 'LG' },
-        { label: 'Sony', value: 'Sony' },
-        // Add other common TV brands
-      ],
-    },
-    {
-      id: 'tv-budget',
-      text: 'What is your approximate budget for a new TV?',
-      type: 'radio', // Simplified to radio for now, could be range input
-      // productField: 'retailPrice', // Custom logic
-      options: [
-        { label: 'Under $500', value: 'under500' },
-        { label: '$500 - $1000', value: '500-1000' },
-        { label: '$1000 - $2000', value: '1000-2000' },
-        { label: 'Over $2000', value: 'over2000' },
-        { label: 'Any Budget', value: 'any' },
-      ],
-    },
-  ],
-  // ... other categories
-};
-
-// Helper function to parse numeric values from strings like "120Hz", "1000 nits"
-const parseNumericValue = (str) => {
-  if (typeof str === 'number') return str;
-  if (typeof str !== 'string') return null;
-  const match = str.match(/(\d+(\.\d+)?)/);
-  return match ? parseFloat(match[1]) : null;
-};
-
-// Helper function to get nested property values
-const getNestedValue = (obj, path) => {
-  if (!path || !obj) return undefined;
-  const keys = path.split('.');
-  let result = obj;
-  for (const key of keys) {
-    if (result && typeof result === 'object' && key in result) {
-      result = result[key];
-    } else {
-      return undefined; // Path does not exist or value is not an object at some point
-    }
-  }
-  return result;
-};
-
-// --- Laptop Specific Helper Functions ---
-const parseRam = (ramString) => {
-  if (typeof ramString !== 'string') return null;
-  const match = ramString.match(/(\d+)\s*GB/i);
-  return match ? parseInt(match[1], 10) : null;
-};
-
-const parseStorage = (storageString) => {
-  if (typeof storageString !== 'string') return null;
-  const match = storageString.match(/(\d+)\s*(GB|TB)/i);
-  if (match) {
-    const value = parseInt(match[1], 10);
-    const unit = match[2].toUpperCase();
-    return unit === 'TB' ? value * 1024 : value; // Convert TB to GB
-  }
-  return null;
-};
-
-const parseScreenSize = (screenSizeString) => {
-  if (typeof screenSizeString !== 'string') return null;
-  const match = screenSizeString.match(/(\d+(\.\d+)?)/); // Extracts numbers like 13.6, 15, 16.2
-  return match ? parseFloat(match[1]) : null;
-};
-
-const hasDedicatedGraphics = (keySpecs) => {
-  if (!keySpecs) return false;
-  const graphicsSpec = String(keySpecs.Graphics || keySpecs.gpu || '').toLowerCase();
-  const processorSpec = String(keySpecs.Processor || '').toLowerCase();
-
-  // Standard dedicated GPUs
-  if (graphicsSpec.includes('nvidia') || graphicsSpec.includes('rtx') || graphicsSpec.includes('geforce') ||
-      graphicsSpec.includes('amd radeon') || graphicsSpec.includes('intel arc')) {
-    return true;
-  }
-
-  // Apple Silicon: Pro, Max, Ultra chips have significantly more powerful GPUs
-  const appleProMaxUltraPattern = /m\d\s*(pro|max|ultra)/i;
-  if (appleProMaxUltraPattern.test(processorSpec) || appleProMaxUltraPattern.test(graphicsSpec)) {
-      return true;
-  }
-  
-  return false;
-};
-
-const parseBatteryLife = (batteryString) => {
-  if (typeof batteryString !== 'string') return null;
-  // Matches "Up to 18 hours", "10 hrs", "Approx. 12hr"
-  const match = batteryString.match(/(\d+)\s*(?:hours|hrs|hr)/i);
-  return match ? parseInt(match[1], 10) : null;
-};
-
-// --- Smartphone Specific Helper Functions ---
-const parseSmartphoneBatteryLife = (batteryString) => {
-  if (typeof batteryString !== 'string') return null;
-
-  // Try to parse "X hours"
-  const hoursMatch = batteryString.match(/(\d+)\s*(?:hours|hrs|hr)/i);
-  if (hoursMatch) {
-    return parseInt(hoursMatch[1], 10);
-  }
-
-  // Heuristic for "All-Day"
-  if (batteryString.toLowerCase().includes('all-day') || batteryString.toLowerCase().includes('allday')) {
-    return 18; // Heuristic: Represents 15-20 hours
-  }
-  // Add mAh parsing here if needed, but it's less directly comparable for "how long"
-  // For now, returning null if only mAh is found and no hours/all-day.
-  return null;
-};
-
-const getMaxMegapixels = (cameraSpec) => {
-  if (typeof cameraSpec !== 'string') return null;
-  const mpMatches = cameraSpec.match(/(\d+)\s*MP/gi); // Find all MP mentions
-  if (!mpMatches) return null;
-  
-  let maxMp = 0;
-  mpMatches.forEach(match => {
-    const mpValue = parseInt(match, 10); // parseInt will correctly parse "48MP" to 48
-    if (mpValue > maxMp) {
-      maxMp = mpValue;
-    }
-  });
-  return maxMp > 0 ? maxMp : null;
-};
-
-// --- End Laptop Specific Helper Functions ---
+import ProductCard from '../../components/ProductCard';
+import { questionnaires } from './config/questionnaireData';
+import {
+  parseNumericValue,
+  getNestedValue,
+  parseRam,
+  parseStorage,
+  parseScreenSize,
+  hasDedicatedGraphics,
+  parseBatteryLife,
+  parseSmartphoneBatteryLife,
+  getMaxMegapixels,
+} from './utils/techFinderUtils';
+import CategorySelector from './components/CategorySelector';
+import TechFinderQuestionnaire from './components/TechFinderQuestionnaire';
+import TechFinderResults from './components/TechFinderResults';
 
 function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, calculateCriticsScore }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -471,6 +86,11 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
     window.scrollTo(0, 0);
   };
   
+  const handleSortChange = (newSortOption) => {
+    setSortOption(newSortOption);
+  };
+
+
   const handleGoBackToQuestions = () => {
     if (selectedCategory) {
       setCurrentQuestionIndex(0); // Go back to the first question of the current category
@@ -1016,21 +636,55 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
   }, [currentQuestionIndex, selectedCategory]); // Removed isLoadingRecommendations from dependencies
 
   // Helper to get a single price for sorting
-  const getProductPriceForSort = (product) => {
-    const retailPrice = product.keySpecs?.retailPrice; // Access retailPrice from keySpecs
-    if (typeof retailPrice === 'number') {
-      return retailPrice;
+  const getProductPriceForSort = (product, currentAnswers, categoryName) => {
+    const retailPriceData = product.keySpecs?.retailPrice;
+
+    // Helper to parse size ranges from user answers for TVs
+    const getTvSizeRangeFromAnswer = (answerValue) => {
+      if (answerValue === '55-inch') return { min: 40, max: 55 };
+      if (answerValue === '65-inch') return { min: 60, max: 70 };
+      if (answerValue === '75-inch') return { min: 75, max: Infinity }; // Max is open-ended
+      return null; // 'any' or unknown
+    };
+
+    if (categoryName === 'TVs') {
+      const userSelectedSizeAnswer = currentAnswers?.['tv-size'];
+      const targetSizeRange = getTvSizeRangeFromAnswer(userSelectedSizeAnswer);
+
+      if (targetSizeRange && Array.isArray(retailPriceData)) {
+        // User has a specific TV size preference, and product has an array of prices.
+        let minPriceInSelectedRange = Infinity;
+        for (const priceEntry of retailPriceData) {
+          if (typeof priceEntry === 'object' && priceEntry.screenSize && typeof priceEntry.price === 'number') {
+            const productSizeNum = parseNumericValue(String(priceEntry.screenSize));
+            if (productSizeNum !== null && productSizeNum >= targetSizeRange.min && productSizeNum <= targetSizeRange.max) {
+              minPriceInSelectedRange = Math.min(minPriceInSelectedRange, priceEntry.price);
+            }
+          }
+        }
+        return minPriceInSelectedRange !== Infinity ? minPriceInSelectedRange : null;
+      } else if (targetSizeRange && typeof retailPriceData === 'number') {
+        // User has specific size preference, but product has a single price. Cannot confirm it's for that size.
+        return null;
+      }
+      // If no specific size preference, or retailPriceData isn't an array for size logic, fall through.
     }
-    if (Array.isArray(retailPrice) && retailPrice.length > 0) {
+
+    // Generic price extraction (min price if array, or the price if single number)
+    if (typeof retailPriceData === 'number') {
+      return retailPriceData;
+    }
+    if (Array.isArray(retailPriceData) && retailPriceData.length > 0) {
       let minPrice = Infinity;
-      for (const item of retailPrice) {
-        if (typeof item === 'number') {
-          minPrice = Math.min(minPrice, item);
-        } else if (typeof item === 'object' && typeof item.price === 'number') {
-          minPrice = Math.min(minPrice, item.price);
+      let foundPrice = false;
+      for (const item of retailPriceData) {
+        const currentItemPrice = (typeof item === 'object' && typeof item.price === 'number') ? item.price : (typeof item === 'number' ? item : null);
+        if (currentItemPrice !== null) {
+          minPrice = Math.min(minPrice, currentItemPrice);
+          foundPrice = true;
         }
       }
-      return minPrice === Infinity ? null : minPrice;
+      return foundPrice ? minPrice : null;
     }
     return null; // No price or unparseable
   };
@@ -1042,15 +696,15 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
     switch (sortOption) {
       case 'price_asc':
         sorted.sort((a, b) => {
-          const priceA = getProductPriceForSort(a) ?? Infinity;
-          const priceB = getProductPriceForSort(b) ?? Infinity;
+          const priceA = getProductPriceForSort(a, userAnswers, selectedCategory?.name) ?? Infinity;
+          const priceB = getProductPriceForSort(b, userAnswers, selectedCategory?.name) ?? Infinity;
           return priceA - priceB;
         });
         break;
       case 'price_desc':
         sorted.sort((a, b) => {
-          const priceA = getProductPriceForSort(a) ?? -Infinity;
-          const priceB = getProductPriceForSort(b) ?? -Infinity;
+          const priceA = getProductPriceForSort(a, userAnswers, selectedCategory?.name) ?? -Infinity;
+          const priceB = getProductPriceForSort(b, userAnswers, selectedCategory?.name) ?? -Infinity;
           return priceB - priceA;
         });
         break;
@@ -1066,8 +720,21 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
         });
     }
     return sorted;
-  }, [filteredProducts, sortOption, calculateCriticsScore]);
+  }, [filteredProducts, sortOption, calculateCriticsScore, userAnswers, selectedCategory]);
 
+  const handleNavigatePreviousQuestion = () => {
+    setCurrentQuestionIndex(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNavigateNextQuestion = () => {
+    const categoryQuestions = questionnaires[selectedCategory?.name] || [];
+    const currentQuestion = categoryQuestions[currentQuestionIndex];
+    const isLastQuestion = currentQuestionIndex >= categoryQuestions.length -1;
+    if (currentQuestion?.type === 'radio' && !userAnswers[currentQuestion?.id] && !isLastQuestion) {
+      return; // Don't advance if not last question and no answer for radio
+    }
+    setCurrentQuestionIndex(prev => prev + 1);
+  };
   const effectiveIsLoading = isAppDataLoading || !availableCategories;
   const effectiveError = !effectiveIsLoading && (!availableCategories || availableCategories.length === 0)
     ? "No product categories are currently available. Please try again later."
@@ -1095,185 +762,63 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
               <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6 sm:mb-10 text-center">
                 What are you looking for?
               </h2>
-              {effectiveIsLoading && (
-                <div className="flex justify-center items-center min-h-[200px]">
-                  <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
-                  <p className="ml-3 text-gray-500">Loading categories...</p>
-                </div>
-              )}
-              {effectiveError && !effectiveIsLoading && (
-                <p className="col-span-full text-center text-red-500 bg-red-50 p-4 rounded-md">{effectiveError}</p>
-              )}
-              {!effectiveIsLoading && !effectiveError && availableCategories && availableCategories.length > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-                  {availableCategories.map((category) => (
-                    <button
-                      key={category.id || category.slug}
-                      onClick={() => handleCategorySelect(category)}
-                      aria-label={`Select category: ${category.name}`}
-                      className="group bg-white rounded-xl shadow-lg p-4 sm:p-6 transform hover:scale-105 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-brand-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
-                    >
-                      {category.iconImageUrl ? (
-                        <img
-                          src={category.iconImageUrl}
-                          alt="" // Decorative, as button has aria-label
-                          aria-hidden="true"
-                          className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 object-contain mb-2 sm:mb-3 group-hover:opacity-80 transition-opacity"
-                        />
-                      ) : (
-                        <div aria-hidden="true" className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 bg-gray-200 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-400 text-4xl sm:text-5xl">?</div>
-                      )}
-                      <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 group-hover:text-brand-primary transition-colors">
-                        {category.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <CategorySelector
+                availableCategories={availableCategories}
+                onCategorySelect={handleCategorySelect}
+                isLoading={effectiveIsLoading}
+                error={effectiveError}
+              />
             </section>
           </>
         )}
 
-        {currentStep === 2 && selectedCategory && (() => {
+        {currentStep === 2 && selectedCategory && (
+          <div className="py-10">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-brand-text">
+                {selectedCategory.name} Finder
+              </h2>
+              <button onClick={handleRestart} className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary-dark transition-colors">Restart</button>
+            </div>
+
+            {(() => {
           const categoryQuestions = questionnaires[selectedCategory.name] || [];
-          const currentQuestion = categoryQuestions[currentQuestionIndex];
-          const isLastQuestion = currentQuestionIndex >= categoryQuestions.length -1;
           const questionnaireComplete = currentQuestionIndex >= categoryQuestions.length;
 
-          if (!categoryQuestions.length) {
-            return (
-              <div className="text-center py-10">
-                <h2 className="text-2xl sm:text-3xl font-bold text-brand-text mb-4">No questions available for {selectedCategory.name}</h2>
-                <p className="text-lg text-gray-700 mb-8">We don't have a guided questionnaire for this category yet. You can browse all {selectedCategory.name} products directly.</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                  {allProductsForCategory.map(product => (
-                    <ProductCard key={product.id || product.productName} product={product} calculateCriticsScore={calculateCriticsScore} />
-                  ))}
-                </div>
-                <button onClick={handleRestart} className="mt-8 px-6 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-primary-dark transition-colors">Start Over</button>
-              </div>
-            );
-          }
-
-          return (
-            <div className="py-10">
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl sm:text-3xl font-bold text-brand-text">
-                  {selectedCategory.name} Finder
-                </h2>
-                <button onClick={handleRestart} className="text-sm text-brand-primary hover:underline">Restart</button>
-              </div>
-
-              {!questionnaireComplete && currentQuestion && (
-                <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl">
-                  <p className="text-sm text-gray-500 mb-2">Question {currentQuestionIndex + 1} of {categoryQuestions.length}</p>
-                  <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">{currentQuestion.text}</h3>
-                  
-                  {currentQuestion.type === 'radio' && (
-                    <div className="space-y-3">
-                      {currentQuestion.options.map(option => (
-                        <label key={option.value + '-' + currentQuestion.id} className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
-                          <input
-                            type="radio"
-                            name={currentQuestion.id}
-                            value={option.value}
-                            checked={userAnswers[currentQuestion.id] === option.value}
-                            onChange={() => handleAnswerSelect(currentQuestion.id, option.value)}
-                            className="h-5 w-5 text-brand-primary focus:ring-brand-primary border-gray-300"
-                          />
-                          <span className="ml-3 text-gray-700">{option.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                  {/* Add other question types like 'range' or 'checkbox' here later */}
-
-                  <div className="mt-8 flex justify-between items-center">
-                    <button
-                      onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
-                      disabled={currentQuestionIndex === 0}
-                      className="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
-                    >
-                      Previous
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (currentQuestion.type === 'radio' && !userAnswers[currentQuestion.id] && !isLastQuestion) {
-                          // Optionally, show an alert or message to select an option
-                          // For now, just don't advance if not last question and no answer
-                          return;
-                        }
-                        setCurrentQuestionIndex(prev => prev + 1);
-                      }}
-                      // Disable if it's a radio button, no answer is selected, AND it's not the last question
-                      // (allow proceeding to results even if last question is unanswered)
-                      disabled={currentQuestion.type === 'radio' && !userAnswers[currentQuestion.id] && !isLastQuestion}
-                      className="px-6 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-primary-dark transition-colors disabled:opacity-50"
-                    >
-                      {isLastQuestion ? 'Show Results' : 'Next'}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {questionnaireComplete && (
-                <div className="mt-10">
-                  {isLoadingRecommendations ? (
-                    <div className="flex flex-col justify-center items-center min-h-[200px] py-10">
-                      <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-                      <p className="text-lg text-gray-600">Generating your recommendations...</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8">
-                        <h3 className="text-2xl sm:text-3xl font-bold text-brand-text text-center sm:text-left mb-4 sm:mb-0">
-                          Your Recommended {selectedCategory.name}
-                        </h3>
-                        {sortedAndFilteredProducts.length > 0 && (
-                           <div className="flex items-center space-x-2">
-                            <label htmlFor="sort-options" className="text-sm text-gray-600">Sort by:</label>
-                            <select
-                              id="sort-options"
-                              value={sortOption}
-                              onChange={(e) => setSortOption(e.target.value)}
-                              className="p-2 border border-gray-300 rounded-md text-sm focus:ring-brand-primary focus:border-brand-primary"
-                            >
-                              <option value="default">Relevance & Score</option>
-                              <option value="price_asc">Price: Low to High</option>
-                              <option value="price_desc">Price: High to Low</option>
-                              <option value="brand_asc">Brand: A-Z</option>
-                            </select>
-                          </div>
-                        )}
-                      </div>
-
-                      {sortedAndFilteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {sortedAndFilteredProducts.map(product => (
-                            <ProductCard key={product.id || product.productName} product={product} calculateCriticsScore={calculateCriticsScore} />
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="text-center text-lg text-gray-600 py-10 bg-gray-50 rounded-lg shadow p-6">
-                          <p className="text-xl font-semibold mb-3">No exact matches found.</p>
-                          <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>
-                        </div>
-                      )}
-                    </>
-                  )}
-                   <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
-                     <button onClick={handleGoBackToQuestions} className="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
-                        Go Back to Questions
-                     </button>
-                     <button onClick={handleRestart} className="w-full sm:w-auto px-8 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-primary-dark transition-colors">
-                        Start Over
-                     </button>
-                   </div>
-                </div>
-              )}
-            </div>
-          );
-        })()}
+              if (!questionnaireComplete) {
+                return (
+                  <TechFinderQuestionnaire
+                    questions={categoryQuestions}
+                    currentQuestionIndex={currentQuestionIndex}
+                    userAnswers={userAnswers}
+                    onAnswerSelect={handleAnswerSelect}
+                    onNavigatePrevious={handleNavigatePreviousQuestion}
+                    onNavigateNext={handleNavigateNextQuestion}
+                    categoryName={selectedCategory.name}
+                    totalQuestions={categoryQuestions.length}
+                    allProductsForCategory={allProductsForCategory}
+                    calculateCriticsScore={calculateCriticsScore}
+                    ProductCardComponent={ProductCard}
+                    onRestart={handleRestart}
+                  />
+                );
+              } else {
+                return (
+                  <TechFinderResults
+                    categoryName={selectedCategory.name}
+                    products={sortedAndFilteredProducts}
+                    calculateCriticsScore={calculateCriticsScore}
+                    sortOption={sortOption}
+                    onSortChange={handleSortChange}
+                    isLoading={isLoadingRecommendations}
+                    onGoBackToQuestions={handleGoBackToQuestions}
+                    onRestart={handleRestart}
+                  />
+                );
+              }
+            })()}
+          </div>
+        )}
       </main>
     </>
   );

@@ -93,7 +93,7 @@ function AppRoutes({
           path="/category/:categorySlug" element={(
             <>
               {/* This console.log executes if React Router matches this route and starts rendering the element */}
-              {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')}
+              {/* {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')} */}
               <CategoryPage
                 allProducts={allProductsArray}
                 allAvailableCategories={availableCategories}
