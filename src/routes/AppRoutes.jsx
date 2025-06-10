@@ -25,6 +25,7 @@ function AppRoutes({
   headerSearchResults,
   // Props for ProductPage & CategoryPage
   calculateCriticsScore,
+  // Props for TechFinderPage (allProductsArray is already listed, calculateCriticsScore is new here)
   // Props for CategoryPage
   isAppDataLoading,
 }) {
@@ -83,6 +84,8 @@ function AppRoutes({
           <TechFinderPage
             availableCategories={availableCategories}
             isAppDataLoading={isAppDataLoading}
+            allProducts={allProductsArray} // Pass allProductsArray as allProducts
+            calculateCriticsScore={calculateCriticsScore} // Pass calculateCriticsScore
           />}
       />
   {/* The main Footer component is typically rendered outside the Routes, in App.jsx or a Layout component */}

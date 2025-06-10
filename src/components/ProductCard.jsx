@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' }) => {
   const criticsScoreDisplay = useMemo(() => {
-    // Existing score calculation logic
-    return product.criticReviews ? Math.round(calculateCriticsScore(product.criticReviews)) : '--';
-  }, [product.criticReviews, calculateCriticsScore]);
+    const score = calculateCriticsScore(product); // Pass the entire product object
+    return score !== null ? Math.round(score) : '--';
+  }, [product, calculateCriticsScore]);
 
   const audienceScoreOutOf100 = useMemo(() => {
     if (product.audienceRating) {

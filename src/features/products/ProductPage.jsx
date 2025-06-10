@@ -43,8 +43,8 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   }, [productNameSlug, allProducts]);
 
   const criticsScoreValue = useMemo(() => {
-    if (product && product.criticReviews) {
-      return calculateCriticsScore(product.criticReviews);
+    if (product) { // Check if the product object exists
+      return calculateCriticsScore(product); // Pass the entire product object
     }
     return null;
   }, [product, calculateCriticsScore]);

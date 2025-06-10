@@ -35,16 +35,22 @@ export function normalizeScore(score, scale, targetScale) {
   /**
    * Calculates a weighted average Critics Score from an array of critic reviews.
    */
-  export function calculateCriticsScore(criticReviews, criticWeightsData) {
+  export function calculateCriticsScore(product, criticWeightsData) {
     if (!criticWeightsData || Object.keys(criticWeightsData).length === 0) {
       console.warn("Critic weights not loaded or empty. Cannot calculate critics score.");
       return null;
     }
-  
+  // Check if product exists and if product.criticReviews is a non-empty array
+  if (!product || !Array.isArray(product.criticReviews) || product.criticReviews.length === 0) {
+    // console.warn(`Product "${product?.productName || 'N/A'}" has no valid critic reviews or criticReviews is not an array.`);
+    return null; // No reviews to score, or invalid structure
+  }
+
+    const reviews = product.criticReviews; // Use the actual reviews array from the product object
     let totalWeightedScore = 0;
     let totalWeight = 0;
   
-    criticReviews.forEach(review => {
+    reviews.forEach(review => {
       const normalizedScore = normalizeScore(review.score, review.scale, 100);
       if (normalizedScore !== null) {
         let publicationWeight = criticWeightsData[review.publication];

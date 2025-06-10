@@ -76,8 +76,9 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const preprocessedAliases = usePreprocessedAliases(searchAliasesData);
 
   // Create a memoized version of calculateCriticsScore that depends on criticWeightsData
-  const calculateCriticsScore = useCallback((reviews) => {
-    return importedCalculateCriticsScore(reviews, criticWeightsData);
+  const calculateCriticsScore = useCallback((product) => { // Changed parameter name from 'reviews' to 'product'
+    // The importedCalculateCriticsScore expects the full product object and criticWeightsData
+    return importedCalculateCriticsScore(product, criticWeightsData);
   }, [criticWeightsData]);
 
   // Fetch data on component mount
