@@ -120,12 +120,16 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
           productName: p.product_name, // Map snake_case from DB to camelCase if needed
           imageURL: p.image_url,
           keySpecs: p.key_specs,
+          description: p.description, // Assuming you have a description column
           bestBuySku: p.best_buy_sku,
-          audienceRating: p.audience_rating,
-          audienceReviewCount: p.audience_review_count,
           aiProsCons: p.ai_pros_cons,
           category: p.categories?.name || 'Unknown',
           criticReviews: p.critic_reviews || [],
+          // Ensure these match the expected props in ProductCard and ProductPage
+          preAggregatedCriticScore: p.pre_aggregated_critic_score,
+          totalCriticReviewCount: p.total_critic_review_count,
+          preAggregatedAudienceScore: p.pre_aggregated_audience_score,
+          totalAudienceReviewCount: p.total_audience_review_count,
         }));
         setAllProductsArray(processedProducts);
         const productsByCategory = processedProducts.reduce((acc, product) => {

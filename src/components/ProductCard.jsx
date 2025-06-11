@@ -2,27 +2,28 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+// calculateAudienceScore is no longer needed here as scores are pre-aggregated
 
-const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' }) => {
+const ProductCard = ({ product, layoutType = 'default' }) => {
+  // Log the initial props received by the component
+  console.log('[ProductCard] Props received:', { product, layoutType });
+
   const criticsScoreDisplay = useMemo(() => {
-    const score = calculateCriticsScore(product); // Pass the entire product object
-    return score !== null ? Math.round(score) : '--';
-  }, [product, calculateCriticsScore]);
+    // Use pre-aggregated critic score directly from product
+    console.log('[ProductCard] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore });
+    const score = product.preAggregatedCriticScore;
+    return typeof score === 'number' ? Math.round(score) : '--';
+  }, [product.preAggregatedCriticScore]);
 
-  const audienceScoreOutOf100 = useMemo(() => {
-    if (product.audienceRating) {
-      const match = product.audienceRating.match(/(\d+(\.\d+)?)\s*\/\s*(\d+)/);
-      if (match) {
-        const score = parseFloat(match[1]);
-        const scale = parseInt(match[3], 10);
-        if (scale !== 0) {
-          return Math.round((score / scale) * 100);
-        }
-      }
-    }
-    return null;
-  }, [product.audienceRating]); // Keep existing score calculation
-  const audienceScoreToDisplay = audienceScoreOutOf100 !== null ? audienceScoreOutOf100 : '--';
+  const audienceScoreDisplay = useMemo(() => {
+    // Log the values being used for audience score calculation
+    console.log('[ProductCard] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore });
+    // Use pre-aggregated audience score directly from product
+    const score = product.preAggregatedAudienceScore;
+    return typeof score === 'number' ? score : '--';
+  }, [product.preAggregatedAudienceScore]);
+
+  // const audienceScoreToDisplay = audienceScoreValue !== null ? audienceScoreValue : '--'; // Replaced by audienceScoreDisplay
 
   // Generalized score color function
   const getScoreColor = (score, defaultColorClass = 'text-brand-secondary') => {
@@ -36,7 +37,7 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
     return defaultColorClass; // Fallback for any other case
   };
 
-  const audienceScoreColorClass = getScoreColor(audienceScoreOutOf100);
+  const audienceScoreColorClass = getScoreColor(audienceScoreDisplay);
   // Use 'text-brand-primary' as the default for critics score if no specific color applies
   const criticsScoreColorClass = getScoreColor(criticsScoreDisplay, 'text-brand-primary');
 
@@ -133,7 +134,7 @@ const ProductCard = ({ product, calculateCriticsScore, layoutType = 'default' })
           {/* Audience Score Block */}
           <div className={`flex flex-col ${isCarousel ? "items-center" : ""}`}>
             <span className={`${isCarousel ? "text-2xl font-bold" : "font-semibold"} ${audienceScoreColorClass}`}>
-              {audienceScoreToDisplay}
+              {audienceScoreDisplay}
             </span>
             <span className={`text-gray-500 ${isCarousel ? "text-xs mt-0.5" : "ml-0.5"}`}>Audience</span>
             {/* Audience review count - omitted for carousel for simplicity (Criterion IV.3), shown for default */}
@@ -149,13 +150,18 @@ ProductCard.propTypes = {
     productName: PropTypes.string.isRequired,
     brand: PropTypes.string.isRequired,
     imageURL: PropTypes.string,
-    audienceRating: PropTypes.string,
+    // audienceRating: PropTypes.string, // Original string might still exist
     description: PropTypes.string,
-    audienceReviewCount: PropTypes.number,
-    criticReviews: PropTypes.array,
+    // audienceReviewCount: PropTypes.number, // Original count might still exist
+    // criticReviews: PropTypes.array, // Original reviews might still exist
+    preAggregatedCriticScore: PropTypes.number, // New prop for pre-calculated critic score
+    totalCriticReviewCount: PropTypes.number,
+    preAggregatedAudienceScore: PropTypes.number, // New prop for pre-calculated audience score
+    totalAudienceReviewCount: PropTypes.number,
   }).isRequired,
-  calculateCriticsScore: PropTypes.func.isRequired,
+  // calculateCriticsScore: PropTypes.func.isRequired, // No longer needed for calculation here
   layoutType: PropTypes.oneOf(['default', 'carousel']), // New prop for layout context
+  // retailerReviews prop is removed as it's not used for score calculation anymore
 };
 
 ProductCard.defaultProps = {

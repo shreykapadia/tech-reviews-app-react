@@ -69,3 +69,68 @@ export function normalizeScore(score, scale, targetScale) {
   
     return totalWeight === 0 ? null : totalWeightedScore / totalWeight;
   }
+
+  /**
+ * Calculates an aggregated audience score.
+ * It considers the main product audience rating and count,
+ * and optionally, an array of retailer reviews.
+ * If actual review counts exist (main or retailer), it computes a weighted average.
+ * If no review counts exist but audienceRatingString is parsable, it returns that score with a count of 0.
+ * @param {string} audienceRatingString - E.g., "4.5 / 5".
+ * @param {number} audienceReviewCountInput - Number of reviews for the main audienceRatingString.
+ * @param {Array} retailerReviewsArray - Array of retailer review objects.
+ *                                      Each object: { average: number, count: number, scale?: number }
+ * @returns {object} - { score: number|null, count: number }
+ */
+export const calculateAudienceScore = (
+  audienceRatingString,
+  audienceReviewCountInput = 0,
+  retailerReviewsArray = []
+) => {
+  let totalWeightedScore = 0;
+  let totalReviewsAggregated = 0;
+  let mainScore100 = null;
+
+  const mainAudienceReviewCount = Number(audienceReviewCountInput) || 0;
+
+  // Try to parse the main audience rating string regardless of count
+  if (audienceRatingString) {
+    const match = audienceRatingString.match(/(\d+(\.\d+)?)\s*\/\s*(\d+)/);
+    if (match) {
+      const score = parseFloat(match[1]);
+      const scale = parseInt(match[3], 10);
+      if (scale !== 0) {
+        mainScore100 = (score / scale) * 100;
+      }
+    }
+  }
+
+  // If main audience rating is valid and has reviews, add to weighted average
+  if (mainScore100 !== null && mainAudienceReviewCount > 0) {
+    totalWeightedScore += mainScore100 * mainAudienceReviewCount;
+    totalReviewsAggregated += mainAudienceReviewCount;
+  }
+
+  // Process retailer review data
+  (retailerReviewsArray || []).forEach(retailer => {
+    if (retailer && typeof retailer.average === 'number' && typeof retailer.count === 'number' && retailer.count > 0) {
+      const scale = retailer.scale || 5; // Assume 5 if not provided
+      if (scale !== 0) {
+        const score100 = (retailer.average / scale) * 100;
+        totalWeightedScore += score100 * retailer.count;
+        totalReviewsAggregated += retailer.count;
+      }
+    }
+  });
+
+  if (totalReviewsAggregated > 0) {
+    const finalCombinedScore = Math.round(totalWeightedScore / totalReviewsAggregated);
+    return { score: finalCombinedScore, count: totalReviewsAggregated };
+  } else if (mainScore100 !== null) {
+    // No reviews contributed to weighted average, but main audience rating string was valid
+    return { score: Math.round(mainScore100), count: 0 };
+  } else {
+    // No valid scores or reviews from any source
+    return { score: null, count: 0 };
+  }
+};

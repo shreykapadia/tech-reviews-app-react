@@ -7,7 +7,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid'; // For custom dropd
 const TechFinderResults = ({
   categoryName,
   products,
-  calculateCriticsScore,
+  // calculateCriticsScore, // No longer needed by ProductCard for score calculation
   sortOption,
   onSortChange,
   isLoading,
@@ -70,7 +70,11 @@ const TechFinderResults = ({
       {hasExactMatches ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(product => (
-            <ProductCard key={product.id || product.productName} product={product} calculateCriticsScore={calculateCriticsScore} />
+            <ProductCard 
+              key={product.id || product.productName} 
+              product={product} 
+              // retailerReviews={product.retailerReviews || []} // This was illustrative; retailerReviews removed from ProductCard
+            />
           ))}
         </div>
       ) : (
@@ -98,7 +102,10 @@ const TechFinderResults = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {productsInGroup.map((product, index) => (
                       <div key={`close-${product.id || product.productName}-${index}`} className="flex flex-col">
-                        <ProductCard product={product} calculateCriticsScore={calculateCriticsScore} />
+                        <ProductCard 
+                          product={product} 
+                          // retailerReviews={product.retailerReviews || []} // Illustrative
+                        />
                         {product.failedCriteria && product.failedCriteria.length > 0 && (
                           <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-700 shadow-sm">
                             <p className="font-semibold mb-1">Where these choices missed out:</p>
@@ -132,7 +139,7 @@ const TechFinderResults = ({
 TechFinderResults.propTypes = {
   categoryName: PropTypes.string.isRequired,
   products: PropTypes.array.isRequired,
-  calculateCriticsScore: PropTypes.func.isRequired,
+  // calculateCriticsScore: PropTypes.func.isRequired, // No longer passed to ProductCard
   sortOption: PropTypes.string.isRequired,
   onSortChange: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,

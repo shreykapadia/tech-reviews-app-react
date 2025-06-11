@@ -16,7 +16,8 @@ import FeatureSpecificInsights from './components/FeatureSpecificInsights';
 import CompareSimilarProducts from './components/CompareSimilarProducts'; 
 import RelatedArticles from './components/RelatedArticles'; 
 
-import { normalizeScore } from '../../utils/scoreCalculations'; 
+// calculateAudienceScore is no longer needed here for the primary score
+// normalizeScore might still be used if displaying individual critic review scores that need normalization
 
 const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   const { productNameSlug } = useParams();
@@ -44,67 +45,54 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
   const criticsScoreValue = useMemo(() => {
     if (product) { // Check if the product object exists
-      return calculateCriticsScore(product); // Pass the entire product object
+      // Use pre-aggregated critic score directly
+      console.log('[ProductPage] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore, totalCriticReviewCount: product.totalCriticReviewCount });
+      return typeof product.preAggregatedCriticScore === 'number' ? product.preAggregatedCriticScore : null;
     }
     return null;
-  }, [product, calculateCriticsScore]);
+  }, [product]);
 
   const { combinedAudienceScoreOutOf100, combinedAudienceReviewCount } = useMemo(() => {
-    let totalWeightedScore = 0;
-    let totalReviews = 0;
+    // Log the product and retailerReviewData when this memo recalculates
+    // console.log('[ProductPage] Using pre-aggregated audience score. Product:', product); // This log is already good for the whole product
 
-    // Process original product audience rating
-    if (product?.audienceRating && product?.audienceReviewCount > 0) {
-      const match = product.audienceRating.match(/(\d+(\.\d+)?)\s*\/\s*(\d+)/);
-      if (match) {
-        const score = parseFloat(match[1]);
-        const scale = parseInt(match[3], 10);
-        if (scale !== 0) {
-          const score100 = (score / scale) * 100;
-          totalWeightedScore += score100 * product.audienceReviewCount;
-          totalReviews += product.audienceReviewCount;
-        }
-      }
-    }
-
-    // Process retailer review data
-    retailerReviewData.forEach(retailer => {
-      if (retailer.average && retailer.count > 0) {
-        const scale = retailer.scale || 5; // Assume 5 if not provided
-        const score100 = (retailer.average / scale) * 100;
-        totalWeightedScore += score100 * retailer.count;
-        totalReviews += retailer.count;
-      }
-    });
-
-    if (totalReviews === 0) {
+    if (!product) {
+      console.log('[ProductPage] No product data available for audience score calculation.');
       return { combinedAudienceScoreOutOf100: null, combinedAudienceReviewCount: 0 };
     }
+    // Use pre-aggregated audience score and count directly
+    console.log('[ProductPage] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore, totalAudienceReviewCount: product.totalAudienceReviewCount });
+    const score = typeof product.preAggregatedAudienceScore === 'number' ? product.preAggregatedAudienceScore : null;
+    const count = typeof product.totalAudienceReviewCount === 'number' ? product.totalAudienceReviewCount : 0;
+    
+    // console.log('[ProductPage] Using pre-aggregated audience score:', score, 'Count:', count); // This log shows the processed values
 
-    const finalCombinedScore = Math.round(totalWeightedScore / totalReviews);
-    return { combinedAudienceScoreOutOf100: finalCombinedScore, combinedAudienceReviewCount: totalReviews };
-  }, [product, retailerReviewData]);
+    return {
+      combinedAudienceScoreOutOf100: score,
+      combinedAudienceReviewCount: count,
+    };
+  }, [product]);
 
   const handleRetailerReviewDataUpdate = useCallback((data) => {
+    // Log when retailer review data is updated
+    console.log('[ProductPage] handleRetailerReviewDataUpdate called with:', data);
+
     setRetailerReviewData(prevData => {
-      // Check if data has meaningfully changed
-      if (prevData.length !== data.length) {
-        return data; // Length changed, definitely update
+      if (prevData.length !== data.length || 
+          data.some((newItem, index) => {
+            const oldItem = prevData[index];
+            return !oldItem || JSON.stringify(newItem) !== JSON.stringify(oldItem);
+          })) {
+        return data;
       }
-
-      // Compare content of each item
-      const hasChanged = data.some((newItem, index) => {
-        const oldItem = prevData[index];
-        if (!oldItem) return true; // Should not happen if lengths are same
-        return oldItem.retailerName !== newItem.retailerName ||
-               oldItem.average !== newItem.average ||
-               oldItem.count !== newItem.count ||
-               oldItem.scale !== newItem.scale;
-      });
-
-      return hasChanged ? data : prevData; // Only update if content changed
+      return prevData;
     });
-  }, []); // Empty dependency array: setRetailerReviewData is stable
+  }, []);
+  // Log initial product state and when it changes
+  useEffect(() => {
+    console.log('[ProductPage] Product state initialized or changed:', product);
+  }, [product]);
+
 
   if (loading) {
     return (
@@ -167,8 +155,8 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
         "ratingValue": criticsScoreValue !== null ? criticsScoreValue : combinedAudienceScoreOutOf100, // Prioritize critics or use audience
         "bestRating": "100",
         "worstRating": "0",
-        "ratingCount": (product.criticReviews?.length || 0) + combinedAudienceReviewCount,
-        "reviewCount": (product.criticReviews?.length || 0) + combinedAudienceReviewCount
+        "ratingCount": (product.totalCriticReviewCount || 0) + (product.totalAudienceReviewCount || 0), // Use total counts from backend
+        "reviewCount": (product.totalCriticReviewCount || 0) + (product.totalAudienceReviewCount || 0)  // Use total counts from backend
       }
     } : {}),
     // "review": product.criticReviews?.map(r => ({ // Can be extensive

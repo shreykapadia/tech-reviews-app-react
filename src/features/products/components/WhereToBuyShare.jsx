@@ -260,7 +260,7 @@ WhereToBuyShare.propTypes = {
     })),
   }).isRequired,
   productPageUrl: PropTypes.string.isRequired,
-  onRetailerReviewDataUpdate: PropTypes.func.isRequired,
+  onRetailerReviewDataUpdate: PropTypes.func, // Can be optional if not always used for score
 };
 
 export default WhereToBuyShare;
