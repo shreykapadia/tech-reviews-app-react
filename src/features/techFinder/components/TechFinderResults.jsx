@@ -15,6 +15,20 @@ const TechFinderResults = ({
   onRestart,
   closeMatchProducts, // New prop
 }) => {
+  // Group close matches by failedCount
+  const groupedCloseMatches = (closeMatchProducts || []).reduce((acc, product) => {
+    const count = product.failedCount || 0; // Default to 0 if undefined
+    if (!acc[count]) {
+      acc[count] = [];
+    }
+    acc[count].push(product);
+    return acc;
+  }, {});
+
+  const hasCloseMatches = closeMatchProducts && closeMatchProducts.length > 0;
+  const hasExactMatches = products.length > 0;
+
+
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center min-h-[200px] py-10">
@@ -28,7 +42,7 @@ const TechFinderResults = ({
     <div className="mt-10">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8">
         <h3 className="text-2xl sm:text-3xl font-bold text-brand-text text-center sm:text-left mb-4 sm:mb-0">
-          Your Recommended {categoryName}
+          {hasExactMatches ? `Your Recommended ${categoryName}` : `Recommendations for ${categoryName}`}
         </h3>
         {products.length > 0 && (
           <div className="flex items-center space-x-2">
@@ -53,7 +67,7 @@ const TechFinderResults = ({
         )}
       </div>
 
-      {products.length > 0 ? (
+      {hasExactMatches ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(product => (
             <ProductCard key={product.id || product.productName} product={product} calculateCriticsScore={calculateCriticsScore} />
@@ -61,21 +75,45 @@ const TechFinderResults = ({
         </div>
       ) : (
         <div className="text-center text-lg text-gray-600 py-10 bg-gray-50 rounded-lg shadow p-6">
-          <p className="text-xl font-semibold mb-3">No exact matches found.</p>
-          <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>
+          <p className="text-xl font-semibold mb-3">No exact matches found for all your criteria.</p>
+          {!hasCloseMatches && (
+            <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>
+          )}
         </div>
       )}
 
-      {closeMatchProducts && closeMatchProducts.length > 0 && (
+      {hasCloseMatches && (
         <div className="mt-12 pt-8 border-t border-gray-200">
           <h4 className="text-xl sm:text-2xl font-semibold text-brand-text text-center sm:text-left mb-6">
-            You Might Also Consider
+            {hasExactMatches ? "You Might Also Consider" : "Here are some close matches:"}
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {closeMatchProducts.map(product => (
-              <ProductCard key={`close-${product.id || product.productName}`} product={product} calculateCriticsScore={calculateCriticsScore} />
-            ))}
-          </div>
+          {Object.entries(groupedCloseMatches)
+            .sort(([countA], [countB]) => parseInt(countA, 10) - parseInt(countB, 10)) // Sort by failedCount numerically
+            .map(([count, productsInGroup]) => (
+              parseInt(count, 10) > 0 && productsInGroup.length > 0 && ( // Ensure count is positive and group not empty
+                <div key={`group-failed-${count}`} className="mb-8">
+                  <h5 className="text-lg font-medium text-gray-700 mt-4 mb-3 pl-1">
+                    Missed by {count} filter{count > 1 ? 's' : ''}:
+                  </h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {productsInGroup.map((product, index) => (
+                      <div key={`close-${product.id || product.productName}-${index}`} className="flex flex-col">
+                        <ProductCard product={product} calculateCriticsScore={calculateCriticsScore} />
+                        {product.failedCriteria && product.failedCriteria.length > 0 && (
+                          <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-700 shadow-sm">
+                            <p className="font-semibold mb-1">Where these choices missed out:</p>
+                            <ul className="list-disc list-inside ml-2 space-y-0.5">
+                              {product.failedCriteria.map((reason, reasonIndex) => (
+                                <li key={reasonIndex}>{reason}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )))}
         </div>
       )}
 
@@ -100,7 +138,15 @@ TechFinderResults.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onGoBackToQuestions: PropTypes.func.isRequired,
   onRestart: PropTypes.func.isRequired,
-  closeMatchProducts: PropTypes.array,
+  closeMatchProducts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      productName: PropTypes.string,
+      // ProductCard will validate the rest of the product structure
+      failedCount: PropTypes.number.isRequired,
+      failedCriteria: PropTypes.arrayOf(PropTypes.string).isRequired,
+    })
+  ),
 };
 
 TechFinderResults.defaultProps = {
