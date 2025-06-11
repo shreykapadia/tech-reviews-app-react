@@ -2,27 +2,15 @@
 export const questionnaires = {
   Smartphones: [
     {
-      id: 'smartphone-os',
-      text: 'Which operating system do you prefer?',
-      type: 'radio',
-      productField: 'keySpecs.Operating System', // Direct check in logic
-      options: [
-        { label: 'iOS (Apple iPhone)', value: 'iOS' },
-        { label: 'Android (Google, Samsung, etc.)', value: 'Android' },
-        { label: 'No preference', value: 'any' },
-      ],
-    },
-    {
       id: 'smartphone-performance',
       text: 'How important is raw speed and performance?',
       type: 'radio',
       // No direct productField, complex logic on keySpecs.Processor
       options: [
-        { label: 'Basic Usage (social media, browsing, light apps)', value: 'basic_performance_sm' },
         { label: 'Everyday Multitasking (smooth general use, some gaming)', value: 'everyday_multitasking_sm' },
         { label: 'Demanding Apps/Gaming (heavy gaming, video editing)', value: 'demanding_apps_sm' },
-        { label: 'Absolute Top-Tier (latest flagships, maximum power)', value: 'top_tier_sm' },
-        { label: 'No strong preference', value: 'any' },
+        { label: 'Absolute Top-Tier (future proofing, maximum power)', value: 'top_tier_sm' },
+        { label: 'No preference', value: 'any' },
       ],
     },
     {
@@ -77,7 +65,7 @@ export const questionnaires = {
     {
       id: 'smartphone-brand-preference',
       text: 'Do you have a preferred smartphone brand?',
-      type: 'radio',
+      type: 'multiselect_checkbox',
       productField: 'brand',
       options: [
         { label: 'Any Brand', value: 'any' },
@@ -157,7 +145,7 @@ export const questionnaires = {
     {
       id: 'laptop-brand-preference',
       text: 'Do you have a preferred laptop brand?',
-      type: 'radio',
+      type: 'multiselect_checkbox',
       productField: 'brand',
       options: [ // These could be dynamically populated from available laptop brands
         { label: 'Any Brand', value: 'any' },
@@ -260,7 +248,7 @@ export const questionnaires = {
     {
       id: 'tv-brand-preference',
       text: 'Do you have a preferred TV brand?',
-      type: 'radio', // Or 'select' if many brands
+      type: 'multiselect_checkbox', // Or 'select' if many brands
       productField: 'brand', // Can use generic logic if options are direct brand names
       options: [ // These should ideally be populated dynamically from available TV brands
         { label: 'Any Brand', value: 'any' },

@@ -13,6 +13,7 @@ const TechFinderResults = ({
   isLoading,
   onGoBackToQuestions,
   onRestart,
+  closeMatchProducts, // New prop
 }) => {
   if (isLoading) {
     return (
@@ -40,8 +41,8 @@ const TechFinderResults = ({
                 className="appearance-none block w-full bg-white border border-gray-300 hover:border-brand-primary px-3 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary text-sm transition-all duration-150 ease-in-out cursor-pointer"
               >
                 <option value="default">Relevance & Score</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
+                <option value="price_asc">Starting Price Price: Low to High</option>
+                <option value="price_desc">Starting Price: High to Low</option>
                 <option value="brand_asc">Brand: A-Z</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
@@ -62,6 +63,19 @@ const TechFinderResults = ({
         <div className="text-center text-lg text-gray-600 py-10 bg-gray-50 rounded-lg shadow p-6">
           <p className="text-xl font-semibold mb-3">No exact matches found.</p>
           <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>
+        </div>
+      )}
+
+      {closeMatchProducts && closeMatchProducts.length > 0 && (
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <h4 className="text-xl sm:text-2xl font-semibold text-brand-text text-center sm:text-left mb-6">
+            You Might Also Consider
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {closeMatchProducts.map(product => (
+              <ProductCard key={`close-${product.id || product.productName}`} product={product} calculateCriticsScore={calculateCriticsScore} />
+            ))}
+          </div>
         </div>
       )}
 
@@ -86,6 +100,11 @@ TechFinderResults.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onGoBackToQuestions: PropTypes.func.isRequired,
   onRestart: PropTypes.func.isRequired,
+  closeMatchProducts: PropTypes.array,
+};
+
+TechFinderResults.defaultProps = {
+  closeMatchProducts: [],
 };
 
 export default TechFinderResults;
