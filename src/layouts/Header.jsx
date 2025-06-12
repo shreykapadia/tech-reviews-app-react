@@ -1,6 +1,8 @@
 // src/components/Header.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
+import { AuthContext } from '../contexts/AuthContext'; // Adjust path as necessary
+import PropTypes from 'prop-types';
 
 // --- Icon Components ---
 const SearchIcon = () => (
@@ -60,13 +62,26 @@ const BackArrowIcon = () => (
   </svg>
 );
 
-function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubmit and isHomePage props
+function Header({ onSearchSubmit, isHomePage = false }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const headerRef = useRef(null);
   const mobileSearchInputRef = useRef(null);
+  const { user, signOut, loading: authLoading } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      navigate('/'); // Redirect to homepage after logout
+      if (isMenuOpen) setIsMenuOpen(false); // Close mobile menu if open
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+      // Optionally, display an error message to the user
+    }
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -147,6 +162,32 @@ function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubm
     // setIsMobileSearchOpen(false); // Not needed here as links are in menu
   }
 
+  const authNavLinks = (isMobile = false) => {
+    const baseClass = isMobile ? "block py-2 text-center" : "block py-2"; // Adjusted for mobile centering
+    const hoverClass = "hover:text-brand-primary transition-colors duration-200";
+
+    if (authLoading) {
+      return <li className={`${baseClass} text-gray-500`}>Loading...</li>;
+    }
+    if (user) {
+      return (
+        <>
+          <li><Link to="/dashboard" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Dashboard</Link></li>
+          <li>
+            <button onClick={handleLogout} className={`${baseClass} ${hoverClass} text-red-600 hover:text-red-700 w-full text-center md:text-left`}>
+              Logout
+            </button>
+          </li>
+        </>
+      );
+    }
+    return (
+      <>
+        <li><Link to="/login" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Login</Link></li>
+        <li><Link to="/signup" className={`${baseClass} ${hoverClass} ${isMobile ? '' : 'px-3 py-1.5 bg-brand-primary text-white rounded-md hover:bg-brand-primary-dark hover:text-white'}`} onClick={closeMobileNavAndSearch}>Sign Up</Link></li>
+      </>
+    );
+  };
   // Determine if the header should be transparent
   // Transparent only if on homepage, not scrolled, and no menus/mobile search are open
   const showTransparentHeader = isHomePage && !isScrolled && !isMenuOpen && !isMobileSearchOpen;
@@ -266,7 +307,8 @@ function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubm
                     <li><Link to="/" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</Link></li>
                     <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
                     <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
-                    {/* Consider adding an "About" link if you have an About page */}
+                    <div className="h-6 border-l border-gray-300 mx-2 self-center"></div> {/* Separator */}
+                    {authNavLinks(false)}
                  </ul>
               </nav>
           </div>
@@ -290,11 +332,21 @@ function Header({ onSearchSubmit, isHomePage = false }) { // Accept onSearchSubm
             <li><Link to="/" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</Link></li>
             <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
             <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
-            {/* Consider adding an "About" link if you have an About page */}
+            <hr className="my-2 border-gray-200"/>
+            {authNavLinks(true)}
           </ul>
       </nav>
     </header>
   );
 }
+
+Header.propTypes = {
+  onSearchSubmit: PropTypes.func.isRequired,
+  isHomePage: PropTypes.bool,
+};
+
+Header.defaultProps = {
+  isHomePage: false,
+};
 
 export default Header;

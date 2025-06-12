@@ -11,6 +11,7 @@ import CookieConsentBanner from './components/common/CookieConsentBanner'; // Up
 import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; // Updated path
 
 import AppRoutes from './routes/AppRoutes'; // Updated path
+import { AuthProvider } from './contexts/AuthContext'; // Import AuthProvider
 
 import CategoryPage from './features/categories/CategoryPage'; // Updated path
 import SearchResultsPage from './features/search/SearchResultsPage'; // Updated path
@@ -341,7 +342,9 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <AppContent />
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </Router>
     </HelmetProvider>
   );

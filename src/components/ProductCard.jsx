@@ -6,18 +6,18 @@ import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, layoutType = 'default' }) => {
   // Log the initial props received by the component
-  console.log('[ProductCard] Props received:', { product, layoutType });
+  // console.log('[ProductCard] Props received:', { product, layoutType });
 
   const criticsScoreDisplay = useMemo(() => {
     // Use pre-aggregated critic score directly from product
-    console.log('[ProductCard] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore });
+    // console.log('[ProductCard] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore });
     const score = product.preAggregatedCriticScore;
     return typeof score === 'number' ? Math.round(score) : '--';
   }, [product.preAggregatedCriticScore]);
 
   const audienceScoreDisplay = useMemo(() => {
     // Log the values being used for audience score calculation
-    console.log('[ProductCard] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore });
+    // console.log('[ProductCard] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore });
     // Use pre-aggregated audience score directly from product
     const score = product.preAggregatedAudienceScore;
     return typeof score === 'number' ? score : '--';

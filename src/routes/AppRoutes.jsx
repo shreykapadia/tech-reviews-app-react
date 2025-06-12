@@ -13,6 +13,12 @@ const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
 const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
 const TechFinderPage = React.lazy(() => import('../features/techFinder/TechFinderPage'));
 
+const LoginPage = lazy(() => import('../features/auth/LoginPage'));
+const SignupPage = lazy(() => import('../features/auth/SignupPage'));
+const RequestPasswordResetPage = lazy(() => import('../features/auth/RequestPasswordResetPage'));
+const UpdatePasswordPage = lazy(() => import('../features/auth/UpdatePasswordPage'));
+const DashboardPage = lazy(() => import('../features/user/DashboardPage'));
+
 function AppRoutes({
   // Props for HomePage
   selectedProduct,
@@ -103,6 +109,12 @@ function AppRoutes({
             </>
           )}
         />
+        {/* Auth Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<RequestPasswordResetPage />} />
+        <Route path="/update-password" element={<UpdatePasswordPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
     </Suspense>
   );
