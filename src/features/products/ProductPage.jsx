@@ -1,5 +1,5 @@
 // src/features/products/ProductPage.jsx
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Breadcrumbs from './components/Breadcrumbs'; 
@@ -15,25 +15,38 @@ import AudienceReviewSection from './components/AudienceReviewSection';
 import FeatureSpecificInsights from './components/FeatureSpecificInsights'; 
 import CompareSimilarProducts from './components/CompareSimilarProducts'; 
 import RelatedArticles from './components/RelatedArticles'; 
+import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { AuthContext } from '../../contexts/AuthContext';
+import { supabase } from '../../services/supabaseClient';
 
 // calculateAudienceScore is no longer needed here for the primary score
 // normalizeScore might still be used if displaying individual critic review scores that need normalization
 
 const ProductPage = ({ allProducts, calculateCriticsScore }) => {
+  // Log props received by ProductPage
+  console.log('[ProductPage] Props received:', { allProducts, calculateCriticsScore });
+
   const { productNameSlug } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retailerReviewData, setRetailerReviewData] = useState([]);
+  const { user, loading: authLoading } = useContext(AuthContext);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favoritingLoading, setFavoritingLoading] = useState(false);
 
   useEffect(() => {
     if (productNameSlug && allProducts.length > 0) {
+      console.log(`[ProductPage] Searching for product with slug: "${productNameSlug}" in allProducts (count: ${allProducts.length})`);
       const foundProduct = allProducts.find(
         (p) => p.productName.toLowerCase().replace(/\s+/g, '-') === productNameSlug
       );
       if (foundProduct) {
+        console.log('[ProductPage] Product found and set:', foundProduct);
         setProduct(foundProduct);
       } else {
+        console.error(`[ProductPage] Product with slug "${productNameSlug}" not found.`);
         setError('Product not found.');
       }
     }
@@ -42,6 +55,38 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
         setLoading(false);
     }
   }, [productNameSlug, allProducts]);
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!product || !user || authLoading) {
+        if (!user && !authLoading) setIsFavorited(false); // Explicitly set to false if user is null and auth is loaded
+        return;
+      }
+      try {
+        setFavoritingLoading(true); // Indicate loading favorite status
+        const { data, error: favError } = await supabase
+          .from('user_favorites')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('product_id', product.id) // Ensure product.id is the correct BIGINT ID
+          .limit(1)
+          .maybeSingle();
+
+        if (favError && favError.code !== 'PGRST116') { // PGRST116: "No rows found" - not an error for this check
+          console.error('Error checking favorite status:', favError);
+          setIsFavorited(false);
+        } else {
+          setIsFavorited(!!data);
+        }
+      } catch (err) {
+        console.error('Unexpected error checking favorite status:', err);
+        setIsFavorited(false);
+      } finally {
+        setFavoritingLoading(false);
+      }
+    };
+    checkFavoriteStatus();
+  }, [product, user, authLoading]);
 
   const criticsScoreValue = useMemo(() => {
     if (product) { // Check if the product object exists
@@ -93,6 +138,44 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
     console.log('[ProductPage] Product state initialized or changed:', product);
   }, [product]);
 
+  const handleFavoriteToggle = async (e) => {
+    e.preventDefault(); // Good practice if this button might be nested
+    // e.stopPropagation(); // Use if it's inside another clickable element and you want to prevent that click
+
+    if (favoritingLoading || authLoading) return;
+
+    if (!user) {
+      alert('Please log in to favorite products!');
+      // Optionally, navigate to login: navigate('/login', { state: { from: location } });
+      return;
+    }
+
+    if (!product || !product.id) {
+      console.error("Product or product ID is missing for favoriting.");
+      alert("Could not favorite product. Please try again.");
+      return;
+    }
+
+    setFavoritingLoading(true);
+    try {
+      if (isFavorited) {
+        const { error: deleteError } = await supabase.from('user_favorites').delete().match({ user_id: user.id, product_id: product.id });
+        if (deleteError) throw deleteError;
+        setIsFavorited(false);
+        // alert('Removed from favorites!'); // Consider less intrusive feedback
+      } else {
+        const { error: insertError } = await supabase.from('user_favorites').insert({ user_id: user.id, product_id: product.id });
+        if (insertError) throw insertError;
+        setIsFavorited(true);
+        // alert('Added to favorites!'); // Consider less intrusive feedback
+      }
+    } catch (err) {
+      console.error('Error toggling favorite:', err);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setFavoritingLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -182,23 +265,47 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
         {/* Adjust top padding of this container to py-6 sm:py-8 for consistent spacing after breadcrumbs */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {/* Hero Section for Product Page */}
-          {/* Mobile: Info (Title etc.) first, then Gallery. */}
-          {/* Desktop (lg+): Gallery first (left), then Info (right). */}
-          <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 mb-8 sm:mb-10">
-            {/* Info column - order-1 on mobile, order-2 (right) on lg */}
-            <div className="order-1 lg:order-2 w-full lg:w-4/12 flex flex-col gap-4 sm:gap-5">
+          {/*
+            Main layout for Product Hero section.
+            Mobile: Uses flexbox with order properties.
+            Desktop (lg+): Uses CSS Grid for a two-column layout.
+          */}
+          <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-x-8 gap-y-6 sm:gap-y-8 mb-8 sm:mb-10">
+
+            {/* Title & Brand: Mobile order-1. Desktop: top of the right column. */}
+            <div className="order-1 lg:col-start-9 lg:col-span-4 lg:row-start-1">
               <ProductTitleBrand productName={product.productName} brand={product.brand} />
+            </div>
+
+            {/* Image Gallery: Mobile order-2. Desktop: main left column. */}
+            <div className="order-2 lg:col-start-1 lg:col-span-8 lg:row-start-1 lg:row-span-2">
+              <ProductImageGallery galleryItems={product.gallery || [{ type: 'image', url: product.imageURL, alt: product.productName }]} productName={product.productName} />
+            </div>
+
+            {/* Rest of Info (Scores, ProsCons, Favorite): Mobile order-3. Desktop: bottom of the right column. */}
+            <div className="order-3 lg:col-start-9 lg:col-span-4 lg:row-start-2 flex flex-col gap-4 sm:gap-5">
               <CriticsScoreDisplay criticsScore={criticsScoreValue} />
               <AudienceRatingDisplay
                 scoreOutOf100={combinedAudienceScoreOutOf100}
                 reviewCount={combinedAudienceReviewCount}
               />
               <ProsConsSummary aiProsCons={product.aiProsCons} />
-            </div>
-            {/* Image Gallery column - order-2 on mobile, order-1 (left) on lg */}
-            <div className="order-2 lg:order-1 w-full lg:w-8/12">
-              <ProductImageGallery galleryItems={product.gallery || [{ type: 'image', url: product.imageURL, alt: product.productName }]} productName={product.productName} />
+              {/* Favorite Button Container */}
+              <div className="mt-auto pt-4"> {/* mt-auto pushes to bottom of flex container */}
+                <button
+                  onClick={handleFavoriteToggle}
+                  disabled={favoritingLoading || authLoading}
+                  className={`w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-150 ease-in-out
+                    ${isFavorited 
+                      ? 'bg-red-100 text-red-700 hover:bg-red-200 focus:ring-red-500' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-brand-primary'}
+                    ${(favoritingLoading || authLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                >
+                  {isFavorited ? <HeartSolidIcon className="h-6 w-6 mr-2 text-red-600" /> : <HeartOutlineIcon className="h-6 w-6 mr-2" />}
+                  {favoritingLoading ? 'Updating...' : (isFavorited ? 'Favorited' : 'Favorite')}
+                </button>
+              </div>
             </div>
           </div>
 

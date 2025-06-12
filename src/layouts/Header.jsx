@@ -172,7 +172,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
     if (user) {
       return (
         <>
-          <li><Link to="/dashboard" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Dashboard</Link></li>
+          <li><Link to="/dashboard" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Favorites</Link></li>
           <li>
             <button onClick={handleLogout} className={`${baseClass} ${hoverClass} text-red-600 hover:text-red-700 w-full text-center md:text-left`}>
               Logout
@@ -304,7 +304,6 @@ function Header({ onSearchSubmit, isHomePage = false }) {
               {/* Desktop Navigation */}
               <nav className="hidden md:block">
                  <ul className={`flex flex-row space-x-6 lg:space-x-8 text-lg font-medium items-center ${navLinkColorClass}`}>
-                    <li><Link to="/" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</Link></li>
                     <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
                     <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
                     <div className="h-6 border-l border-gray-300 mx-2 self-center"></div> {/* Separator */}
@@ -329,7 +328,6 @@ function Header({ onSearchSubmit, isHomePage = false }) {
         }`}
       >
           <ul className="flex flex-col px-4 space-y-4 text-brand-text text-lg font-medium items-center">
-            <li><Link to="/" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Home</Link></li>
             <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
             <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
             <hr className="my-2 border-gray-200"/>

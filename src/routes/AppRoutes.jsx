@@ -114,7 +114,12 @@ function AppRoutes({
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<RequestPasswordResetPage />} />
         <Route path="/update-password" element={<UpdatePasswordPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardPage calculateCriticsScore={calculateCriticsScore} />
+          }
+        />
       </Routes>
     </Suspense>
   );

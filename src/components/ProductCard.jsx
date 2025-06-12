@@ -1,14 +1,19 @@
 // src/components/ProductCard.jsx
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
+import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { AuthContext } from '../contexts/AuthContext'; // Adjust path if necessary
+import { supabase } from '../services/supabaseClient'; // Adjust path if necessary
 // calculateAudienceScore is no longer needed here as scores are pre-aggregated
 
 const ProductCard = ({ product, layoutType = 'default' }) => {
   // Log the initial props received by the component
-  // console.log('[ProductCard] Props received:', { product, layoutType });
+  console.log('[ProductCard] Rendering with product:', product, 'Layout:', layoutType);
 
   const criticsScoreDisplay = useMemo(() => {
+    if (!product) return '--';
     // Use pre-aggregated critic score directly from product
     // console.log('[ProductCard] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore });
     const score = product.preAggregatedCriticScore;
@@ -16,12 +21,18 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   }, [product.preAggregatedCriticScore]);
 
   const audienceScoreDisplay = useMemo(() => {
+    if (!product) return '--';
     // Log the values being used for audience score calculation
     // console.log('[ProductCard] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore });
     // Use pre-aggregated audience score directly from product
     const score = product.preAggregatedAudienceScore;
     return typeof score === 'number' ? score : '--';
   }, [product.preAggregatedAudienceScore]);
+
+  const { user, loading: authLoading } = useContext(AuthContext);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [favoritingLoading, setFavoritingLoading] = useState(false);
+
 
   // const audienceScoreToDisplay = audienceScoreValue !== null ? audienceScoreValue : '--'; // Replaced by audienceScoreDisplay
 
@@ -41,7 +52,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   // Use 'text-brand-primary' as the default for critics score if no specific color applies
   const criticsScoreColorClass = getScoreColor(criticsScoreDisplay, 'text-brand-primary');
 
-  const productNameSlug = product.productName.toLowerCase().replace(/\s+/g, '-');
+  const productNameSlug = product?.productName?.toLowerCase().replace(/\s+/g, '-') || 'unknown-product';
 
   const isCarousel = layoutType === 'carousel';
 
@@ -49,8 +60,77 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   const baseLinkClasses = "group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out overflow-hidden border border-gray-200 animate-fade-in-up";
   // Layout specific classes for the Link, Criterion I.1
   const linkLayoutClasses = isCarousel
-    ? "flex flex-col h-full" // Carousel: Vertical stack, h-full to fill carousel item wrapper
-    : "flex flex-row";       // Default: Horizontal layout
+    ? "flex flex-col h-full relative" // Carousel: Vertical stack, h-full, relative for fav button
+    : "flex flex-row relative";       // Default: Horizontal layout, relative for fav button
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      // Enhanced logging for debugging
+      console.log('[ProductCard] checkFavoriteStatus called. Product ID:', product?.id, 'User ID:', user?.id, 'Auth Loading:', authLoading);
+
+      if (!product || !product.id || !user || authLoading) {
+        if (!user && !authLoading) {
+          // console.log('[ProductCard] User not logged in or auth state not ready, setting isFavorited to false.');
+          setIsFavorited(false);
+        }
+        return;
+      }
+      try {
+        // console.log(`[ProductCard] Querying user_favorites for user_id: ${user.id}, product_id: ${product.id}`);
+        const { data, error: favError } = await supabase
+          .from('user_favorites')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('product_id', product.id)
+          .limit(1) // Explicitly ask for at most one row
+          .maybeSingle(); // Returns data as object if one row found, or null if none. Errors if limit(1) somehow fails and multiple are returned.
+
+        if (favError && favError.code !== 'PGRST116') {
+          console.error('[ProductCard] Error checking favorite status (Supabase):', favError.message, 'Code:', favError.code, 'Details:', favError.details, 'Hint:', favError.hint);
+          setIsFavorited(false);
+        } else {
+          // console.log('[ProductCard] Favorite status checked. Data:', data, 'Is favorited:', !!data);
+          setIsFavorited(!!data);
+        }
+      } catch (err) {
+        // This catch block is for unexpected JS errors, not Supabase API errors (handled above)
+        console.error('[ProductCard] Unexpected JavaScript error in checkFavoriteStatus:', err);
+        setIsFavorited(false);
+      }
+    };
+    checkFavoriteStatus();
+  }, [product, user, authLoading]);
+
+  const handleFavoriteToggle = async (e) => {
+    e.preventDefault(); // IMPORTANT: Prevent Link navigation
+    e.stopPropagation(); // IMPORTANT: Stop event from bubbling up to Link
+
+    if (favoritingLoading || authLoading) return;
+
+    if (!user) {
+      alert('Please log in to favorite products!');
+      return;
+    }
+    if (!product || !product.id) return;
+
+    setFavoritingLoading(true);
+    try {
+      if (isFavorited) {
+        const { error: deleteError } = await supabase.from('user_favorites').delete().match({ user_id: user.id, product_id: product.id });
+        if (deleteError) throw deleteError;
+        setIsFavorited(false);
+      } else {
+        const { error: insertError } = await supabase.from('user_favorites').insert({ user_id: user.id, product_id: product.id });
+        if (insertError) throw insertError;
+        setIsFavorited(true);
+      }
+    } catch (err) {
+      console.error('Error toggling card favorite:', err);
+      alert('An error occurred. Please try again.');
+    } finally {
+      setFavoritingLoading(false);
+    }
+  };
 
   return (
     <Link
@@ -59,6 +139,21 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
       aria-label={`View details for ${product.productName}`}
     >
       {/* Image Section - Top for carousel, Left for default. Criterion II.1 */}
+      {/* Favorite button for ProductCard - positioned absolutely */}
+      {user && !authLoading && ( // Only show if user state is determined
+        <button
+          onClick={handleFavoriteToggle}
+          disabled={favoritingLoading}
+          className={`absolute top-2 right-2 z-10 p-1.5 rounded-full transition-colors duration-150 ease-in-out
+            ${isFavorited ? 'bg-red-500 hover:bg-red-600' : 'bg-black/40 hover:bg-black/60'}
+            ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+        >
+          {isFavorited 
+            ? <HeartSolidIcon className="h-5 w-5 text-white" /> 
+            : <HeartOutlineIcon className="h-5 w-5 text-white" />}
+        </button>
+      )}
       <div
         className={
           isCarousel
@@ -147,6 +242,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
 
 ProductCard.propTypes = {
   product: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Ensure ID is present
     productName: PropTypes.string.isRequired,
     brand: PropTypes.string.isRequired,
     imageURL: PropTypes.string,
