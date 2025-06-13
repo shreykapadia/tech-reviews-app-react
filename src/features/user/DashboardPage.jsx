@@ -7,7 +7,7 @@ import ProductCard from '../../components/ProductCard'; // Adjust path if necess
 // calculateCriticsScore will be passed as a prop
 
 function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsScore prop
-  const { user, loading: authLoading } = useContext(AuthContext); // Renamed loading to authLoading
+  const { user, userProfile, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [favoritedProducts, setFavoritedProducts] = useState([]);
@@ -120,8 +120,8 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className=" mx-auto bg-white shadow-xl rounded-lg p-6 md:p-10">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
-          Welcome, <span className="text-brand-primary break-all">{user.email}</span>!
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+          Welcome, <span className="text-brand-primary break-all">{userProfile?.username || user?.email || 'User'}</span>!
         </h1>
         <p className="text-gray-700 mb-4">
           This is your personal dashboard. You can manage your profile and settings here.
