@@ -10,7 +10,7 @@ import { supabase } from '../services/supabaseClient'; // Adjust path if necessa
 
 const ProductCard = ({ product, layoutType = 'default' }) => {
   // Log the initial props received by the component
-  console.log('[ProductCard] Rendering with product:', product, 'Layout:', layoutType);
+  // console.log('[ProductCard] Rendering with product:', product, 'Layout:', layoutType);
 
   const criticsScoreDisplay = useMemo(() => {
     if (!product) return '--';
@@ -66,7 +66,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       // Enhanced logging for debugging
-      console.log('[ProductCard] checkFavoriteStatus called. Product ID:', product?.id, 'User ID:', user?.id, 'Auth Loading:', authLoading);
+      // console.log('[ProductCard] checkFavoriteStatus called. Product ID:', product?.id, 'User ID:', user?.id, 'Auth Loading:', authLoading);
 
       if (!product || !product.id || !user || authLoading) {
         if (!user && !authLoading) {
