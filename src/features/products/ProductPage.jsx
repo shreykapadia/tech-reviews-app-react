@@ -290,22 +290,24 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
                 reviewCount={combinedAudienceReviewCount}
               />
               <ProsConsSummary aiProsCons={product.aiProsCons} />
-              {/* Favorite Button Container */}
-              <div className="mt-auto pt-4"> {/* mt-auto pushes to bottom of flex container */}
-                <button
-                  onClick={handleFavoriteToggle}
-                  disabled={favoritingLoading || authLoading}
-                  className={`w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-150 ease-in-out
-                    ${isFavorited 
-                      ? 'bg-red-100 text-red-700 hover:bg-red-200 focus:ring-red-500' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-brand-primary'}
-                    ${(favoritingLoading || authLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
-                >
-                  {isFavorited ? <HeartSolidIcon className="h-6 w-6 mr-2 text-red-600" /> : <HeartOutlineIcon className="h-6 w-6 mr-2" />}
-                  {favoritingLoading ? 'Updating...' : (isFavorited ? 'Favorited' : 'Favorite')}
-                </button>
-              </div>
+              {/* Favorite Button Container - Only show if user is logged in and auth state is determined */}
+              {!authLoading && user && (
+                <div className="mt-auto pt-4"> {/* mt-auto pushes to bottom of flex container */}
+                  <button
+                    onClick={handleFavoriteToggle}
+                    disabled={favoritingLoading} // authLoading check is now part of the parent conditional
+                    className={`w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-150 ease-in-out
+                      ${isFavorited 
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200 focus:ring-red-500' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-brand-primary'}
+                      ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : ''}`} // authLoading check removed from here
+                    aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    {isFavorited ? <HeartSolidIcon className="h-6 w-6 mr-2 text-red-600" /> : <HeartOutlineIcon className="h-6 w-6 mr-2" />}
+                    {favoritingLoading ? 'Updating...' : (isFavorited ? 'Favorited' : 'Favorite')}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -321,8 +323,8 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
           {/* Main Content Sections */}
           <ProductSpecifications product={product} />
           <CriticsReviewSection product={product} />
-          <AudienceReviewSection product={product} />
           <FeatureSpecificInsights product={product} />
+          <AudienceReviewSection product={product} />
           <CompareSimilarProducts
               currentProduct={product}
               allProducts={allProducts}

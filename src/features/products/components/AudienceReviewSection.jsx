@@ -12,7 +12,27 @@ import {
   CheckBadgeIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
+// import { StarIcon as StarSolid } from '@heroicons/react/24/solid'; // Replaced by custom StarIcon
+
+// Helper component: StarIcon (also used in SubmitReviewForm)
+// (Ideally, this would be in a shared components directory and imported)
+const StarIcon = ({ fillLevel, sizeClasses = "h-6 w-6" }) => {
+  // React.useId is preferred for unique IDs, with a fallback for older React versions
+  const uniqueId = React.useId ? React.useId() : `grad-${Math.random().toString(36).substring(2, 9)}`;
+  const starPath = "M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.116 3.986 1.241 5.385c.275 1.183-.984 2.126-2.056 1.532L12 18.22l-4.994 2.695c-1.072.593-2.331-.35-2.056-1.532l1.24-5.385L1.08 10.955c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z";
+
+  return (
+    <svg className={`${sizeClasses} inline-block`} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={uniqueId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset={`${Math.max(0, Math.min(100, fillLevel * 100))}%`} className="text-yellow-400" stopColor="currentColor" />
+          <stop offset={`${Math.max(0, Math.min(100, fillLevel * 100))}%`} className="text-gray-300" stopColor="currentColor" />
+        </linearGradient>
+      </defs>
+      <path d={starPath} fill={`url(#${uniqueId})`} />
+    </svg>
+  );
+};
 
 const RatingDistributionBar = ({ rating, percentage, count, colorClass = 'bg-yellow-400' }) => (
   <div className="flex items-center space-x-2 mb-1 text-xs">
@@ -29,15 +49,16 @@ const RatingDistributionBar = ({ rating, percentage, count, colorClass = 'bg-yel
 
 const UserReviewCard = ({ review, currentUserId, onEdit, onDelete }) => {
   const renderStars = (rating) => {
+    // rating is now a float, e.g., 3.7
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push(
-        i <= rating ? (
-          <StarSolid key={i} className="h-4 w-4 text-yellow-400" />
-        ) : (
-          <StarOutline key={i} className="h-4 w-4 text-gray-300" />
-        )
-      );
+      let fillLevel = 0;
+      if (rating >= i) { // Full star
+        fillLevel = 1;
+      } else if (rating > i - 1 && rating < i) { // Partial star
+        fillLevel = rating - (i - 1);
+      } // Else, fillLevel remains 0 (empty star)
+      stars.push(<StarIcon key={i} fillLevel={fillLevel} sizeClasses="h-4 w-4" />);
     }
     return stars;
   };
@@ -133,8 +154,14 @@ const AudienceReviewSection = ({ product }) => {
   useEffect(() => {
     if (productId) {
       fetchReviews();
+    } else {
+      // If productId is not available, we can't fetch reviews.
+      // Set loading to false and clear any previous review data/error.
+      setIsLoadingReviews(false);
+      setUserReviews([]);
+      setReviewsError(null);
     }
-  }, [productId]);
+  }, [productId]); // Note: For more complex scenarios, fetchReviews might also be a dependency if not memoized.
 
   const currentUserReview = useMemo(() => {
     if (!user || !userReviews.length) return null;
@@ -186,20 +213,35 @@ const AudienceReviewSection = ({ product }) => {
   };
 
   const ratingDistribution = useMemo(() => {
-    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    let totalRatings = 0;
+    const distributionBuckets = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }; // Initialize with numeric keys
+    let totalRatingsValidForDistribution = 0;
+
     userReviews.forEach(review => {
-      if (review.rating >= 1 && review.rating <= 5) {
-        distribution[review.rating]++;
-        totalRatings++;
+      // Ensure rating is a number and strictly positive for distribution (0 means not rated yet)
+      if (typeof review.rating === 'number' && review.rating > 0 && review.rating <= 5) {
+        const roundedRating = Math.round(review.rating); // e.g., 3.7 -> 4, 3.2 -> 3
+        // Clamp roundedRating to be between 1 and 5.
+        // e.g. if rating is 0.2 (should not happen if form prevents 0), rounded is 0. Clamped to 1.
+        const clampedRating = Math.max(1, Math.min(5, roundedRating));
+
+        if (clampedRating >= 1 && clampedRating <= 5) {
+          distributionBuckets[clampedRating]++;
+          totalRatingsValidForDistribution++;
+        }
       }
     });
-    if (totalRatings === 0) return null;
-    return Object.keys(distribution).reduce((acc, key) => {
-      const count = distribution[key];
-      acc[key] = { count, percentage: totalRatings > 0 ? (count / totalRatings) * 100 : 0 };
-      return acc;
-    }, {});
+
+    if (totalRatingsValidForDistribution === 0) return null;
+
+    const finalDistributionData = {};
+    // Iterate 5 down to 1 for the typical display order of rating bars
+    for (let i = 5; i >= 1; i--) {
+      finalDistributionData[i.toString()] = { // Keys will be '5', '4', '3', '2', '1'
+        count: distributionBuckets[i] || 0,
+        percentage: totalRatingsValidForDistribution > 0 ? ((distributionBuckets[i] || 0) / totalRatingsValidForDistribution) * 100 : 0,
+      };
+    }
+    return finalDistributionData;
   }, [userReviews]);
 
   const totalReviewCount = userReviews.length;
@@ -221,7 +263,7 @@ const AudienceReviewSection = ({ product }) => {
     <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
-          What Users Are Saying
+          Community Rating
         </h3>
 
         <div className="grid md:grid-cols-12 gap-6 sm:gap-8">
