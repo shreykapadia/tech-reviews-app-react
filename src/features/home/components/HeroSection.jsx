@@ -1,12 +1,6 @@
 // src/components/HeroSection.jsx
 import React from 'react';
-
-// Submit Arrow Icon SVG
-const SubmitArrowIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-  </svg>
-);
+import { Link } from 'react-router-dom'; // Added Link for navigation
 
 // Wrap the component definition with React.memo.
 // Using a named function expression for better debugging and component display name in React DevTools.
@@ -14,9 +8,6 @@ const HeroSection = React.memo(function HeroSection() {
   const handleEmailSubmit = (event) => {
     event.preventDefault();
     // TODO: Implement actual email signup logic
-    const formData = new FormData(event.target);
-    const email = formData.get('email');
-    alert(`Email submitted: ${email}\n(Email signup functionality to be implemented)`);
   };
 
   return (
@@ -33,26 +24,17 @@ const HeroSection = React.memo(function HeroSection() {
           From cutting-edge gadgets to essential software, TechScore provides unbiased, in-depth reviews and comparisons. Make smarter choices with us.
         </p>
 
-        {/* Email Signup Form */}
-        <form onSubmit={handleEmailSubmit} className="max-w-xl mx-auto animate-fade-in delay-100">
-          <div className="relative flex items-center">
-            <input
-              type="email"
-              name="email"
-              placeholder="Sign up for updates"
-              // Increased pr-12 or pr-14 to make space for the button
-              className="w-full p-4 pr-14 text-base rounded-full border-2 border-gray-200 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all duration-300 shadow-md text-gray-700 placeholder-gray-400"
-              aria-label="Email for updates"
-            />
-            <button
-              type="submit"
-              aria-label="Sign up for updates"
-              className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
+        {/* Tech Finder Call to Action */}
+        <div className="mt-12 animate-fade-in delay-100">
+          <div>
+            <Link
+              to="/tech-finder" // Assuming this is the route for your Tech Finder
+              className="inline-block px-10 py-4 bg-brand-primary text-white text-lg font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
-              <SubmitArrowIcon />
-            </button>
+              Find your perfect device
+            </Link>
           </div>
-        </form>
+        </div>
       </div>
     </section>
   );

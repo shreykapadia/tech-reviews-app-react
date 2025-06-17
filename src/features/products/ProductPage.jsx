@@ -25,13 +25,14 @@ import { supabase } from '../../services/supabaseClient';
 
 const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   // Log props received by ProductPage
-  console.log('[ProductPage] Props received:', { allProducts, calculateCriticsScore });
+  // console.log('[ProductPage] Props received:', { allProducts, calculateCriticsScore });
 
   const { productNameSlug } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retailerReviewData, setRetailerReviewData] = useState([]);
+  const [featureInsights, setFeatureInsights] = useState([]);
   const { user, loading: authLoading } = useContext(AuthContext);
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoritingLoading, setFavoritingLoading] = useState(false);
@@ -55,6 +56,30 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
         setLoading(false);
     }
   }, [productNameSlug, allProducts]);
+
+  useEffect(() => {
+    const fetchFeatureInsights = async () => {
+      if (product && product.id) {
+        // console.log(`[ProductPage] Fetching feature insights for product ID: ${product.id}`);
+        try {
+          const { data, error: insightsError } = await supabase
+            .from('product_feature_insights')
+            .select('*')
+            .eq('product_id', product.id);
+
+          if (insightsError) {
+            throw insightsError;
+          }
+          console.log('[ProductPage] Feature insights fetched:', data); // Ensure this line is uncommented
+          setFeatureInsights(data || []);
+        } catch (err) {
+          console.error('Error fetching feature insights:', err);
+          setFeatureInsights([]); // Set to empty array on error
+        }
+      }
+    };
+    fetchFeatureInsights();
+  }, [product]); // Changed dependency to 'product'
 
   useEffect(() => {
     const checkFavoriteStatus = async () => {
@@ -91,7 +116,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   const criticsScoreValue = useMemo(() => {
     if (product) { // Check if the product object exists
       // Use pre-aggregated critic score directly
-      console.log('[ProductPage] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore, totalCriticReviewCount: product.totalCriticReviewCount });
+      // console.log('[ProductPage] Critic Score Data:', { preAggregatedCriticScore: product.preAggregatedCriticScore, totalCriticReviewCount: product.totalCriticReviewCount });
       return typeof product.preAggregatedCriticScore === 'number' ? product.preAggregatedCriticScore : null;
     }
     return null;
@@ -106,7 +131,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
       return { combinedAudienceScoreOutOf100: null, combinedAudienceReviewCount: 0 };
     }
     // Use pre-aggregated audience score and count directly
-    console.log('[ProductPage] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore, totalAudienceReviewCount: product.totalAudienceReviewCount });
+    // console.log('[ProductPage] Audience Score Data:', { preAggregatedAudienceScore: product.preAggregatedAudienceScore, totalAudienceReviewCount: product.totalAudienceReviewCount });
     const score = typeof product.preAggregatedAudienceScore === 'number' ? product.preAggregatedAudienceScore : null;
     const count = typeof product.totalAudienceReviewCount === 'number' ? product.totalAudienceReviewCount : 0;
     
@@ -323,7 +348,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
           {/* Main Content Sections */}
           <ProductSpecifications product={product} />
           <CriticsReviewSection product={product} />
-          <FeatureSpecificInsights product={product} />
+          <FeatureSpecificInsights product={product} insightsData={featureInsights} />
           <AudienceReviewSection product={product} />
           <CompareSimilarProducts
               currentProduct={product}
