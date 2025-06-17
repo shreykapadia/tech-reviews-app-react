@@ -29,16 +29,22 @@ const CriticsReviewSectionComponent = ({ product }) => {
   const { criticReviews, aiProsCons, productName } = product;
 
   // Calculate score breakdown
+  // Log raw critic reviews to inspect score and scale
+  console.log(`[CriticsReviewSection] Product: ${productName} - Raw criticReviews:`, criticReviews.map(r => ({ score: r.score, scale: r.scale, publication: r.publication })));
+
   const normalizedScores = criticReviews.map(review => normalizeScore(review.score, review.scale)).filter(score => score !== null);
   
+  // Log normalized scores to see what `normalizeScore` is producing
+  console.log(`[CriticsReviewSection] Product: ${productName} - Normalized scores for sentiment (expected 0-100):`, normalizedScores);
+
   let positiveCount = 0;
   let neutralCount = 0;
   let negativeCount = 0;
 
   normalizedScores.forEach(score => {
-    if (score >= 75) positiveCount++;
-    else if (score >= 50) neutralCount++;
-    else negativeCount++;
+    if (score >= 80) positiveCount++; // Positive: 80+
+    else if (score >= 70) neutralCount++; // Neutral: 70-79 (implicitly < 80 due to first check)
+    else negativeCount++; // Negative: below 70 (scores less than 70)
   });
 
   const totalScores = normalizedScores.length;

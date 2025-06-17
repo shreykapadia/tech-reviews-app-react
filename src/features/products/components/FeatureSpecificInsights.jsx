@@ -49,9 +49,9 @@ const getSentimentCategory = (score) => {
 
   if (typeof numericScore !== 'number' || isNaN(numericScore)) return 'unknown';
 
-  if (numericScore >= 75) return 'positive';
-  if (numericScore >= 50) return 'neutral';
-  if (numericScore < 50) return 'negative'; 
+  if (numericScore >= 80) return 'positive';
+  if (numericScore >= 60) return 'neutral';
+  if (numericScore < 60) return 'negative'; 
   return 'unknown'; 
 };
 
@@ -65,7 +65,7 @@ const getSentimentColor = (sentiment) => {
 const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
   // feature.feature_category should come from Supabase
   // feature.concensus_sentiment_score and feature.feature_summary as well
-  console.log('[FeatureInsightItem] Processing feature:', feature); // Log individual feature
+  // console.log('[FeatureInsightItem] Processing feature:', feature); // Log individual feature
 
   const IconComponent = iconMap[(feature.feature_category || '').toLowerCase()] || QuestionMarkCircleIcon;
   
@@ -134,7 +134,7 @@ const FeatureSpecificInsights = ({ product, insightsData }) => {
   const [openFeatureId, setOpenFeatureId] = useState(null);
 
   // Log the received insightsData prop
-  console.log('[FeatureSpecificInsights] Received insightsData:', insightsData);
+  // console.log('[FeatureSpecificInsights] Received insightsData:', insightsData);
 
   // Use insightsData prop, which comes from Supabase via ProductPage
   const featureSentiments = insightsData || [];

@@ -39,12 +39,12 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
   useEffect(() => {
     if (productNameSlug && allProducts.length > 0) {
-      console.log(`[ProductPage] Searching for product with slug: "${productNameSlug}" in allProducts (count: ${allProducts.length})`);
+      // console.log(`[ProductPage] Searching for product with slug: "${productNameSlug}" in allProducts (count: ${allProducts.length})`);
       const foundProduct = allProducts.find(
         (p) => p.productName.toLowerCase().replace(/\s+/g, '-') === productNameSlug
       );
       if (foundProduct) {
-        console.log('[ProductPage] Product found and set:', foundProduct);
+        // console.log('[ProductPage] Product found and set:', foundProduct);
         setProduct(foundProduct);
       } else {
         console.error(`[ProductPage] Product with slug "${productNameSlug}" not found.`);
@@ -70,7 +70,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
           if (insightsError) {
             throw insightsError;
           }
-          console.log('[ProductPage] Feature insights fetched:', data); // Ensure this line is uncommented
+          // console.log('[ProductPage] Feature insights fetched:', data); // Ensure this line is uncommented
           setFeatureInsights(data || []);
         } catch (err) {
           console.error('Error fetching feature insights:', err);
@@ -145,7 +145,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
   const handleRetailerReviewDataUpdate = useCallback((data) => {
     // Log when retailer review data is updated
-    console.log('[ProductPage] handleRetailerReviewDataUpdate called with:', data);
+    // console.log('[ProductPage] handleRetailerReviewDataUpdate called with:', data);
 
     setRetailerReviewData(prevData => {
       if (prevData.length !== data.length || 
