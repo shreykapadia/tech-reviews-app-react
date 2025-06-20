@@ -198,7 +198,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
   const navLinkColorClass = showTransparentHeader ? 'text-gray-700' : 'text-brand-text';
   // Search input style based on background
   const desktopSearchInputClasses = `
-    w-full py-2 px-4 pr-10 text-sm rounded-full border-2 transition-all duration-300 ease-in-out
+    w-full py-3 px-4 pr-10 text-sm rounded-full border-2 transition-all duration-300 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent
     ${showTransparentHeader // When header is transparent, search bar still looks solid
       ? 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white shadow-md' // Styles for solid look
@@ -226,7 +226,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
           className="flex items-center justify-between w-full h-full"
         >
             {/* Logo */}
-            <Link to="/" className="cursor-pointer" onClick={closeMobileNavAndSearch}>
+            <Link to="/" className="cursor-pointer p-2 -m-2" onClick={closeMobileNavAndSearch}>
               <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 font-serif text-brand-primary`}>
                 TechScore
               </h1>
@@ -285,7 +285,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
                 type={isMobileSearchOpen ? "submit" : "button"}
                 form={isMobileSearchOpen ? "mobileHeaderSearchForm" : undefined}
                 aria-label={isMobileSearchOpen ? "Submit search query" : "Open search bar"}
-                className={`md:hidden p-1 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
+                className={`md:hidden p-3 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
               >
                 <SearchIcon />
               </button>
@@ -296,7 +296,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
                   onClick={handleToggleMenu}
                   aria-label="Toggle menu"
                   aria-expanded={isMenuOpen}
-                  className={`p-1 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}>
+                  className={`p-2 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}>
                   <AnimatedMenuIcon isOpen={isMenuOpen} />
                 </button>
               </div>

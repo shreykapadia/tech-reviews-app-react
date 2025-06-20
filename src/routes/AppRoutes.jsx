@@ -8,6 +8,7 @@ const HomePage = lazy(() => import('../features/home/HomePage'));
 const SearchResultsPage = lazy(() => import('../features/search/SearchResultsPage'));
 const TermsOfServicePage = lazy(() => import('../features/staticContent/TermsOfServicePage'));
 const PrivacyPolicyPage = lazy(() => import('../features/staticContent/PrivacyPolicyPage'));
+const CookieSettingsPage = lazy(() => import('../features/staticContent/CookieSettingsPage'));
 const ProductPage = lazy(() => import('../features/products/ProductPage'));
 const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
 const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
@@ -110,6 +111,7 @@ function AppRoutes({
           )}
         />
         {/* Auth Routes */}
+        <Route path="/cookie-settings" element={<CookieSettingsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<RequestPasswordResetPage />} />
