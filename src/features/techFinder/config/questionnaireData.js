@@ -255,6 +255,8 @@ export const questionnaires = {
         { label: 'Samsung', value: 'Samsung' },
         { label: 'LG', value: 'LG' },
         { label: 'Sony', value: 'Sony' },
+        { label: 'TCL', value: 'TCL' },
+        { label: 'Hisense', value: 'Hisense' }
         // Add other common TV brands
       ],
     },

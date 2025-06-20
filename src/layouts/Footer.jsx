@@ -15,12 +15,13 @@ function Footer() {
             <li><a href="/#about" className="hover:text-white transition-colors duration-200">About Us</a></li> {/* Placeholder link */}
             <li><Link to="/privacy-policy" className="hover:text-white transition-colors duration-200">Privacy Policy</Link></li>
             <li><Link to="/terms-of-service" className="hover:text-white transition-colors duration-200">Terms of Service</Link></li>
+            <li><Link to="/cookie-settings" className="hover:text-white transition-colors duration-200">Cookie Settings</Link></li>
           </ul>
         </nav>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-400 leading-normal">
           &copy; {currentYear} TechScore. All rights reserved.
         </p>
-        <p className="text-xs text-gray-500 mt-3">
+        <p className="text-xs text-gray-400 mt-3 leading-normal">
           Disclaimer: All reviews and opinions are based on our team's expertise and research. Product specifications and availability are subject to change.
         </p>
       </div>

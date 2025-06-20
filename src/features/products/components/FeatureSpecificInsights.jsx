@@ -2,59 +2,58 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
-import { CameraIcon, Battery50Icon, ComputerDesktopIcon, CpuChipIcon, PaintBrushIcon, CogIcon } from '@heroicons/react/24/outline'; // Example icons
+import {
+  CameraIcon,
+  Battery50Icon,
+  ComputerDesktopIcon,
+  CpuChipIcon,
+  PaintBrushIcon,
+  CogIcon,
+  SpeakerWaveIcon, // Example for Audio
+  WifiIcon,        // Example for Connectivity
+  DevicePhoneMobileIcon, // Added for "Software & UI"
+  BriefcaseIcon, // Added for "Portability"
+  TvIcon, // Added for "Picture Quality"
+  PuzzlePieceIcon, // Added for "Gaming Features"
+  LinkIcon, // Added for "Connectivity & Ports"
+  QuestionMarkCircleIcon, // Default/fallback icon
+} from '@heroicons/react/24/outline';
 
-// Placeholder ABSA data - this would come from your backend/data source
-const placeholderFeatureSentiments = [
-  {
-    id: 'camera',
-    featureName: "Camera Quality",
-    icon: CameraIcon,
-    sentiment: "positive", // 'positive', 'neutral', 'negative'
-    sentimentScore: 88, // 0-100, for visual bar
-    summary: "Users and critics consistently praise the camera for its sharp images, excellent low-light performance, and versatile shooting modes. Video recording is also a strong point.",
-  },
-  {
-    id: 'battery',
-    featureName: "Battery Life",
-    icon: Battery50Icon,
-    sentiment: "positive",
-    sentimentScore: 82,
-    summary: "The device offers impressive battery longevity, easily lasting a full day for most users even with moderate to heavy usage. Fast charging support is a welcome addition.",
-  },
-  {
-    id: 'display',
-    featureName: "Display",
-    icon: ComputerDesktopIcon,
-    sentiment: "positive",
-    sentimentScore: 92,
-    summary: "The display is frequently highlighted for its vibrant colors, excellent brightness levels suitable for outdoor use, and smooth refresh rate enhancing user experience.",
-  },
-  {
-    id: 'performance',
-    featureName: "Performance",
-    icon: CpuChipIcon,
-    sentiment: "positive",
-    sentimentScore: 85,
-    summary: "Overall performance is snappy and responsive, handling demanding applications and multitasking with ease. Gamers will appreciate the smooth frame rates.",
-  },
-  {
-    id: 'design',
-    featureName: "Design & Build",
-    icon: PaintBrushIcon,
-    sentiment: "neutral",
-    sentimentScore: 65,
-    summary: "The design is considered modern and premium by many, though some find it iterative. Build quality is generally solid, but opinions on material choices vary.",
-  },
-  {
-    id: 'software',
-    featureName: "Software & UI",
-    icon: CogIcon,
-    sentiment: "neutral",
-    sentimentScore: 70,
-    summary: "The software offers a clean user interface and useful features. However, some users report occasional minor bugs or desire more customization options.",
-  },
-];
+// Icon mapping from feature_category (lowercase) to Heroicon component
+const iconMap = {
+  // Specific mappings as per request
+  'camera quality': CameraIcon,
+  'battery life': Battery50Icon,
+  'design & build': PaintBrushIcon,
+  'software & ui': DevicePhoneMobileIcon,
+  'portability': BriefcaseIcon,
+  'picture quality': TvIcon,
+  'gaming features': PuzzlePieceIcon,
+  'connectivity & ports': LinkIcon,
+
+  // General/fallback mappings (can be kept or removed if specific ones cover all cases)
+  'camera': CameraIcon, // Fallback if "Camera Quality" isn't exact
+  'battery': Battery50Icon, // Fallback
+  'display': ComputerDesktopIcon,
+  'performance': CpuChipIcon,
+  'design': PaintBrushIcon, // Fallback
+  'software': DevicePhoneMobileIcon, // Fallback, or CogIcon if preferred for generic "software"
+  'ui': DevicePhoneMobileIcon, // Fallback, or CogIcon if preferred for generic "ui"
+  'audio': SpeakerWaveIcon,
+  'connectivity': WifiIcon,
+};
+
+const getSentimentCategory = (score) => {
+  // Ensure score is a number for comparison
+  const numericScore = typeof score === 'string' ? parseFloat(score) : score;
+
+  if (typeof numericScore !== 'number' || isNaN(numericScore)) return 'unknown';
+
+  if (numericScore >= 80) return 'positive';
+  if (numericScore >= 60) return 'neutral';
+  if (numericScore < 60) return 'negative'; 
+  return 'unknown'; 
+};
 
 const getSentimentColor = (sentiment) => {
   if (sentiment === 'positive') return 'bg-green-500';
@@ -64,7 +63,21 @@ const getSentimentColor = (sentiment) => {
 };
 
 const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
-  const IconComponent = feature.icon || PaintBrushIcon; // Default icon
+  // feature.feature_category should come from Supabase
+  // feature.concensus_sentiment_score and feature.feature_summary as well
+  // console.log('[FeatureInsightItem] Processing feature:', feature); // Log individual feature
+
+  const IconComponent = iconMap[(feature.feature_category || '').toLowerCase()] || QuestionMarkCircleIcon;
+  
+  // Robust score handling
+  const rawScore = feature.concensus_sentiment_score;
+  let numericScore = typeof rawScore === 'string' ? parseFloat(rawScore) : rawScore;
+  if (typeof numericScore !== 'number' || isNaN(numericScore)) {
+    numericScore = null; // Treat non-numeric/NaN as null for consistency
+  }
+
+  const sentimentCategory = getSentimentCategory(numericScore);
+  const displayScore = numericScore !== null ? Math.max(0, Math.min(100, numericScore)) : 0;
 
   return (
     <div className="border-b border-gray-200 last:border-b-0">
@@ -76,14 +89,28 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
       >
         <div className="flex items-center">
           <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-brand-primary mr-3 flex-shrink-0" />
-          <span className="text-sm sm:text-base font-medium text-brand-text">{feature.featureName}</span>
+          <span className="text-sm sm:text-base font-medium text-brand-text">
+            {feature.feature_category || 'Unnamed Feature'}
+          </span>
         </div>
         <div className="flex items-center">
-          <div className="w-16 sm:w-20 h-2 bg-gray-200 rounded-full overflow-hidden mr-2 sm:mr-3">
+          {/* Display score text */}
+          <span className="text-xs sm:text-sm text-gray-600 font-medium w-10 text-right mr-2">
+            {numericScore !== null ? `${numericScore.toFixed(0)}%` : 'N/A'}
+          </span>
+
+          {/* Always render the bar structure */}
+          {/* Adjusted width of the bar container slightly if needed, or keep as is if layout allows */}
+          {/* Original: w-16 sm:w-20. If space is tight, consider w-12 sm:w-16 or adjust margins. */}
+          <div className="w-14 sm:w-16 h-2 bg-gray-200 rounded-full overflow-hidden mr-2 sm:mr-3">
             <div
-              className={`h-full rounded-full ${getSentimentColor(feature.sentiment)}`}
-              style={{ width: `${feature.sentimentScore}%` }}
-              title={`Sentiment: ${feature.sentimentScore}% ${feature.sentiment}`}
+              className={`h-full rounded-full ${getSentimentColor(sentimentCategory)}`}
+              style={{ width: `${displayScore}%` }}
+              title={
+                numericScore !== null
+                  ? `Sentiment: ${numericScore.toFixed(0)}% ${sentimentCategory}`
+                  : 'Sentiment: N/A'
+              }
             />
           </div>
           {isOpen ? <ChevronUpIcon className="h-5 w-5 text-gray-500" /> : <ChevronDownIcon className="h-5 w-5 text-gray-500" />}
@@ -91,21 +118,29 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
       </button>
       {isOpen && (
         <div id={`feature-details-${feature.id}`} className="p-3 sm:p-4 bg-gray-50 border-t border-gray-200">
-          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-2">{feature.summary}</p>
-          <p className="text-xs text-gray-500 italic">AI-generated summary</p>
+          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-2">
+            {feature.feature_summary || 'No summary available for this feature.'}
+          </p>
+          {feature.feature_summary && ( // Only show "AI-generated" if there's a summary
+            <p className="text-xs text-gray-500 italic">AI-generated summary</p>
+          )}
         </div>
       )}
     </div>
   );
 };
 
-const FeatureSpecificInsights = ({ product }) => {
+const FeatureSpecificInsights = ({ product, insightsData }) => {
   const [openFeatureId, setOpenFeatureId] = useState(null);
 
-  // In a real app, featureSentiments would be derived from 'product' prop or fetched
-  const featureSentiments = placeholderFeatureSentiments;
+  // Log the received insightsData prop
+  // console.log('[FeatureSpecificInsights] Received insightsData:', insightsData);
 
-  if (!product || !featureSentiments || featureSentiments.length === 0) {
+  // Use insightsData prop, which comes from Supabase via ProductPage
+  const featureSentiments = insightsData || [];
+
+  // Check if product exists and if there are any feature sentiments to display
+  if (!product || featureSentiments.length === 0) {
     return null;
   }
 
@@ -121,7 +156,7 @@ const FeatureSpecificInsights = ({ product }) => {
         </h3>
         <div className="border border-gray-200 rounded-md">
           {featureSentiments.map((feature) => (
-            <FeatureInsightItem
+            <FeatureInsightItem // Ensure feature has a unique 'id' or use index as last resort
               key={feature.id}
               feature={feature}
               isOpen={openFeatureId === feature.id}
@@ -135,7 +170,14 @@ const FeatureSpecificInsights = ({ product }) => {
 };
 
 FeatureSpecificInsights.propTypes = {
-  product: PropTypes.object.isRequired, // Would contain ABSA data in a real scenario
+  product: PropTypes.object.isRequired,
+  insightsData: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // Assuming 'id' is the primary key from your table
+    feature_category: PropTypes.string,
+    consensus_sentiment_score: PropTypes.number, // Corrected spelling: Can be null
+    feature_summary: PropTypes.string,
+    product_id: PropTypes.number.isRequired,
+  })),
 };
 
 export default FeatureSpecificInsights;
