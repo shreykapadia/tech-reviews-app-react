@@ -177,7 +177,7 @@ function CategoryPage({
   if (categoryPageIsLoading) { // Primary loading state for fetching category details
     return (
       <>
-        {console.log(`CategoryPage (${categorySlug}): Rendering loading state. areGlobalCategoriesLoading: ${areGlobalCategoriesLoading}`)}
+        {/* {console.log(`CategoryPage (${categorySlug}): Rendering loading state. areGlobalCategoriesLoading: ${areGlobalCategoriesLoading}`)} */}
         <div className="flex justify-center items-center min-h-screen">
           <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
           <p className="ml-4 text-lg">Loading category...</p>
@@ -208,7 +208,7 @@ function CategoryPage({
     { label: 'Categories', path: '/categories' } // Link to the All Categories page
   ];
 
-  console.log(`CategoryPage (${categorySlug}): Rendering main content. categoryDetails:`, categoryDetails, "categoryPageCrumbs:", categoryPageCrumbs);
+  // console.log(`CategoryPage (${categorySlug}): Rendering main content. categoryDetails:`, categoryDetails, "categoryPageCrumbs:", categoryPageCrumbs);
   // At this point, categoryDetails is loaded and valid.
   // Now, display content based on products.
 

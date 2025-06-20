@@ -11,6 +11,7 @@ import CookieConsentBanner from './components/common/CookieConsentBanner'; // Up
 import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; // Updated path
 
 import AppRoutes from './routes/AppRoutes'; // Updated path
+import { AuthProvider } from './contexts/AuthContext'; // Import AuthProvider
 
 import CategoryPage from './features/categories/CategoryPage'; // Updated path
 import SearchResultsPage from './features/search/SearchResultsPage'; // Updated path
@@ -64,6 +65,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [availableCategories, setAvailableCategories] = useState([]);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const [cookieConsent, setCookieConsent] = useState({ analytics: false, marketing: false }); // New state for granular consent
   const [isAppDataLoading, setIsAppDataLoading] = useState(true); // New state for global data loading
 
   // State for header search functionality
@@ -177,15 +179,40 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   // Effect for cookie consent
   useEffect(() => {
     const consentCookie = Cookies.get('userConsent');
+
     if (!consentCookie) {
       setShowCookieBanner(true);
-    } else if (consentCookie === 'accepted') {
-      // User has already consented, you can initialize cookie-dependent services here
-      console.log('Cookie consent previously accepted.');
     } else {
-      console.log('Cookie consent previously declined.');
+      setShowCookieBanner(false);
+      try {
+        // Handle new granular consent object from CookieSettingsPage
+        const parsedConsent = JSON.parse(consentCookie);
+        if (typeof parsedConsent === 'object' && parsedConsent !== null) {
+          setCookieConsent({
+            analytics: !!parsedConsent.analytics,
+            marketing: !!parsedConsent.marketing,
+          });
+        }
+      } catch (e) {
+        // Fallback for old "accepted" / "declined" string values
+        if (consentCookie === 'accepted') {
+          setCookieConsent({ analytics: true, marketing: true });
+        } else {
+          // 'declined' or any other non-json string
+          setCookieConsent({ analytics: false, marketing: false });
+        }
+      }
     }
   }, []);
+
+  // This new effect will run whenever consent changes, allowing you to initialize scripts.
+  useEffect(() => {
+    if (cookieConsent.analytics) {
+      console.log('Analytics enabled. Initializing analytics scripts...');
+      // TODO: Add your analytics initialization code here (e.g., Google Analytics)
+    }
+    // You can add a similar block for marketing scripts
+  }, [cookieConsent]);
 
   // Apply filters whenever productsData, debouncedSearchTerm, or selectedCategory changes
   useEffect(() => {
@@ -237,16 +264,19 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   }, []); // setSelectedProduct is stable
 
   const handleAcceptCookieConsent = () => {
-    Cookies.set('userConsent', 'accepted', { expires: 365, path: '/' });
+    const newConsent = { analytics: true, marketing: true };
+    Cookies.set('userConsent', JSON.stringify(newConsent), { expires: 365, path: '/' });
+    setCookieConsent(newConsent);
     setShowCookieBanner(false);
-    console.log('User accepted cookie consent.');
+    console.log('User accepted all cookies.');
   };
 
   const handleDeclineCookieConsent = () => {
-    // Set a cookie to remember they declined
-    Cookies.set('userConsent', 'declined', { expires: 365, path: '/' });
+    const newConsent = { analytics: false, marketing: false };
+    Cookies.set('userConsent', JSON.stringify(newConsent), { expires: 365, path: '/' });
+    setCookieConsent(newConsent);
     setShowCookieBanner(false);
-    console.log('User declined cookie consent.');
+    console.log('User declined non-essential cookies.');
   };
 
   // This function is called when the search is submitted from the Header
@@ -341,7 +371,9 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <AppContent />
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </Router>
     </HelmetProvider>
   );

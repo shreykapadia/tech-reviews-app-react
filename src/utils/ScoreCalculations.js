@@ -3,34 +3,40 @@
 /**
  * Normalizes a numerical score from its original scale to a target scale using Min-Max normalization.
  */
-export function normalizeScore(score, scale, targetScale) {
-    let originalMax;
-  
-    if (scale === 'out of 10') {
-      originalMax = 10;
-    } else if (scale === 'out of 5 stars') {
-      originalMax = 5;
-    } else if (scale === 'percent') {
-      originalMax = 100;
-    } else {
-      console.warn(`Unknown or invalid scale: ${scale}`);
-      return null;
-    }
-  
-    if (score === null || typeof score !== 'number' || isNaN(score)) {
-      return null;
-    }
-  
-    if (originalMax === 0) { // Safety check for division by zero
-      return null;
-    }
-  
-    if (scale === 'percent') {
-        return (score / 100) * targetScale;
-    } else {
-        return (score / originalMax) * targetScale;
-    }
+// src/utils/scoreCalculations.js
+
+export function normalizeScore(score, scale, targetScale = 100) { // Added default for targetScale
+  let originalMax;
+  const lowerScale = typeof scale === 'string' ? scale.toLowerCase().trim() : ''; // Normalize scale input
+
+  // More robust scale matching
+  if (lowerScale === 'out of 10' || lowerScale === '/10') {
+    originalMax = 10;
+  } else if (lowerScale === 'out of 5 stars' || lowerScale === '/5') {
+    originalMax = 5;
+  } else if (lowerScale === 'percent' || lowerScale === '/100' || lowerScale === 'out of 100') {
+    originalMax = 100;
+  } else {
+    console.warn(`Unknown or invalid scale: "${scale}"`);
+    return null; // Return null for unknown scales
   }
+
+  if (score === null || typeof score !== 'number' || isNaN(score)) {
+    console.warn(`Invalid score: ${score} (type: ${typeof score}) for scale: "${scale}"`);
+    return null; // Return null for invalid scores
+  }
+
+  if (originalMax === 0) { // Safety check for division by zero
+    console.error(`Original max scale is zero for scale: "${scale}". Cannot normalize.`);
+    return null;
+  }
+
+  // Simplified calculation: originalMax is already set correctly for 'percent'
+  return (score / originalMax) * targetScale;
+}
+
+// ... (the rest of your scoreCalculations.js file, like calculateCriticsScore, would go here)
+
   
   /**
    * Calculates a weighted average Critics Score from an array of critic reviews.

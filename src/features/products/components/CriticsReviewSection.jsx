@@ -1,8 +1,9 @@
 // src/components/ProductPage/CriticsReviewSection.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { ChatBubbleLeftEllipsisIcon, ArrowRightIcon, StarIcon } from '@heroicons/react/24/outline'; // Corrected: Added missing import for StarIcon
+// Removed Link from 'react-router-dom' as it's no longer used for the main button
+import { ChatBubbleLeftEllipsisIcon, ArrowRightIcon, StarIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'; // Added for expand/collapse
 import { normalizeScore } from '../../../utils/scoreCalculations'; // Corrected path
 const ScoreBreakdownBarInternal = ({ percentage, colorClass, label }) => (
   <div className="flex items-center mb-1.5">
@@ -19,6 +20,8 @@ const ScoreBreakdownBarInternal = ({ percentage, colorClass, label }) => (
     const ScoreBreakdownBar = React.memo(ScoreBreakdownBarInternal);
 
 const CriticsReviewSectionComponent = ({ product }) => {
+  const [showAllReviews, setShowAllReviews] = useState(false);
+
   if (!product || !product.criticReviews || product.criticReviews.length === 0) {
     return null;
   }
@@ -26,16 +29,22 @@ const CriticsReviewSectionComponent = ({ product }) => {
   const { criticReviews, aiProsCons, productName } = product;
 
   // Calculate score breakdown
+  // Log raw critic reviews to inspect score and scale
+  console.log(`[CriticsReviewSection] Product: ${productName} - Raw criticReviews:`, criticReviews.map(r => ({ score: r.score, scale: r.scale, publication: r.publication })));
+
   const normalizedScores = criticReviews.map(review => normalizeScore(review.score, review.scale)).filter(score => score !== null);
   
+  // Log normalized scores to see what `normalizeScore` is producing
+  console.log(`[CriticsReviewSection] Product: ${productName} - Normalized scores for sentiment (expected 0-100):`, normalizedScores);
+
   let positiveCount = 0;
   let neutralCount = 0;
   let negativeCount = 0;
 
   normalizedScores.forEach(score => {
-    if (score >= 75) positiveCount++;
-    else if (score >= 50) neutralCount++;
-    else negativeCount++;
+    if (score >= 80) positiveCount++; // Positive: 80+
+    else if (score >= 70) neutralCount++; // Neutral: 70-79 (implicitly < 80 due to first check)
+    else negativeCount++; // Negative: below 70 (scores less than 70)
   });
 
   const totalScores = normalizedScores.length;
@@ -49,6 +58,11 @@ const CriticsReviewSectionComponent = ({ product }) => {
 
   // Select featured reviews (e.g., first 3 or based on some weighting if available)
   const featuredReviews = criticReviews.slice(0, 3);
+  const reviewsToDisplay = showAllReviews ? criticReviews : featuredReviews;
+
+  const handleToggleShowAll = () => {
+    setShowAllReviews(prev => !prev);
+  };
 
   return (
     <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
@@ -106,25 +120,26 @@ const CriticsReviewSectionComponent = ({ product }) => {
           {/* Right Column: Featured Reviews */}
           <div className="md:col-span-7 lg:col-span-8">
             <h4 className="text-md sm:text-lg font-semibold text-brand-text font-sans mb-4">Featured Reviews</h4>
-            {featuredReviews.length > 0 ? (
+            {reviewsToDisplay.length > 0 ? (
               <div className="space-y-4">
-                {featuredReviews.map((review, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow">
+                {reviewsToDisplay.map((review, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow text-left">
                     <div className="flex justify-between items-start mb-1">
                       <span className="font-semibold text-sm text-brand-text">{review.publication}</span>
-                      {review.score !== null && (
-                        <span className="text-xs text-gray-600 bg-gray-200 px-1.5 py-0.5 rounded-full flex items-center">
-                          <StarIcon className="h-3 w-3 text-yellow-500 mr-0.5" />
-                          {normalizeScore(review.score, review.scale)}/100
-                        </span>
-                      )}
+                      {/* Individual score removed as per request */}
                     </div>
-                    {/* Placeholder for review snippet. Actual snippets would need to be in JSON or AI-generated. */}
-                    <p className="text-xs text-gray-600 italic mb-2">
-                      Full review snippet would appear here. Currently showing publication and score.
-                    </p>
+                    {review.summary ? (
+                      <>
+                        <p className="text-xs text-gray-700 mb-1 leading-relaxed">{review.summary}</p>
+                        <p className="text-xs text-gray-500 italic mb-2">AI-generated summary</p>
+                      </>
+                    ) : (
+                      <p className="text-xs text-gray-600 italic mb-2">
+                        Summary not available. Read the full review for more details.
+                      </p>
+                    )}
                     <a
-                      href={review.link}
+                      href={review.link} // This already correctly uses review.link
                       target="_blank"
                       rel="noopener noreferrer nofollow"
                       className="text-xs text-brand-primary hover:text-blue-700 hover:underline font-medium inline-flex items-center"
@@ -138,14 +153,19 @@ const CriticsReviewSectionComponent = ({ product }) => {
               <p className="text-sm text-gray-500">No featured critic reviews available for this product yet.</p>
             )}
 
-            <div className="mt-6 text-center sm:text-right">
-              <Link
-                to={`/product/${encodeURIComponent(productName.toLowerCase().replace(/\s+/g, '-'))}/critic-reviews`}
+            {/* Only show button if there are more reviews than initially featured */}
+            {criticReviews.length > featuredReviews.length && (
+              <div className="mt-6 text-center sm:text-right">
+                <button
+                type="button"
+                onClick={handleToggleShowAll}
                 className="inline-flex items-center px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200"
-              >
-                See All Critic Reviews ({criticReviews.length})
-              </Link>
-            </div>
+                >
+                  {showAllReviews ? 'Show Fewer Reviews' : `See All ${criticReviews.length} Critic Reviews`}
+                  {showAllReviews ? <ChevronUpIcon className="h-4 w-4 ml-2" /> : <ChevronDownIcon className="h-4 w-4 ml-2" />}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -161,6 +181,7 @@ CriticsReviewSectionComponent.propTypes = {
       score: PropTypes.number,
       scale: PropTypes.string,
       link: PropTypes.string,
+      summary: PropTypes.string, // Added summary to PropTypes
     })),
     aiProsCons: PropTypes.shape({
       pros: PropTypes.arrayOf(PropTypes.string),

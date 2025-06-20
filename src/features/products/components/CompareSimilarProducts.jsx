@@ -5,13 +5,35 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { StarIcon } from '@heroicons/react/24/outline'; // For audience score display
 
-const SuggestedProductCard = ({ product, onSelect, isSelected, calculateCriticsScore }) => {
-  const criticsScore = useMemo(() => {
-    return product.criticReviews ? Math.round(calculateCriticsScore(product.criticReviews)) : '--';
-  }, [product.criticReviews, calculateCriticsScore]);
+// Consistent score color function
+const getScoreColor = (score, defaultColorClass = 'text-gray-700') => {
+  if (score === null || score === '--') return defaultColorClass;
+  const numericScore = Number(score);
+  if (isNaN(numericScore)) return defaultColorClass;
 
-  // Simplified audience score display for this component
-  const audienceScoreDisplay = product.audienceRating || '--';
+  if (numericScore >= 85) return 'text-green-600';
+  if (numericScore >= 70) return 'text-yellow-600';
+  if (numericScore < 70 && numericScore >= 0) return 'text-red-600';
+  return defaultColorClass;
+};
+
+
+const SuggestedProductCard = ({ product, onSelect, isSelected }) => {
+  const criticsScoreDisplay = useMemo(() => {
+    if (!product) return '--';
+    // Use pre-aggregated critic score directly from product
+    const score = product.preAggregatedCriticScore;
+    return typeof score === 'number' ? Math.round(score) : '--';
+  }, [product]);
+
+  const audienceScoreDisplay = useMemo(() => {
+    if (!product) return '--';
+    const score = product.preAggregatedAudienceScore; // This is already 0-100
+    return typeof score === 'number' ? score : '--';
+  }, [product]);
+
+  const criticsScoreColorClass = getScoreColor(criticsScoreDisplay, 'text-brand-primary');
+  const audienceScoreColorClass = getScoreColor(audienceScoreDisplay, 'text-brand-secondary');
 
   return (
     <div
@@ -38,19 +60,18 @@ const SuggestedProductCard = ({ product, onSelect, isSelected, calculateCriticsS
       <p className="text-xs text-gray-500 mb-2">{product.brand}</p>
       <div className="flex justify-between items-center text-xs">
         <div className="flex flex-col items-center">
-          <span className="font-bold text-brand-primary">{criticsScore}</span>
+          <span className={`font-bold ${criticsScoreColorClass}`}>{criticsScoreDisplay}</span>
           <span className="text-gray-500">Critics</span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="font-bold text-brand-secondary">{audienceScoreDisplay.split('/')[0]}</span> {/* Show just the score part */}
+          <span className={`font-bold ${audienceScoreColorClass}`}>{audienceScoreDisplay}</span>
           <span className="text-gray-500">Audience</span>
         </div>
       </div>
     </div>
   );
 };
-
-const CompareSimilarProducts = ({ currentProduct, allProducts, calculateCriticsScore }) => {
+const CompareSimilarProducts = ({ currentProduct, allProducts }) => {
   const [selectedToCompare, setSelectedToCompare] = useState([]);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
   const navigate = useNavigate();
@@ -108,7 +129,6 @@ const CompareSimilarProducts = ({ currentProduct, allProducts, calculateCriticsS
               product={product}
               onSelect={handleSelectProduct}
               isSelected={selectedToCompare.includes(product.productName)}
-              calculateCriticsScore={calculateCriticsScore}
             />
           ))}
         </div>
@@ -138,8 +158,16 @@ const CompareSimilarProducts = ({ currentProduct, allProducts, calculateCriticsS
 
 CompareSimilarProducts.propTypes = {
   currentProduct: PropTypes.object.isRequired,
-  allProducts: PropTypes.array.isRequired,
-  calculateCriticsScore: PropTypes.func.isRequired,
+  allProducts: PropTypes.arrayOf(PropTypes.shape({
+    productName: PropTypes.string.isRequired,
+    brand: PropTypes.string,
+    imageURL: PropTypes.string,
+    category: PropTypes.string,
+    preAggregatedCriticScore: PropTypes.number,
+    preAggregatedAudienceScore: PropTypes.number,
+    // Add other product properties used by SuggestedProductCard if any
+  })).isRequired,
+  // calculateCriticsScore is no longer needed here
 };
 
 export default CompareSimilarProducts;

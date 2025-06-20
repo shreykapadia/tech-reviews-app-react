@@ -8,10 +8,17 @@ const HomePage = lazy(() => import('../features/home/HomePage'));
 const SearchResultsPage = lazy(() => import('../features/search/SearchResultsPage'));
 const TermsOfServicePage = lazy(() => import('../features/staticContent/TermsOfServicePage'));
 const PrivacyPolicyPage = lazy(() => import('../features/staticContent/PrivacyPolicyPage'));
+const CookieSettingsPage = lazy(() => import('../features/staticContent/CookieSettingsPage'));
 const ProductPage = lazy(() => import('../features/products/ProductPage'));
 const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
 const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
 const TechFinderPage = React.lazy(() => import('../features/techFinder/TechFinderPage'));
+
+const LoginPage = lazy(() => import('../features/auth/LoginPage'));
+const SignupPage = lazy(() => import('../features/auth/SignupPage'));
+const RequestPasswordResetPage = lazy(() => import('../features/auth/RequestPasswordResetPage'));
+const UpdatePasswordPage = lazy(() => import('../features/auth/UpdatePasswordPage'));
+const DashboardPage = lazy(() => import('../features/user/DashboardPage'));
 
 function AppRoutes({
   // Props for HomePage
@@ -102,6 +109,18 @@ function AppRoutes({
               />
             </>
           )}
+        />
+        {/* Auth Routes */}
+        <Route path="/cookie-settings" element={<CookieSettingsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/forgot-password" element={<RequestPasswordResetPage />} />
+        <Route path="/update-password" element={<UpdatePasswordPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardPage calculateCriticsScore={calculateCriticsScore} />
+          }
         />
       </Routes>
     </Suspense>

@@ -42,7 +42,7 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
         return matchesSize ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Screen Size" } };
       }
       case 'tv-resolution': {
-        const matches = String(keySpecs.Resolution || '').toLowerCase().includes(String(answerValue).toLowerCase());
+        const matches = String(keySpecs.resolution || '').toLowerCase().includes(String(answerValue).toLowerCase());
         return matches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Resolution" } };
       }
       case 'tv-color-vibrancy': {
@@ -70,7 +70,7 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
         const backlighting = String(keySpecs.displayBacklighting || '').toLowerCase();
         let matches = false;
         if (answerValue === 'bright_room') matches = (peakBrightness && peakBrightness > 1000) || backlighting.includes('mini-led') || panelType.includes('qd-oled') || (panelType.includes('qled') && (backlighting.includes('fald') || backlighting.includes('fald')));
-        else if (answerValue === 'dark_room') matches = panelType.includes('oled') || backlighting.includes('oled');
+        else if (answerValue === 'dark_room') matches = panelType.includes('oled') || backlighting.includes('oled') || peakBrightness < 1000;
         else matches = true;
         return matches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Viewing Environment" } };
       }
