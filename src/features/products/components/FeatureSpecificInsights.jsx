@@ -70,7 +70,7 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
   const IconComponent = iconMap[(feature.feature_category || '').toLowerCase()] || QuestionMarkCircleIcon;
   
   // Robust score handling
-  const rawScore = feature.concensus_sentiment_score;
+  const rawScore = feature.consensus_sentiment_score;
   let numericScore = typeof rawScore === 'string' ? parseFloat(rawScore) : rawScore;
   if (typeof numericScore !== 'number' || isNaN(numericScore)) {
     numericScore = null; // Treat non-numeric/NaN as null for consistency
