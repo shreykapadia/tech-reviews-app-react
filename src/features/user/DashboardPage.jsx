@@ -118,7 +118,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 pt-24 pb-8 px-4 sm:px-6 lg:px-8 md:pt-28">
       <div className=" mx-auto bg-white shadow-xl rounded-lg p-6 md:p-10">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
           Welcome, <span className="text-brand-primary break-all">{userProfile?.username || user?.email || 'User'}</span>!
