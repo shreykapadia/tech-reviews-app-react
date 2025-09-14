@@ -1,6 +1,6 @@
 // src/components/Header.jsx
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate
+import { Link, useNavigate, useLocation } from 'react-router-dom'; // Import Link, useNavigate, and useLocation
 import { AuthContext } from '../contexts/AuthContext'; // Adjust path as necessary
 import PropTypes from 'prop-types';
 
@@ -71,6 +71,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
   const mobileSearchInputRef = useRef(null);
   const { user, signOut, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     try {
@@ -183,8 +184,8 @@ function Header({ onSearchSubmit, isHomePage = false }) {
     }
     return (
       <>
-        <li><Link to="/login" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Login</Link></li>
-        <li><Link to="/signup" className={`${baseClass} ${hoverClass} ${isMobile ? '' : 'px-3 py-1.5 bg-brand-primary text-white rounded-md hover:bg-brand-primary-dark hover:text-white'}`} onClick={closeMobileNavAndSearch}>Sign Up</Link></li>
+        <li><Link to="/login" state={{ from: location }} className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Login</Link></li>
+        <li><Link to="/signup" state={{ from: location }} className={`${baseClass} ${hoverClass} ${isMobile ? '' : 'px-3 py-1.5 bg-brand-primary text-white rounded-md hover:bg-brand-primary-dark hover:text-white'}`} onClick={closeMobileNavAndSearch}>Sign Up</Link></li>
       </>
     );
   };

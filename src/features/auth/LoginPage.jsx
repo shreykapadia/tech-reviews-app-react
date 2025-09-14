@@ -1,6 +1,6 @@
 // src/features/auth/LoginPage.jsx
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseClient'; // Import supabase client
 
@@ -11,6 +11,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { signIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +43,8 @@ function LoginPage() {
       if (signInError) {
         throw signInError;
       }
-      navigate('/'); // Redirect to homepage on successful login
+      const from = location.state?.from || '/';
+      navigate(from, { replace: true }); // `replace: true` prevents the login page from being in the history.
     } catch (err) {
       const invalidCredentialsMessage = 'Invalid login credentials';
       setError(err.message?.includes(invalidCredentialsMessage) ? invalidCredentialsMessage : (err.message || 'Failed to log in. Please try again.'));
