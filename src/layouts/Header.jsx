@@ -249,7 +249,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
                   name="search_query_field"
                   value={searchQuery}
                   onChange={handleSearchInputChange}
-                  placeholder="Search products, reviews..."
+                  placeholder="Search products, categories..."
                   className={desktopSearchInputClasses}
                   aria-label="Search"
                 />
