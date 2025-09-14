@@ -56,6 +56,12 @@ const AnimatedMenuIcon = ({ isOpen }) => (
   </svg>
 );
 
+const XMarkIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
 const BackArrowIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -219,12 +225,12 @@ function Header({ onSearchSubmit, isHomePage = false }) {
       }`}
     >
       {/* Added `relative` for positioning animated children */}
-      <div className="container mx-auto relative flex items-center justify-between px-4 h-16 md:h-20"> {/* Removed overflow-hidden for simplicity with inline search */}
+      <div className="container mx-auto relative px-4 h-16 md:h-20">
  
         {/* --- DEFAULT HEADER UI --- */}
-        {/* This block now always stays, and the mobile search input is injected into it */}
+         {/* This view is visible by default, but hidden on mobile when search is active */}
         <div
-          className="flex items-center justify-between w-full h-full"
+          className={`flex items-center justify-between w-full h-full transition-opacity duration-200 md:opacity-100 ${isMobileSearchOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         >
             {/* Logo */}
             <Link to="/" className="cursor-pointer p-2 -m-2" onClick={closeMobileNavAndSearch}>
@@ -233,29 +239,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
               </h1>
             </Link>
 
-            {/* Conditionally Rendered Mobile Search Input Form */}
-            <form
-                id="mobileHeaderSearchForm"
-                onSubmit={handleSearchSubmit}
-                // md:hidden ensures it's only for mobile.
-                // flex-grow allows it to take available space.
-                // mx-2 for spacing.
-                // transition-all for smooth width/opacity changes.
-                className={`md:hidden flex-grow mx-2 transition-all duration-300 ease-in-out ${
-                    isMobileSearchOpen ? 'max-w-full opacity-100' : 'max-w-0 opacity-0 pointer-events-none'
-                }`}
-            >
-                <input
-                    ref={mobileSearchInputRef}
-                    type="search"
-                    name="mobile_search_query"
-                    value={searchQuery}
-                    onChange={handleSearchInputChange}
-                    placeholder="Search..."
-                    className="w-full py-2 bg-transparent border-0 border-b-2 border-gray-300 focus:border-brand-primary focus:outline-none focus:ring-0 text-brand-text placeholder-gray-500"
-                    aria-label="Search input for mobile"
-                />
-            </form>
+            
 
             {/* Desktop Search Bar (Centrally Aligned) */}
             <div className="hidden md:flex flex-1 mx-4 lg:mx-8 justify-center items-center">
@@ -278,15 +262,11 @@ function Header({ onSearchSubmit, isHomePage = false }) {
             {/* Right-Side Controls: Mobile Search Icon, Hamburger, Desktop Nav */}
             {/* Added flex-shrink-0 to prevent this group from shrinking */}
             <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
-              {/* Mobile Search Toggle/Submit Button */}
+              {/* Mobile Search Toggle Button */}
               <button
-                // If search is open, this button acts as submit for the form.
-                // If search is closed, it toggles the search open.
-                onClick={!isMobileSearchOpen ? handleToggleMobileSearch : undefined}
-                type={isMobileSearchOpen ? "submit" : "button"}
-                form={isMobileSearchOpen ? "mobileHeaderSearchForm" : undefined}
-                aria-label={isMobileSearchOpen ? "Submit search query" : "Open search bar"}
-                className={`md:hidden p-3 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
+               onClick={handleToggleMobileSearch}
+               aria-label="Open search bar"
+               className={`md:hidden p-3 -m-3 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
               >
                 <SearchIcon />
               </button>
@@ -312,6 +292,49 @@ function Header({ onSearchSubmit, isHomePage = false }) {
                  </ul>
               </nav>
           </div>
+        </div>
+        {/* --- MOBILE SEARCH OVERLAY --- */}
+        {/* This view is hidden by default and overlays the header on mobile when search is active */}
+        <div className={`absolute inset-0 w-full h-full bg-white flex items-center px-2 sm:px-4 transition-opacity duration-300 ease-in-out md:hidden ${isMobileSearchOpen ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'}`}>
+          <form onSubmit={handleSearchSubmit} className="w-full flex items-center gap-x-2">
+            <button
+              type="button"
+              onClick={handleToggleMobileSearch}
+              className="p-2 text-gray-600 hover:text-brand-primary"
+              aria-label="Close search bar"
+            >
+              <BackArrowIcon />
+            </button>
+            <div className="relative flex-grow">
+              <input
+                ref={mobileSearchInputRef}
+                type="search"
+                name="mobile_search_query"
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+                placeholder="Search products, reviews..."
+                className="w-full py-2 pl-3 pr-10 bg-gray-100 border-2 border-gray-200 rounded-full focus:border-brand-primary focus:ring-brand-primary text-brand-text placeholder-gray-500"
+                aria-label="Search input for mobile"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-brand-primary"
+                  aria-label="Clear search input"
+                >
+                  <XMarkIcon />
+                </button>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-semibold text-white bg-brand-primary rounded-full hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-brand-primary"
+              aria-label="Submit search"
+            >
+              Search
+            </button>
+          </form>
         </div>
       </div>
 
