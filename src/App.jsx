@@ -331,14 +331,14 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const isCurrentPageHome = location.pathname === '/';
 
   return (
-    <div className="bg-brand-light-gray font-sans antialiased text-brand-text">
+    <div className="flex flex-col min-h-screen bg-brand-light-gray font-sans antialiased text-brand-text">
       <Header onSearchSubmit={handleHeaderSearchSubmit} isHomePage={isCurrentPageHome} />
       {/* 
         Pass `handleSearchChange` and `searchTerm` to components that need live input for the main filter,
         e.g., if MemoizedHomePageLayout has its own search bar for the `filteredProducts`.
         The Header's search bar uses `onSearchSubmit` for a different purpose (global search navigation).
       */}
-      <main>
+       <main className="flex-grow">
         <AppRoutes
           selectedProduct={selectedProduct}
           onBackClick={handleBackToProducts}

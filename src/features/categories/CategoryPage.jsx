@@ -219,7 +219,7 @@ function CategoryPage({
         <meta name="description" content={metaDescription} />
         <link rel="canonical" href={`https://www.techscore.com/category/${categorySlug}`} />
       </Helmet>
-      <main className="pt-16 md:pt-20"> {/* Adjust for fixed header height */}
+      <div className="pt-16 md:pt-20"> {/* Adjust for fixed header height */}
         <Breadcrumbs crumbs={categoryPageCrumbs} />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-brand-text mb-6 sm:mb-8 font-serif">
@@ -310,7 +310,7 @@ function CategoryPage({
             </div>
           </div>
         </div>
-      </main>
+      </div>
       {/* Footer is rendered globally by App.jsx as per prior comment */}
     </>
   );
