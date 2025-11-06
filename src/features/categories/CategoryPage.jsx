@@ -1,7 +1,6 @@
 // src/features/categories/CategoryPage.jsx
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom'; // Removed useLocation as it's not used
-import { Helmet } from 'react-helmet-async';
 import Breadcrumbs from '../products/components/Breadcrumbs'; 
 import ProductCard from '../../components/ProductCard'; // Adjusted path to global ProductCard
 // FunnelIcon and XMarkIcon were imported but not used. If needed elsewhere, ensure they are correctly implemented.
@@ -214,11 +213,9 @@ function CategoryPage({
 
   return (
     <>
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={`https://www.techscore.com/category/${categorySlug}`} />
-      </Helmet>
+      <title>{pageTitle}</title>
+      <meta name="description" content={metaDescription} />
+      <link rel="canonical" href={`https://www.techscore.com/category/${categorySlug}`} />
       <div className="pt-16 md:pt-20"> {/* Adjust for fixed header height */}
         <Breadcrumbs crumbs={categoryPageCrumbs} />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">

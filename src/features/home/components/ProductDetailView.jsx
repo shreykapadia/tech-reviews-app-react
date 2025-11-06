@@ -47,15 +47,17 @@ function ProductDetailView({ product, onBackClick, calculateCriticsScore }) {
             <p className="text-lg text-brand-text mb-2">Brand: <span id="product-detail-brand" className="font-semibold text-brand-text">{product.brand}</span></p>
             <p className="text-lg text-brand-text mb-6">Category: <span id="product-detail-category" className="font-semibold text-brand-text">{product.category}</span></p>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-y-4 sm:gap-x-8 mb-8">
-              <div className="flex items-center space-x-3">
+            {/* Use a grid for consistent alignment */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 mb-8">
+              {/* Critics Score */}
+              <div className="flex items-center space-x-3 justify-center sm:justify-start">
                 <span id="product-detail-critics-score" className={`score-badge ${scoreBadgeClass} score-badge-lg`}>
                   {criticsScore !== null ? `${Math.round(criticsScore)}/100` : 'N/A'}
                 </span>
                 <span className="text-lg font-semibold text-brand-text">Critics Score</span>
               </div>
-
-              <div className="flex items-center space-x-3">
+              {/* Audience Rating */}
+              <div className="flex items-center space-x-3 justify-center sm:justify-start">
                 <span className="text-3xl text-yellow-500">&#9733;</span>
                 <span id="product-detail-audience-rating" className="text-lg font-semibold text-brand-text">{product.audienceRating} Audience Rating</span>
               </div>

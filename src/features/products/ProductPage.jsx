@@ -1,7 +1,6 @@
 // src/features/products/ProductPage.jsx
 import React, { useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
 import Breadcrumbs from './components/Breadcrumbs'; 
 import ProductTitleBrand from './components/ProductTitleBrand'; 
 import ProductImageGallery from './components/ProductImageGallery'; 
@@ -276,14 +275,11 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   };
 
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{`${product.productName} Reviews & Scores - TechScore`}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={productPageUrl} />
-        <script type="application/ld+json">{JSON.stringify(schema)}</script>
-      </Helmet>
-
+    <>
+      <title>{`${product.productName} Reviews & Scores - TechScore`}</title>
+      <meta name="description" content={metaDescription} />
+      <link rel="canonical" href={productPageUrl} />
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
       {/* Add a wrapper div with top padding to account for the fixed header */}
       <div className="pt-16 md:pt-20">
         <Breadcrumbs crumbs={productPageCrumbs} />
@@ -358,7 +354,7 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
           <RelatedArticles currentProduct={product} />
         </div>
       </div>
-    </HelmetProvider>
+    </>
   );
 };
 

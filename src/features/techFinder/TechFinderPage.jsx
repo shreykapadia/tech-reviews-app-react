@@ -1,6 +1,5 @@
 // src/features/techFinder/TechFinderPage.jsx
 import React, { useState, useEffect, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import ProductCard from '../../components/ProductCard';
 import { questionnaires } from './config/questionnaireData';
@@ -276,12 +275,10 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
 
   return (
     <>
-      <Helmet>
-        <title>
-          {currentStep === 1 ? 'Tech Finder - Select Category' : `Tech Finder - ${selectedCategory?.name || 'Guide'}`}
-        </title>
-        <meta name="description" content={currentStep === 1 ? "Select a product category to start finding your perfect tech device." : `Answer questions to find the best ${selectedCategory?.name || 'device'}.`} />
-      </Helmet>
+      <title>
+        {currentStep === 1 ? 'Tech Finder - Select Category' : `Tech Finder - ${selectedCategory?.name || 'Guide'}`}
+      </title>
+      <meta name="description" content={currentStep === 1 ? "Select a product category to start finding your perfect tech device." : `Answer questions to find the best ${selectedCategory?.name || 'device'}.`} />
       <main className="container mx-auto px-4 py-8 mt-16 md:mt-20">
         {currentStep === 1 && (
           <>

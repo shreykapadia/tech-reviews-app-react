@@ -1,7 +1,6 @@
 // src/App.jsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react'; // Added useLocation, useMemo
 import Cookies from 'js-cookie'; // Import js-cookie
-import { HelmetProvider } from 'react-helmet-async'; // Import HelmetProvider
 import { BrowserRouter as Router, useNavigate, useLocation } from 'react-router-dom';
 import Header from './layouts/Header'; // Updated path
 import Footer from './layouts/Footer'; // Updated path
@@ -16,8 +15,6 @@ import { AuthProvider } from './contexts/AuthContext'; // Import AuthProvider
 import CategoryPage from './features/categories/CategoryPage'; // Updated path
 import SearchResultsPage from './features/search/SearchResultsPage'; // Updated path
 import { supabase } from './services/supabaseClient.js'; // Updated path
-import './styles/App.css';
-import './styles/index.css';
 
 // Memoized helper to pre-process search aliases for faster lookups
 const usePreprocessedAliases = (searchAliasesData) => {
@@ -369,13 +366,11 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 // Wrap AppContent with Router
 function App() {
   return (
-    <HelmetProvider>
-      <Router>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </Router>
-    </HelmetProvider>
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 }
 
