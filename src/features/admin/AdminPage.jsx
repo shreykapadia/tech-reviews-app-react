@@ -1,13 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../services/supabaseClient';
-
-const slugify = (value) =>
-  String(value || '')
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+import { slugify } from '../../utils/stringUtils';
 
 const defaultKeySpecs = `{
   "screenSize": "",
