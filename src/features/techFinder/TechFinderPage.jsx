@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProductCard from '../../components/ProductCard';
 import { questionnaires } from './config/questionnaireData';
-import { calculateCriticsScore as calculateCriticsScoreUtil } from '../../utils/ScoreCalculations'; // Assuming this is where it might live or be passed from
+import { calculateCriticsScore as calculateCriticsScoreUtil } from '../../utils/scoreCalculations'; // Assuming this is where it might live or be passed from
 import {
   // Utility functions used by the moved logic will be imported in techFinderFilteringLogic.js
 } from './utils/techFinderUtils';
