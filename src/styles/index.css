@@ -1,51 +1,163 @@
-/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles from output.css */
+:root {
+  --bg-start: #f4f8fb;
+  --bg-mid: #edf5fb;
+  --bg-end: #f8fbfd;
+  --surface: #ffffff;
+  --surface-soft: #f7fbff;
+  --text-primary: #12243a;
+  --text-muted: #516377;
+  --brand: #0f4c81;
+  --brand-strong: #0b365d;
+  --accent: #ff7a45;
+  --card-shadow: 0 16px 44px rgba(7, 33, 58, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 6% 8%, rgba(35, 107, 167, 0.14) 0%, rgba(35, 107, 167, 0) 42%),
+    radial-gradient(circle at 94% 16%, rgba(255, 122, 69, 0.16) 0%, rgba(255, 122, 69, 0) 44%),
+    linear-gradient(180deg, var(--bg-start) 0%, var(--bg-mid) 45%, var(--bg-end) 100%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+}
+
+a {
+  transition: color 180ms ease, opacity 180ms ease;
+}
+
+main {
+  position: relative;
+}
+
+main::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: min(50vw, 740px);
+  height: 420px;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(15, 76, 129, 0.08), rgba(15, 76, 129, 0));
+  filter: blur(2px);
+}
+
+input,
+select,
+textarea {
+  border-radius: 0.85rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible {
+  outline: none;
+}
+
+button {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
 .hero-bg-image {
-  background-image: url('https://t4.ftcdn.net/jpg/04/14/22/55/360_F_414225555_k4FE9n2fjaBen0QlOW1kSjaQBWfjfCjF.jpg');
+  background-image:
+    linear-gradient(115deg, rgba(10, 44, 75, 0.76), rgba(10, 44, 75, 0.34)),
+    url('/images/products/heroimage.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  margin: 0;
 }
 
 header {
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.loader {
+  border-radius: 9999px;
+  border-color: rgba(107, 123, 141, 0.3);
+  border-top-color: var(--brand);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Apply fade-in by default */
-.animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
-}
-
-/* Reduce or disable animation if user prefers */
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-in,
-  .animate-fade-in-up {
-    animation: none;
-    opacity: 1; /* Ensure visibility if animation is removed */
-    transform: none; /* Reset transform if animation is removed */
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Apply fade-in-up by default */
+.animate-fade-in {
+  animation: fadeIn 0.75s ease-out forwards;
+}
+
 .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .score-badge {
@@ -54,36 +166,29 @@ header {
   justify-content: center;
   white-space: nowrap;
   border-radius: 9999px;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.625rem;
-  padding-right: 0.625rem;
+  padding: 0.25rem 0.625rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: 700;
 }
 
 .score-avg {
-  background-color: #fee2e2; /* Light Red */
-  color: #b91c1c; /* Darker Red for better contrast */
+  background-color: #fee2e2;
+  color: #b91c1c;
 }
 
 .score-excellent {
-  background-color: #dcfce7; /* Light Green */
-  color: #047857; /* Dark Green */
+  background-color: #dcfce7;
+  color: #047857;
 }
 
 .score-good {
-  /* Let's use an amber/yellow for "good" */
-  background-color: #fef3c7; /* Light Amber/Yellow */
-  color: #b45309; /* Dark Amber/Orange */
+  background-color: #fef3c7;
+  color: #b45309;
 }
 
 .score-badge-lg {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0.5rem 1rem;
   font-size: 1.125rem;
   line-height: 1.75rem;
 }
@@ -91,18 +196,18 @@ header {
 details summary {
   cursor: pointer;
   padding: 1rem;
-  border-radius: 0.75rem;
-  background-color: #f3f4f6;
+  border-radius: 0.85rem;
+  background-color: var(--surface-soft);
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: background-color 0.2s ease-in-out;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: var(--card-shadow);
 }
 
 details summary:hover {
-  background-color: #e5e7eb;
+  background-color: #edf4fa;
 }
 
 details[open] summary {
@@ -114,74 +219,25 @@ details summary::after {
   content: '+';
   font-size: 1.5rem;
   line-height: 1;
-  transition: transform 0.2s ease-in-out;
 }
 
 details[open] summary::after {
   content: '-';
-  transform: rotate(0deg);
 }
 
 details .content {
   padding: 1rem;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
+  background-color: var(--surface);
+  border: 1px solid #d6e4f0;
   border-top: none;
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-bottom-left-radius: 0.85rem;
+  border-bottom-right-radius: 0.85rem;
+  box-shadow: var(--card-shadow);
 }
 
-/* Utility for multi-line text clamping */
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  /* Fallback for non-webkit browsers (optional, less effective) */
-  /* max-height: calc(2 * 1.25em); /* Assuming line-height is around 1.25em, adjust as needed */
-}
-
-/* Styles moved from App.css */
-#root {
-  max-width: 1920px;
-  margin: 0 auto;
-  padding: 0rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

@@ -118,8 +118,8 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-24 pb-8 px-4 sm:px-6 lg:px-8 md:pt-28">
-      <div className=" mx-auto bg-white shadow-xl rounded-lg p-6 md:p-10">
+    <div className="min-h-screen pt-24 pb-10 px-4 sm:px-6 lg:px-8 md:pt-28">
+      <div className="mx-auto bg-white/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] rounded-2xl border border-white/80 p-6 md:p-10">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
           Welcome, <span className="text-brand-primary break-all">{userProfile?.username || user?.email || 'User'}</span>!
         </h1>
@@ -168,7 +168,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
         <div className="mt-10">
           <Link
             to="/"
-            className="inline-flex items-center px-6 py-3 bg-brand-primary text-white font-medium rounded-md hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition duration-150 ease-in-out"
+            className="inline-flex items-center px-6 py-3 bg-brand-primary text-white font-medium rounded-full hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition duration-150 ease-in-out shadow-md shadow-brand-primary/25"
           >
             Go to Homepage
           </Link>

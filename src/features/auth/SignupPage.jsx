@@ -67,7 +67,7 @@ function SignupPage() {
       {/* Overlay to darken the background image a bit for better readability of the form, optional */}
       {/* <div className="absolute inset-0 bg-black opacity-30"></div> */}
 
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+      <div className="max-w-md w-full space-y-8 bg-white/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] border border-white/80">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Create your account
@@ -88,7 +88,7 @@ function SignupPage() {
                     type="text"
                     autoComplete="username"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-t-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                     placeholder="Username (3-20 chars, a-z, 0-9, _)"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -103,7 +103,7 @@ function SignupPage() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm" // Adjusted rounding
+                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                     placeholder="Email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -118,7 +118,7 @@ function SignupPage() {
                     type="password"
                     autoComplete="new-password"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                     placeholder="Password (min. 6 characters)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -127,7 +127,7 @@ function SignupPage() {
                 </div>
               </div>
               <div>
-                <button type="submit" disabled={loading || !!message} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50">
+                <button type="submit" disabled={loading || !!message} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50 shadow-md shadow-brand-primary/25">
                   {loading ? 'Creating account...' : 'Sign up'}
                 </button>
               </div>

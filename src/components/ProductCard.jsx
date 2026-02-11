@@ -57,7 +57,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   const isCarousel = layoutType === 'carousel';
 
   // Base classes for the Link, Criterion I.3
-  const baseLinkClasses = "group bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ease-in-out overflow-hidden border border-gray-200 animate-fade-in-up";
+  const baseLinkClasses = "group bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] hover:shadow-[0_24px_48px_rgba(8,38,67,0.16)] transition-all duration-300 ease-in-out overflow-hidden border border-white/80 animate-fade-in-up";
   // Layout specific classes for the Link, Criterion I.1
   const linkLayoutClasses = isCarousel
     ? "flex flex-col h-full relative" // Carousel: Vertical stack, h-full, relative for fav button
@@ -145,7 +145,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
           onClick={handleFavoriteToggle}
           disabled={favoritingLoading}
           className={`absolute top-2 right-2 z-10 p-1.5 rounded-full transition-colors duration-150 ease-in-out
-            ${isFavorited ? 'bg-red-500 hover:bg-red-600' : 'bg-black/40 hover:bg-black/60'}
+            ${isFavorited ? 'bg-red-500 hover:bg-red-600' : 'bg-brand-primary/75 hover:bg-brand-primary'}
             ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
         >
@@ -157,8 +157,8 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
       <div
         className={
           isCarousel
-            ? "relative w-full h-56 bg-white px-6 pt-6" // Carousel: Changed bg-gray-100 to bg-white
-            : "relative w-24 sm:w-32 flex-shrink-0 bg-gray-100" // Default: Removed fixed height (h-24 sm:h-32) to allow vertical stretching
+            ? "relative w-full h-56 bg-brand-surface-soft px-6 pt-6"
+            : "relative w-24 sm:w-32 flex-shrink-0 bg-brand-surface-soft"
         }
       >
         <img
@@ -176,8 +176,8 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
       <div
         className={
           isCarousel
-            ? "p-4 flex flex-col flex-grow" // Carousel: Increased padding slightly for larger text
-            : "p-3 flex flex-col flex-grow justify-between" // Default
+            ? "p-5 flex flex-col flex-grow"
+            : "p-4 flex flex-col flex-grow justify-between"
         }
       >
         {/* Product Name & Brand Section - Criterion III.1 */}

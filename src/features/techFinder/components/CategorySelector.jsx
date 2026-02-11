@@ -27,7 +27,7 @@ const CategorySelector = ({ availableCategories, onCategorySelect, isLoading, er
           key={category.id || category.slug}
           onClick={() => onCategorySelect(category)}
           aria-label={`Select category: ${category.name}`}
-          className="group bg-white rounded-xl shadow-lg p-4 sm:p-6 transform hover:scale-105 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-brand-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
+          className="group bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_42px_rgba(8,38,67,0.16)] transition-all duration-300 border border-white/80 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
         >
           {category.iconImageUrl ? (
             <img

@@ -40,7 +40,7 @@ function AppRoutes({
   const LoadingFallback = () => (
     <div className="flex justify-center items-center min-h-[calc(100vh-10rem)]">
       <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
-      <p className="ml-4 text-lg">Loading page...</p>
+      <p className="ml-4 text-lg text-brand-text">Loading page...</p>
     </div>
   );
 

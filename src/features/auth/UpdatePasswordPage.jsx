@@ -62,8 +62,8 @@ function UpdatePasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] border border-white/80">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Update Your Password
@@ -78,15 +78,15 @@ function UpdatePasswordPage() {
               <div className="rounded-md shadow-sm -space-y-px">
                 <div>
                   <label htmlFor="new-password" className="sr-only">New Password</label>
-                  <input id="new-password" name="newPassword" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="New Password (min. 6 characters)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={loading} />
+                  <input id="new-password" name="newPassword" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-t-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="New Password (min. 6 characters)" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={loading} />
                 </div>
                 <div>
                   <label htmlFor="confirm-new-password" className="sr-only">Confirm New Password</label>
-                  <input id="confirm-new-password" name="confirmNewPassword" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="Confirm New Password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} disabled={loading} />
+                  <input id="confirm-new-password" name="confirmNewPassword" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="Confirm New Password" value={confirmNewPassword} onChange={(e) => setConfirmNewPassword(e.target.value)} disabled={loading} />
                 </div>
               </div>
               <div>
-                <button type="submit" disabled={loading || !!message} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50">
+                <button type="submit" disabled={loading || !!message} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50 shadow-md shadow-brand-primary/25">
                   {loading ? 'Updating...' : 'Update Password'}
                 </button>
               </div>

@@ -170,7 +170,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
   }
 
   const authNavLinks = (isMobile = false) => {
-    const baseClass = isMobile ? "block py-2 text-center" : "block py-2"; // Adjusted for mobile centering
+    const baseClass = isMobile ? "block py-2 text-center" : "block py-2";
     const hoverClass = "hover:text-brand-primary transition-colors duration-200";
 
     if (authLoading) {
@@ -191,7 +191,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
     return (
       <>
         <li><Link to="/login" state={{ from: location }} className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Login</Link></li>
-        <li><Link to="/signup" state={{ from: location }} className={`${baseClass} ${hoverClass} ${isMobile ? '' : 'px-3 py-1.5 bg-brand-primary text-white rounded-md hover:bg-brand-primary-dark hover:text-white'}`} onClick={closeMobileNavAndSearch}>Sign Up</Link></li>
+        <li><Link to="/signup" state={{ from: location }} className={`${baseClass} ${hoverClass} ${isMobile ? '' : 'px-4 py-2 bg-brand-primary text-white rounded-full hover:bg-brand-primary-dark hover:text-white shadow-md shadow-brand-primary/25'}`} onClick={closeMobileNavAndSearch}>Sign Up</Link></li>
       </>
     );
   };
@@ -200,28 +200,28 @@ function Header({ onSearchSubmit, isHomePage = false }) {
   const showTransparentHeader = isHomePage && !isScrolled && !isMenuOpen && !isMobileSearchOpen;
 
   // Text color for logo and hamburger icon (contrasts with background)
-  const primaryInteractiveColorClass = showTransparentHeader ? 'text-gray-700' : 'text-brand-primary';
+  const primaryInteractiveColorClass = showTransparentHeader ? 'text-white' : 'text-brand-primary';
   // Text color for navigation links (contrasts with background)
-  const navLinkColorClass = showTransparentHeader ? 'text-gray-700' : 'text-brand-text';
+  const navLinkColorClass = showTransparentHeader ? 'text-white/90' : 'text-brand-text';
   // Search input style based on background
   const desktopSearchInputClasses = `
-    w-full py-3 px-4 pr-10 text-sm rounded-full border-2 transition-all duration-300 ease-in-out
+    w-full py-3 px-4 pr-10 text-sm rounded-full border transition-all duration-300 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent
-    ${showTransparentHeader // When header is transparent, search bar still looks solid
-      ? 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white shadow-md' // Styles for solid look
-      : 'border-gray-300 bg-gray-50 text-brand-text placeholder-gray-500 focus:bg-white' // Styles for solid state (already solid)
+    ${showTransparentHeader
+      ? 'border-white/40 bg-white/20 text-white placeholder-white/75 focus:bg-white focus:text-brand-text shadow-lg backdrop-blur-sm'
+      : 'border-slate-200 bg-white text-brand-text placeholder-slate-400 focus:bg-white shadow-sm'
     }
   `;
   const desktopSearchButtonClasses = `
     absolute right-0 top-0 h-full flex items-center justify-center px-3 transition-colors duration-300
-    ${showTransparentHeader ? 'text-brand-primary hover:text-brand-accent' : 'text-brand-primary hover:text-brand-accent'}
+    ${showTransparentHeader ? 'text-white hover:text-brand-accent' : 'text-brand-primary hover:text-brand-accent'}
   `;
 
   return (
     <header
       ref={headerRef}
       className={`fixed w-full top-0 left-0 z-50 transition-all duration-300 ease-in-out ${
-        showTransparentHeader ? 'bg-transparent' : 'bg-white shadow-lg'
+        showTransparentHeader ? 'bg-transparent' : 'bg-white/85 shadow-[0_10px_35px_rgba(9,40,70,0.12)] border-b border-white/50'
       }`}
     >
       {/* Added `relative` for positioning animated children */}
@@ -234,7 +234,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
         >
             {/* Logo */}
             <Link to="/" className="cursor-pointer p-2 -m-2" onClick={closeMobileNavAndSearch}>
-              <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 font-serif text-brand-primary`}>
+              <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 font-serif ${showTransparentHeader ? 'text-white' : 'text-brand-primary'}`}>
                 TechScore
               </h1>
             </Link>
@@ -266,7 +266,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
               <button
                onClick={handleToggleMobileSearch}
                aria-label="Open search bar"
-               className={`md:hidden p-3 -m-3 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
+               className={`md:hidden p-3 -m-3 rounded-full hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}
               >
                 <SearchIcon />
               </button>
@@ -277,7 +277,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
                   onClick={handleToggleMenu}
                   aria-label="Toggle menu"
                   aria-expanded={isMenuOpen}
-                  className={`p-2 rounded-full hover:bg-gray-100/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}>
+                  className={`p-2 rounded-full hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 ${primaryInteractiveColorClass}`}>
                   <AnimatedMenuIcon isOpen={isMenuOpen} />
                 </button>
               </div>
@@ -285,9 +285,9 @@ function Header({ onSearchSubmit, isHomePage = false }) {
               {/* Desktop Navigation */}
               <nav className="hidden md:block">
                  <ul className={`flex flex-row space-x-6 lg:space-x-8 text-lg font-medium items-center ${navLinkColorClass}`}>
-                    <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
-                    <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
-                    <div className="h-6 border-l border-gray-300 mx-2 self-center"></div> {/* Separator */}
+                    <li><Link to="/tech-finder" className="block py-2 hover:text-brand-accent transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
+                    <li><Link to="/categories" className="block py-2 hover:text-brand-accent transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
+                    <div className={`h-6 border-l mx-2 self-center ${showTransparentHeader ? 'border-white/50' : 'border-slate-300'}`}></div>
                     {authNavLinks(false)}
                  </ul>
               </nav>
@@ -295,7 +295,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
         </div>
         {/* --- MOBILE SEARCH OVERLAY --- */}
         {/* This view is hidden by default and overlays the header on mobile when search is active */}
-        <div className={`absolute inset-0 w-full h-full bg-white flex items-center px-2 sm:px-4 transition-opacity duration-300 ease-in-out md:hidden ${isMobileSearchOpen ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 w-full h-full bg-white/95 backdrop-blur-sm flex items-center px-2 sm:px-4 transition-opacity duration-300 ease-in-out md:hidden ${isMobileSearchOpen ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'}`}>
           <form onSubmit={handleSearchSubmit} className="w-full flex items-center gap-x-2">
             <button
               type="button"
@@ -313,7 +313,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
                 value={searchQuery}
                 onChange={handleSearchInputChange}
                 placeholder="Search products, reviews..."
-                className="w-full py-2 pl-3 pr-10 bg-gray-100 border-2 border-gray-200 rounded-full focus:border-brand-primary focus:ring-brand-primary text-brand-text placeholder-gray-500"
+                className="w-full py-2 pl-3 pr-10 bg-slate-50 border border-slate-200 rounded-full focus:border-brand-primary focus:ring-brand-primary text-brand-text placeholder-slate-500"
                 aria-label="Search input for mobile"
               />
               {searchQuery && (
@@ -329,7 +329,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
             </div>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-semibold text-white bg-brand-primary rounded-full hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-brand-primary"
+              className="px-4 py-2 text-sm font-semibold text-white bg-brand-primary rounded-full hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-brand-primary shadow-md shadow-brand-primary/25"
               aria-label="Submit search"
             >
               Search
@@ -345,16 +345,16 @@ function Header({ onSearchSubmit, isHomePage = false }) {
         - `transition-all duration-300 ease-in-out`: Smoothly animates opacity and transform (scale).
       */}
       <nav
-        className={`md:hidden absolute top-full left-0 right-0 w-full bg-white shadow-lg py-3 transition-all duration-300 ease-in-out origin-top ${
+        className={`md:hidden absolute top-full left-0 right-0 w-full bg-white/95 backdrop-blur-lg shadow-[0_16px_34px_rgba(7,33,58,0.16)] py-3 transition-all duration-300 ease-in-out origin-top ${
           isMenuOpen && !isMobileSearchOpen
             ? 'opacity-100 scale-y-100' // Open state: visible and full height
             : 'opacity-0 scale-y-0 pointer-events-none' // Closed state: invisible, zero height, not interactive
         }`}
       >
           <ul className="flex flex-col px-4 space-y-4 text-brand-text text-lg font-medium items-center">
-            <li><Link to="/tech-finder" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
-            <li><Link to="/categories" className="block py-2 hover:text-brand-primary transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
-            <hr className="my-2 border-gray-200"/>
+            <li><Link to="/tech-finder" className="block py-2 hover:text-brand-accent transition-colors duration-200" onClick={closeMobileNavAndSearch}>Tech Finder</Link></li>
+            <li><Link to="/categories" className="block py-2 hover:text-brand-accent transition-colors duration-200" onClick={closeMobileNavAndSearch}>Categories</Link></li>
+            <hr className="my-2 border-slate-200"/>
             {authNavLinks(true)}
           </ul>
       </nav>

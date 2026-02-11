@@ -228,7 +228,7 @@ function CategoryPage({
             <div className="lg:hidden mb-6">
               <button
                 onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
-                className={`w-full flex justify-between items-center p-4 bg-brand-primary text-white rounded-lg shadow-md focus:outline-none ${
+                className={`w-full flex justify-between items-center p-4 bg-brand-primary text-white rounded-xl shadow-lg shadow-brand-primary/20 focus:outline-none ${
                   isMobileFiltersOpen ? 'mb-4' : '' // Add margin-bottom only when sidebar is open for consistency
                 }`}
                 aria-expanded={isMobileFiltersOpen}
@@ -248,7 +248,7 @@ function CategoryPage({
                 isMobileFiltersOpen ? 'block' : 'hidden'
               } lg:block mb-8 lg:mb-0`}
             >
-              <div className="sticky top-24 space-y-6 p-4 bg-gray-50 rounded-lg shadow"> {/* Added padding and bg for clarity */}
+              <div className="sticky top-24 space-y-6 p-4 bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_18px_34px_rgba(8,38,67,0.13)] border border-white/80">
                 {FilterSidebarContent}
               </div>
             </aside>

@@ -52,7 +52,7 @@ const TechFinderResults = ({
                 id="sort-options"
                 value={sortOption}
                 onChange={(e) => onSortChange(e.target.value)}
-                className="appearance-none block w-full bg-white border border-gray-300 hover:border-brand-primary px-3 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary text-sm transition-all duration-150 ease-in-out cursor-pointer"
+                className="appearance-none block w-full bg-white/95 border border-slate-300 hover:border-brand-primary px-3 py-2 pr-8 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary text-sm transition-all duration-150 ease-in-out cursor-pointer"
               >
                 <option value="default">Relevance & Score</option>
                 <option value="price_asc">Starting Price Price: Low to High</option>
@@ -78,7 +78,7 @@ const TechFinderResults = ({
           ))}
         </div>
       ) : (
-        <div className="text-center text-lg text-gray-600 py-10 bg-gray-50 rounded-lg shadow p-6">
+        <div className="text-center text-lg text-gray-600 py-10 bg-white/90 rounded-2xl shadow-[0_16px_32px_rgba(8,38,67,0.12)] border border-white/80 p-6">
           <p className="text-xl font-semibold mb-3">No exact matches found for all your criteria.</p>
           {!hasCloseMatches && (
             <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>
@@ -125,10 +125,10 @@ const TechFinderResults = ({
       )}
 
       <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-10">
-        <button onClick={onGoBackToQuestions} className="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
+        <button onClick={onGoBackToQuestions} className="w-full sm:w-auto px-6 py-3 bg-slate-200 text-slate-700 font-semibold rounded-full hover:bg-slate-300 transition-colors">
           Go Back to Questions
         </button>
-        <button onClick={onRestart} className="w-full sm:w-auto px-6 py-3 bg-brand-primary text-white font-semibold rounded-lg hover:bg-brand-primary-dark transition-colors">
+        <button onClick={onRestart} className="w-full sm:w-auto px-6 py-3 bg-brand-primary text-white font-semibold rounded-full hover:bg-brand-primary-dark transition-colors shadow-md shadow-brand-primary/25">
           Start Over
         </button>
       </div>

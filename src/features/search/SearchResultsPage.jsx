@@ -114,10 +114,10 @@ function SearchResultsPage({
     }, []); // Run once on mount
 
     return (
-      <div className="mb-4 border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+      <div className="mb-4 border border-slate-200 rounded-xl shadow-sm overflow-hidden bg-white/90 backdrop-blur-sm">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none"
+          className="w-full flex justify-between items-center p-4 bg-slate-50 hover:bg-slate-100 focus:outline-none"
           aria-expanded={isOpen}
           aria-controls={`filter-content-${title.toLowerCase().replace(/\s+/g, '-')}`}
         >
@@ -163,7 +163,7 @@ function SearchResultsPage({
   }
   return (
     <>
-      <main className="container mx-auto px-4 py-8 mt-20 md:mt-24"> {/* Ensure top margin for fixed header */}
+      <main className="container mx-auto px-4 py-10 mt-20 md:mt-24">
         <div className="mb-12 flex flex-col sm:flex-row sm:items-baseline sm:gap-x-2">
           <h1 className="text-3xl sm:text-4xl font-bold text-brand-primary font-serif">
             Search Results
@@ -181,7 +181,7 @@ function SearchResultsPage({
             {/* Toggle Button for Mobile */}
             <button
               onClick={() => setIsFilterSidebarOpen(!isFilterSidebarOpen)}
-              className={`md:hidden w-full flex justify-between items-center p-4 bg-brand-primary text-white rounded-lg shadow-md focus:outline-none ${
+              className={`md:hidden w-full flex justify-between items-center p-4 bg-brand-primary text-white rounded-xl shadow-lg shadow-brand-primary/20 focus:outline-none ${
                 isFilterSidebarOpen ? 'mb-4' : 'mb-0' // Add margin-bottom only when sidebar is open, or remove if results have enough top margin
               }`}
               aria-expanded={isFilterSidebarOpen}
@@ -196,11 +196,11 @@ function SearchResultsPage({
             {/* Actual Filters Sidebar Content */}
             <aside
               id="filters-sidebar-content"
-              className={`bg-white p-6 rounded-lg shadow-md transition-all duration-300 ease-in-out overflow-hidden ${
+              className={`bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-[0_18px_34px_rgba(8,38,67,0.13)] border border-white/80 transition-all duration-300 ease-in-out overflow-hidden ${
                 isFilterSidebarOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none md:max-h-none md:opacity-100 md:pointer-events-auto'
               } md:block`}
             >
-              <h2 className="text-2xl font-bold text-brand-primary mb-6 font-serif hidden md:block">Filters</h2>
+                  <h2 className="text-2xl font-bold text-brand-text mb-6 font-serif hidden md:block">Filters</h2>
 
               <FilterSection title="Category">
                 <CheckboxFilter items={availableCategories} selectedItems={selectedCategories} onChange={handleCategoryChange} itemType="categories" />
@@ -221,7 +221,7 @@ function SearchResultsPage({
                       value={priceRange.min}
                       onChange={handlePriceChange}
                       placeholder="e.g., 50"
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      className="w-full p-2 border border-slate-300 rounded-lg shadow-sm focus:ring-brand-primary focus:border-brand-primary text-sm"
                     />
                   </div>
                   <div>
@@ -233,7 +233,7 @@ function SearchResultsPage({
                       value={priceRange.max}
                       onChange={handlePriceChange}
                       placeholder="e.g., 500"
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                      className="w-full p-2 border border-slate-300 rounded-lg shadow-sm focus:ring-brand-primary focus:border-brand-primary text-sm"
                     />
                   </div>
                 </div>
@@ -246,7 +246,7 @@ function SearchResultsPage({
           {/* Add margin-top on mobile when filter sidebar is closed, to compensate for its absence */}
           <section className={`w-full md:w-3/4 lg:w-4/5 ${!isFilterSidebarOpen && window.innerWidth < 768 ? 'mt-2' : ''}`}>
             {displayedProducts.length === 0 ? (
-              <div className="text-center py-10 bg-white p-6 rounded-lg shadow-md">
+              <div className="text-center py-10 bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-[0_18px_34px_rgba(8,38,67,0.13)] border border-white/80">
                 {searchTerm ? (
                   <>
                     <p className="text-2xl text-gray-700 mb-4">No products found matching your filters for "{searchTerm}".</p>

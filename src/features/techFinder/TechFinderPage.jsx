@@ -279,10 +279,10 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
         {currentStep === 1 ? 'Tech Finder - Select Category' : `Tech Finder - ${selectedCategory?.name || 'Guide'}`}
       </title>
       <meta name="description" content={currentStep === 1 ? "Select a product category to start finding your perfect tech device." : `Answer questions to find the best ${selectedCategory?.name || 'device'}.`} />
-      <main className="container mx-auto px-4 py-8 mt-16 md:mt-20">
+      <main className="container mx-auto px-4 py-10 mt-16 md:mt-20">
         {currentStep === 1 && (
           <>
-            <h1 className="text-3xl sm:text-4xl font-bold text-brand-text text-center mt-12 sm:mt-20 mb-6 font-serif">
+            <h1 className="text-4xl sm:text-5xl font-bold text-brand-text text-center mt-12 sm:mt-20 mb-6 font-serif">
               Find Your Perfect Tech
             </h1>
             <p className="text-lg text-gray-700 text-center mb-10 sm:mb-12">
@@ -304,12 +304,12 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
         )}
 
         {currentStep === 2 && selectedCategory && (
-          <div className="py-10">
+          <div className="py-10 bg-white/75 backdrop-blur-sm rounded-2xl shadow-[0_18px_34px_rgba(8,38,67,0.12)] border border-white/80 px-4 sm:px-8">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-brand-text">
                 {selectedCategory.name} Finder
               </h2>
-              <button onClick={handleRestart} className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary-dark transition-colors">Restart</button>
+              <button onClick={handleRestart} className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-full hover:bg-brand-primary-dark transition-colors shadow-md shadow-brand-primary/25">Restart</button>
             </div>
 
             {(() => {

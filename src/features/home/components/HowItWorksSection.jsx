@@ -30,7 +30,7 @@ const HowItWorksSection = () => {
   );
 
   return (
-    <section className="py-12 sm:py-16 bg-gray-50 animate-fade-in-up">
+    <section className="py-12 sm:py-16 bg-transparent animate-fade-in-up">
       <div className="container mx-auto px-4">
         {/* Main Title - Criterion 1.1, 1.2 */}
         <h2 className="text-3xl font-bold text-brand-primary mb-10 sm:mb-12 text-center font-serif">
@@ -47,7 +47,7 @@ const HowItWorksSection = () => {
         {/* Grid for Critics Score and Audience Rating - Criterion 7.1, 9.1 */}
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-10 sm:mb-16">
           {/* Critics Score Section - Criterion 3.x */}
-          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] border border-white/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] transition-shadow duration-300">
             <SectionSubTitle icon={ShieldCheckIcon}>Critics Score</SectionSubTitle>
             <Paragraph>
               The Critics Score is a single, aggregated numerical score on a <strong>0-100 scale</strong>. It represents the consensus of professional tech reviewers and reputable tech content creators, including established YouTubers.
@@ -75,7 +75,7 @@ const HowItWorksSection = () => {
           </div>
 
           {/* Audience Rating Section - Criterion 4.x */}
-          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+          <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] border border-white/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] transition-shadow duration-300">
             <SectionSubTitle icon={UserGroupIcon}>Audience Rating</SectionSubTitle>
             <Paragraph>
               The Audience Rating is a separate numerical score, also on a <strong>0-100 scale</strong>, reflecting the collective sentiment of everyday users and consumers.
@@ -101,7 +101,7 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Bias Mitigation Statement - Criterion 5.x */}
-        <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 mb-10 sm:mb-16">
+        <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] border border-white/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] transition-shadow duration-300 mb-10 sm:mb-16">
           <SectionSubTitle icon={LightBulbIcon}>Our Commitment to Mitigating Bias</SectionSubTitle>
           <Paragraph>
             TechScore is deeply committed to fairness and objectivity. We actively work to mitigate potential biases that can arise in both AI-driven aggregation models and human-led review processes.
@@ -124,7 +124,7 @@ const HowItWorksSection = () => {
         <div className="text-center">
           <Link
             to="/about-methodology" // You can update this link when the page is ready
-            className="inline-block px-8 py-3 sm:px-10 sm:py-4 bg-blue-600 text-white text-base sm:text-lg font-medium rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
+            className="inline-block px-8 py-3 sm:px-10 sm:py-4 bg-brand-primary text-white text-base sm:text-lg font-medium rounded-full hover:bg-brand-primary-dark focus:outline-none focus:ring-4 focus:ring-sky-200 shadow-lg shadow-brand-primary/25 transition-all duration-300 transform hover:scale-105 active:scale-95"
             aria-label="Learn more about our scoring methodology"
           >
             Learn More About Our Methodology

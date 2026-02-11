@@ -12,15 +12,17 @@ const HeroSection = React.memo(function HeroSection() {
 
   return (
     <section className="hero-bg-image relative flex items-center justify-center min-h-screen py-24 text-center overflow-hidden">
-      <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-filter backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/30 to-slate-900/65"></div>
+      <div className="absolute -left-10 top-16 h-44 w-44 rounded-full bg-brand-accent/30 blur-3xl"></div>
+      <div className="absolute right-4 bottom-8 h-52 w-52 rounded-full bg-sky-300/30 blur-3xl"></div>
 
       {/* Added px-4 for padding on smaller screens, max-w-4xl handles larger screen centering */}
       <div className="relative z-10 max-w-4xl mx-auto px-4">
-        <h2 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 text-brand-text drop-shadow-lg animate-fade-in-up font-serif">
+        <h2 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 text-white drop-shadow-lg animate-fade-in-up font-serif">
           <span className="block">Unbox Tomorrow, Today.</span>
-          <span className="block text-brand-primary mt-2">Your Definitive Tech Insights.</span>
+          <span className="block text-orange-200 mt-2">Your Definitive Tech Insights.</span>
         </h2>
-        <p className="text-lg md:text-2xl text-brand-text mb-10 leading-relaxed max-w-3xl mx-auto animate-fade-in">
+        <p className="text-lg md:text-2xl text-white/90 mb-10 leading-relaxed max-w-3xl mx-auto animate-fade-in">
           From cutting-edge gadgets to essential software, TechScore provides unbiased, in-depth reviews and comparisons. Make smarter choices with us.
         </p>
 
@@ -29,7 +31,7 @@ const HeroSection = React.memo(function HeroSection() {
           <div>
             <Link
               to="/tech-finder" // Assuming this is the route for your Tech Finder
-              className="inline-block px-10 py-4 bg-brand-primary text-white text-lg font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 active:scale-95"
+              className="inline-block px-10 py-4 bg-brand-accent text-white text-lg font-semibold rounded-full shadow-xl shadow-orange-900/35 hover:bg-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-200 transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
               Find your perfect device
             </Link>

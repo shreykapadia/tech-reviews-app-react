@@ -10,9 +10,9 @@ const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLo
   const effectiveError = error;
 
   return (
-    <section className="py-8 sm:py-12 md:py-16 bg-gray-50 animate-fade-in-up">
+    <section className="py-10 sm:py-14 md:py-16 bg-transparent animate-fade-in-up">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-10 text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold text-brand-text mb-6 sm:mb-10 text-center font-serif">
           Browse by Product Type
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
@@ -27,7 +27,7 @@ const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLo
                 key={category.id || category.slug} // Prefer category.id if available, fallback to slug
                 href={`/category/${category.slug}`} // Updated URL to match CategoryPage route
                 aria-label={category.ariaLabel}
-                className="group bg-white rounded-xl shadow-lg p-4 sm:p-6 transform hover:scale-105 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300 flex flex-col items-center justify-center text-center aspect-square"
+                className="group bg-white/85 backdrop-blur-sm rounded-2xl shadow-[0_18px_35px_rgba(6,39,70,0.12)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_44px_rgba(6,39,70,0.16)] transition-all duration-300 border border-white/70 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
                 // aspect-square ensures the card is a square, good for consistent tap targets
               >
                 {category.iconImageUrl ? (
@@ -41,7 +41,7 @@ const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLo
                 ) : (
                   <div aria-hidden="true" className="h-24 w-24 sm:h-32 sm:w-32 bg-gray-200 rounded-md mb-3 sm:mb-4 flex items-center justify-center text-gray-400 text-4xl">?</div>
                 )}
-                <span className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 group-hover:text-gray-900">
+                <span className="text-lg sm:text-xl md:text-2xl font-semibold text-brand-text group-hover:text-brand-primary">
                   {category.name}
                 </span>
               </a>

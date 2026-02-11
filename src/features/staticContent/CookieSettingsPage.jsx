@@ -84,9 +84,9 @@ function CookieSettingsPage() {
   };
 
   return (
-    <div className="bg-brand-light-gray min-h-screen py-8 pt-20 md:pt-24">
+    <div className="min-h-screen py-8 pt-20 md:pt-24">
       <div className="container mx-auto px-4">
-        <div className="bg-white shadow-xl rounded-lg p-6 sm:p-8 md:p-10 lg:p-12 max-w-4xl mx-auto">
+        <div className="bg-white/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] rounded-2xl border border-white/80 p-6 sm:p-8 md:p-10 lg:p-12 max-w-4xl mx-auto">
           <header className="mb-8 border-b pb-6 border-gray-200">
             <h1 className="text-3xl sm:text-4xl font-bold text-brand-primary font-serif mb-3">
               Cookie Settings
@@ -142,13 +142,13 @@ function CookieSettingsPage() {
             {isSaved && <p className="text-green-600 font-semibold mr-auto">Preferences Saved!</p>}
             <button
               onClick={handleSavePreferences}
-              className="w-full sm:w-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300"
+              className="w-full sm:w-auto bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-full transition-colors duration-300"
             >
               Save Preferences
             </button>
             <button
               onClick={handleAcceptAll}
-              className="w-full sm:w-auto bg-brand-primary hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300"
+              className="w-full sm:w-auto bg-brand-primary hover:bg-brand-primary-dark text-white font-bold py-3 px-6 rounded-full transition-colors duration-300 shadow-md shadow-brand-primary/25"
             >
               Accept All
             </button>

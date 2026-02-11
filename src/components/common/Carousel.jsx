@@ -17,8 +17,8 @@ function Carousel({
   getItemKey,
   title,
   config: userConfig = {},
-  sectionClassName = "container mx-auto pt-8 pb-8 px-4",
-  titleClassName = "text-3xl font-bold text-brand-primary mb-8 text-center font-serif",
+  sectionClassName = "container mx-auto pt-10 pb-10 px-4",
+  titleClassName = "text-3xl sm:text-4xl font-bold text-brand-text mb-8 text-center font-serif",
 }) {
   const config = { ...defaultConfig, ...userConfig };
   const [currentPage, setCurrentPage] = useState(0);
@@ -65,7 +65,7 @@ function Carousel({
             <button
               onClick={prevPage}
               disabled={currentPage === 0}
-              className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/70 hover:bg-white rounded-full shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 hover:bg-white rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               aria-label="Previous page"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-brand-primary">
@@ -116,7 +116,7 @@ function Carousel({
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages - 1}
-              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/70 hover:bg-white rounded-full shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 hover:bg-white rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               aria-label="Next page"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-brand-primary">
