@@ -345,7 +345,12 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
             {/* Image Gallery: Mobile order-2. Desktop: main left column. */}
             <div className="order-2 lg:col-start-1 lg:col-span-8 lg:row-start-1 lg:row-span-2">
-              <ProductImageGallery galleryItems={product.gallery || [{ type: 'image', url: product.imageURL, alt: product.productName }]} productName={product.productName} />
+              <ProductImageGallery
+                galleryItems={(Array.isArray(product.gallery) && product.gallery.length > 0)
+                  ? product.gallery
+                  : [{ type: 'image', url: product.imageURL, alt: product.productName }]}
+                productName={product.productName}
+              />
             </div>
 
             {/* Rest of Info (Scores, ProsCons, Favorite): Mobile order-3. Desktop: bottom of the right column. */}
