@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Cookies from 'js-cookie';
 import App from './App'; // We test the App component which includes AppContent
+import { initGA, trackPageView } from './utils/analytics';
 
 // --- Mocks ---
 
@@ -40,9 +41,15 @@ jest.mock('./services/supabaseClient.js', () => ({
     from: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(),
     order: jest.fn().mockResolvedValue({ data: [], error: null }), // Default mock for any table
+    eq: jest.fn().mockReturnThis(),
+    single: jest.fn().mockResolvedValue({ data: null, error: null }),
     auth: {
       getSession: jest.fn().mockResolvedValue({ data: { session: null }, error: null }),
       onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } }),
+      signInWithPassword: jest.fn(),
+      signUp: jest.fn(),
+      signOut: jest.fn(),
+      resetPasswordForEmail: jest.fn(),
     },
   },
 }));
@@ -63,6 +70,12 @@ global.fetch = jest.fn((url) => {
   }
   return Promise.resolve({ ok: false, status: 404 });
 });
+
+// Mock analytics utility
+jest.mock('./utils/analytics', () => ({
+  initGA: jest.fn(),
+  trackPageView: jest.fn(),
+}));
 
 // Mock child components that are not the focus of these tests to simplify rendering
 jest.mock('./layouts/Header', () => jest.fn(() => <header data-testid="header">Header</header>));
@@ -122,7 +135,7 @@ describe('App Cookie Consent Functionality', () => {
     expect(Cookies.get).toHaveBeenCalledWith('userConsent');
   });
 
-  test('sets "accepted" cookie and hides banner when accept is clicked', async () => {
+  test('sets granular consent cookie and hides banner when accept is clicked', async () => {
     Cookies.get.mockReturnValue(undefined); // Ensure banner is shown initially
     render(<App />);
 
@@ -133,13 +146,17 @@ describe('App Cookie Consent Functionality', () => {
     const acceptButton = screen.getByTestId('accept-cookies');
     fireEvent.click(acceptButton);
 
-    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: true, marketing: true }), { expires: 365, path: '/' });
+    expect(Cookies.set).toHaveBeenCalledWith(
+      'userConsent',
+      JSON.stringify({ analytics: true, marketing: true }),
+      { expires: 365, path: '/' }
+    );
     await waitFor(() => {
         expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     });
   });
 
-  test('sets "declined" cookie and hides banner when decline is clicked', async () => {
+  test('sets granular consent cookie and hides banner when decline is clicked', async () => {
     Cookies.get.mockReturnValue(undefined); // Ensure banner is shown initially
     render(<App />);
 
@@ -150,20 +167,74 @@ describe('App Cookie Consent Functionality', () => {
     const declineButton = screen.getByTestId('decline-cookies');
     fireEvent.click(declineButton);
 
-    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: false, marketing: false }), { expires: 365, path: '/' });
+    expect(Cookies.set).toHaveBeenCalledWith(
+      'userConsent',
+      JSON.stringify({ analytics: false, marketing: false }),
+      { expires: 365, path: '/' }
+    );
     await waitFor(() => {
         expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     });
   });
 
-  test('logs to console when analytics is enabled', async () => {
-    Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    render(<App />);
+  describe('Analytics Integration', () => {
+    test('initializes analytics when consent is granted after click', async () => {
+      Cookies.get.mockReturnValue(undefined);
+      render(<App />);
 
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Analytics enabled. Initializing analytics scripts...');
+      const acceptButton = await screen.findByTestId('accept-cookies');
+      fireEvent.click(acceptButton);
+
+      expect(initGA).toHaveBeenCalled();
+      expect(trackPageView).toHaveBeenCalledWith('/');
     });
-    consoleSpy.mockRestore();
+
+    test('initializes analytics on mount if consent was previously granted', async () => {
+      Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
+      render(<App />);
+
+      await screen.findByTestId('app-routes');
+
+      await waitFor(() => {
+        expect(initGA).toHaveBeenCalled();
+      });
+      await waitFor(() => {
+        expect(trackPageView).toHaveBeenCalledWith('/');
+      });
+    });
+
+    test('does not initialize analytics if consent is declined', async () => {
+      Cookies.get.mockReturnValue(undefined);
+      render(<App />);
+
+      const declineButton = await screen.findByTestId('decline-cookies');
+      fireEvent.click(declineButton);
+
+      expect(initGA).not.toHaveBeenCalled();
+      expect(trackPageView).not.toHaveBeenCalled();
+    });
+
+    test('tracks page views on route change when consent is granted', async () => {
+      Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
+
+      // We need to simulate a location change.
+      // Since we mocked useLocation, we can control its return value.
+      mockUseLocation.mockReturnValue({ pathname: '/', search: '' });
+
+      const { rerender } = render(<App />);
+      await screen.findByTestId('app-routes');
+
+      await waitFor(() => {
+        expect(trackPageView).toHaveBeenCalledWith('/');
+      });
+
+      // Change location and rerender
+      mockUseLocation.mockReturnValue({ pathname: '/search', search: '?q=test' });
+      rerender(<App />);
+
+      await waitFor(() => {
+        expect(trackPageView).toHaveBeenCalledWith('/search?q=test');
+      });
+    });
   });
 });
