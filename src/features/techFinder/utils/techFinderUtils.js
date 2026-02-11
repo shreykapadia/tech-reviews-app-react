@@ -387,9 +387,9 @@ export const getNumericScreenSizeOptions = (screenSizeSpecInput) => {
 };
 /**
  * Retrieves the mobile screen size from key specifications.
- * Expects keySpecs.screenSize to be an integer or a string that can be parsed to an integer.
+ * Expects keySpecs.screenSize to be a number or a string that can be parsed to a number.
  * @param {object|null|undefined} keySpecs - The key specifications object for the product.
- * @returns {number|null} The screen size as an integer, or null otherwise.
+ * @returns {number|null} The screen size as a number, or null otherwise.
  */
 export const getMobileScreenSize = (keySpecs) => {
   if (!keySpecs || typeof keySpecs !== 'object' || keySpecs.screenSize === null || keySpecs.screenSize === undefined) {
@@ -401,11 +401,11 @@ export const getMobileScreenSize = (keySpecs) => {
   if (typeof screenSizeValue === 'number' && !isNaN(screenSizeValue) && screenSizeValue > 0) {
     return screenSizeValue;
   }
-  // Attempt to parse if it's a string representation of an integer
-  const parsedSize = parseInt(screenSizeValue, 10);
-  if (typeof screenSizeValue === 'string' && !isNaN(parsedSize) && Number.isInteger(parsedSize) && parsedSize > 0) {
+  // Attempt to parse if it's a string representation of a number
+  const parsedSize = parseFloat(screenSizeValue);
+  if (typeof screenSizeValue === 'string' && !isNaN(parsedSize) && parsedSize > 0) {
     return parsedSize;
   }
 
-  return null; // Return null if not a valid positive integer
+  return null; // Return null if not a valid positive number
 };
