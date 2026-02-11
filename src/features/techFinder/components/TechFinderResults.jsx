@@ -70,10 +70,10 @@ const TechFinderResults = ({
       {hasExactMatches ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(product => (
-            <ProductCard 
-              key={product.id || product.productName} 
-              product={product} 
-              // retailerReviews={product.retailerReviews || []} // This was illustrative; retailerReviews removed from ProductCard
+            <ProductCard
+              key={product.id || product.productName}
+              product={product}
+            // retailerReviews={product.retailerReviews || []} // This was illustrative; retailerReviews removed from ProductCard
             />
           ))}
         </div>
@@ -102,12 +102,12 @@ const TechFinderResults = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {productsInGroup.map((product, index) => (
                       <div key={`close-${product.id || product.productName}-${index}`} className="flex flex-col">
-                        <ProductCard 
-                          product={product} 
-                          // retailerReviews={product.retailerReviews || []} // Illustrative
+                        <ProductCard
+                          product={product}
+                        // retailerReviews={product.retailerReviews || []} // Illustrative
                         />
                         {product.failedCriteria && product.failedCriteria.length > 0 && (
-                          <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-700 shadow-sm">
+                          <div className="mt-2 p-2.5 bg-amber-50 border border-amber-200 rounded-md text-sm text-amber-700 shadow-sm">
                             <p className="font-semibold mb-1">Where these choices missed out:</p>
                             <ul className="list-disc list-inside ml-2 space-y-0.5">
                               {product.failedCriteria.map((reason, reasonIndex) => (

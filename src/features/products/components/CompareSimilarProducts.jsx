@@ -57,8 +57,8 @@ const SuggestedProductCard = ({ product, onSelect, isSelected }) => {
       <h4 className="text-sm font-semibold text-brand-text truncate mb-0.5" title={product.productName}>
         {product.productName}
       </h4>
-      <p className="text-xs text-gray-500 mb-2">{product.brand}</p>
-      <div className="flex justify-between items-center text-xs">
+      <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
+      <div className="flex justify-between items-center text-sm">
         <div className="flex flex-col items-center">
           <span className={`font-bold ${criticsScoreColorClass}`}>{criticsScoreDisplay}</span>
           <span className="text-gray-500">Critics</span>
@@ -138,16 +138,16 @@ const CompareSimilarProducts = ({ currentProduct, allProducts }) => {
             disabled={!canCompare}
             className={`px-8 py-3 sm:px-10 sm:py-4 text-base sm:text-lg font-medium rounded-full transition-all duration-300
                         ${canCompare
-                          ? 'bg-brand-primary text-white hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transform hover:scale-105 active:scale-95'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                ? 'bg-brand-primary text-white hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transform hover:scale-105 active:scale-95'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
           >
             Compare ({selectedToCompare.length} Selected)
           </button>
           {!canCompare && selectedToCompare.length < 2 && (
             <p className="text-xs text-gray-500 mt-2">Select at least 2 products to compare.</p>
           )}
-           {!canCompare && selectedToCompare.length > 3 && ( // Should not happen with current logic but good to have
+          {!canCompare && selectedToCompare.length > 3 && ( // Should not happen with current logic but good to have
             <p className="text-xs text-red-500 mt-2">Please select a maximum of 3 products.</p>
           )}
         </div>

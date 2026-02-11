@@ -45,7 +45,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
 
     if (numericScore >= 85) return 'text-green-600';
     if (numericScore >= 70) return 'text-yellow-600';
-    if (numericScore < 70 && numericScore >=0) return 'text-red-600'; // Scores can be 0
+    if (numericScore < 70 && numericScore >= 0) return 'text-red-600'; // Scores can be 0
     return defaultColorClass; // Fallback for any other case
   };
 
@@ -150,8 +150,8 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
             ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
         >
-          {isFavorited 
-            ? <HeartSolidIcon className="h-5 w-5 text-white" /> 
+          {isFavorited
+            ? <HeartSolidIcon className="h-5 w-5 text-white" />
             : <HeartOutlineIcon className="h-5 w-5 text-white" />}
         </button>
       )}
@@ -192,15 +192,15 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
             </>
           ) : (
             <>
-              <h3 className="text-sm sm:text-base font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-0.5 truncate" title={product.productName}>
+              <h3 className="text-base sm:text-lg font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-0.5 truncate" title={product.productName}>
                 {product.productName}
               </h3>
-              <p className="text-xs text-gray-500 mb-1">{product.brand}</p>
+              <p className="text-sm text-gray-500 mb-1">{product.brand}</p>
             </>
           )}
 
           {!isCarousel && product.description && ( // Description for default layout
-            <p className="text-xs text-gray-600 mt-1 line-clamp-2 sm:line-clamp-1 md:line-clamp-2" title={product.description}>
+            <p className="text-sm text-gray-600 mt-1 line-clamp-2 sm:line-clamp-1 md:line-clamp-2" title={product.description}>
               {product.description}
             </p>
           )}
@@ -213,10 +213,9 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
         </div>
 
         {/* Scores Section - Criterion IV.1 */}
-        <div className={`flex ${
-          isCarousel 
-            ? "justify-around mt-auto pt-3 items-start" // Use justify-around for spacing, items-start for vertical alignment
-            : "items-center text-xs gap-x-3 mt-2 flex-wrap gap-y-1" // Default for non-carousel
+        <div className={`flex ${isCarousel
+          ? "justify-around mt-auto pt-3 items-start" // Use justify-around for spacing, items-start for vertical alignment
+          : "items-center text-xs sm:text-sm gap-x-3 mt-2 flex-wrap gap-y-1" // Default for non-carousel
           }`}>
           {/* mt-auto for carousel pushes scores to the bottom of flex-grow area, pt-2 for spacing. Criterion IV.2, IV.6 */}
           {/* Critic Score Block */}

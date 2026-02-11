@@ -23,7 +23,7 @@ function ProductListings({ products, calculateCriticsScore }) {
     itemsPerPageDesktop: 4, // Show 4 cards
     maxItems: 12,
     mobileItemWidth: 'w-[85vw] sm:w-[70vw]', // Make cards wider on mobile
-    desktopPageContainerClassName: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8', // Adjust grid for 4 items
+    desktopPageContainerClassName: 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 p-4 pb-12', // Added padding for shadows
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ function ProductListings({ products, calculateCriticsScore }) {
             productIdsToUse = parsedProductIds;
             const reconstructedProducts = productIdsToUse
               .map(id => products.find(p => getProductKey(p) === id))
-              .filter(Boolean); 
+              .filter(Boolean);
 
             if (reconstructedProducts.length >= Math.min(maxItems, productIdsToUse.length * 0.8)) {
               productsToDisplay = reconstructedProducts.slice(0, maxItems);
@@ -65,17 +65,17 @@ function ProductListings({ products, calculateCriticsScore }) {
       }
     }
 
-    if (productsToDisplay.length === 0) { 
+    if (productsToDisplay.length === 0) {
       const shuffled = shuffleArray(products);
       productsToDisplay = shuffled.slice(0, maxItems);
       const idsToStore = productsToDisplay.map(p => getProductKey(p));
       localStorage.setItem('randomizedCarouselProductIds', JSON.stringify(idsToStore));
       localStorage.setItem('carouselShuffleTimestamp', now.toString());
     }
-    
+
     setRandomizedCarouselItems(productsToDisplay);
 
-  }, [products, carouselConfig.maxItems]); 
+  }, [products, carouselConfig.maxItems]);
 
   if (!products || products.length === 0) {
     return <p className="text-center text-gray-600 py-8">No products found.</p>;
