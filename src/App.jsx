@@ -5,6 +5,7 @@ import { BrowserRouter as Router, useNavigate, useLocation } from 'react-router-
 import Header from './layouts/Header'; // Updated path
 import Footer from './layouts/Footer'; // Updated path
 import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/scoreCalculations';
+import { initGA, trackPageView } from './utils/analytics';
 import PrivacyPolicyPage from './features/staticContent/PrivacyPolicyPage'; // Updated path
 import CookieConsentBanner from './components/common/CookieConsentBanner'; // Updated path
 import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; // Updated path
@@ -206,10 +207,17 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   useEffect(() => {
     if (cookieConsent.analytics) {
       console.log('Analytics enabled. Initializing analytics scripts...');
-      // TODO: Add your analytics initialization code here (e.g., Google Analytics)
+      initGA();
     }
     // You can add a similar block for marketing scripts
-  }, [cookieConsent]);
+  }, [cookieConsent.analytics]);
+
+  // Track page views when location or consent changes
+  useEffect(() => {
+    if (cookieConsent.analytics) {
+      trackPageView(location.pathname + location.search);
+    }
+  }, [location, cookieConsent.analytics]);
 
   // Apply filters whenever productsData, debouncedSearchTerm, or selectedCategory changes
   useEffect(() => {
