@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116: No rows found, not an error here
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching user profile:', error.message);
         setUserProfile(null); // Explicitly set to null on error
         return null;
       }
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       setUserProfile(data || null);
       return data || null;
     } catch (error) {
-      console.error('Unexpected error fetching user profile:', error);
+      console.error('Unexpected error fetching user profile:', error.message);
       setUserProfile(null);
       return null;
     }
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
       }
       return { data, error: null };
     } catch (error) {
-      console.error('Error signing in:', error);
+      console.error('Error signing in:', error.message);
       setUserProfile(null); // Clear profile on failed sign-in
       return { data: null, error };
     } finally {
@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }) => {
           .update({ username: username, email: authData.user.email }) // Ensure email is also set/updated
           .eq('id', authData.user.id);
         if (profileError) {
-          console.error('User created in auth, but failed to set username in profiles:', profileError);
+          console.error('User created in auth, but failed to set username in profiles:', profileError.message);
           // Return a specific error indicating partial success if needed, or just the profileError
           throw { ...profileError, message: `User created, but username setup failed: ${profileError.message}` };
         }
@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }) => {
       }
       return { data: authData, error: null };
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error('Error signing up:', error.message);
       return { data: null, error };
     } finally {
       setLoading(false);
@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }) => {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
-      console.error('Error resetting password:', error);
+      console.error('Error resetting password:', error.message);
       return { data: null, error };
     } finally {
       setLoading(false);

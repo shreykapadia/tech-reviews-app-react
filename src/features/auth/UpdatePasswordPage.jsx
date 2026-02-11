@@ -55,7 +55,7 @@ function UpdatePasswordPage() {
       }, 3000);
     } catch (err) {
       setError(err.message || 'Failed to update password. The link may have expired or been used already.');
-      console.error('Update password error:', err);
+      console.error('Update password error:', err.message);
     } finally {
       setLoading(false);
     }

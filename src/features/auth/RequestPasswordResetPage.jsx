@@ -20,14 +20,14 @@ function RequestPasswordResetPage() {
       if (resetError) {
         // Even if there's an error, show a generic message for security.
         // Log the actual error for debugging.
-        console.error('Password reset request error:', resetError);
+        console.error('Password reset request error:', resetError.message);
       }
       setMessage('If an account with that email exists, a password reset link has been sent. Please check your inbox (and spam folder).');
       setEmail(''); // Clear the input field
     } catch (err) {
       // This catch block might not be strictly necessary if resetPassword handles its own errors
       // and returns an error object, but it's good for unexpected issues.
-      console.error('Unexpected error during password reset request:', err);
+      console.error('Unexpected error during password reset request:', err.message);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);

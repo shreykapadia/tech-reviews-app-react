@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
-      console.error('Error signing in:', error);
+      console.error('Error signing in:', error.message);
       return { data: null, error };
     } finally {
       setLoading(false);
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       // but they will need to confirm their email before their session is active.
       return { data, error: null };
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error('Error signing up:', error.message);
       return { data: null, error };
     } finally {
       setLoading(false);
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
       if (error) throw error;
       return { data, error: null };
     } catch (error) {
-      console.error('Error resetting password:', error);
+      console.error('Error resetting password:', error.message);
       return { data: null, error };
     } finally {
       setLoading(false);

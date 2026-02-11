@@ -30,7 +30,7 @@ function LoginPage() {
 
         if (profileError && profileError.code !== 'PGRST116') { // PGRST116: No rows found
           // Log the actual error but show a generic message to the user
-          console.error('Error fetching profile by username:', profileError);
+          console.error('Error fetching profile by username:', profileError.message);
           throw new Error('Failed to find user. Please check your input.');
         }
         if (!profile) {
@@ -48,7 +48,7 @@ function LoginPage() {
     } catch (err) {
       const invalidCredentialsMessage = 'Invalid login credentials';
       setError(err.message?.includes(invalidCredentialsMessage) ? invalidCredentialsMessage : (err.message || 'Failed to log in. Please try again.'));
-      console.error('Login error:', err);
+      console.error('Login error:', err.message);
     } finally {
       setLoading(false);
     }

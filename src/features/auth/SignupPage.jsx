@@ -54,7 +54,7 @@ function SignupPage() {
       } else {
         setError(err.message || 'Failed to sign up. Please try again.');
       }
-      console.error('Signup error:', err);
+      console.error('Signup error:', err.message);
     } finally {
       setLoading(false);
     }
