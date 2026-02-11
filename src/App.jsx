@@ -118,7 +118,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
           ...p,
           productName: p.product_name, // Map snake_case from DB to camelCase if needed
           imageURL: p.image_url,
-          gallery: p.gallery,
+          gallery: p.gallery || [],
           keySpecs: p.key_specs,
           description: p.description, // Assuming you have a description column
           bestBuySku: p.best_buy_sku,

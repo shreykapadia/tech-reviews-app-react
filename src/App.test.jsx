@@ -163,7 +163,6 @@ describe('App Cookie Consent Functionality', () => {
     Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     render(<App />);
-    await screen.findByTestId('app-routes'); // Wait for app to stabilize
 
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith('Analytics enabled. Initializing analytics scripts...');
