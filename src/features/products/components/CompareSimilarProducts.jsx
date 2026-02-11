@@ -102,15 +102,18 @@ const CompareSimilarProducts = ({ currentProduct, allProducts }) => {
   };
 
   const handleCompareNow = () => {
-    if (selectedToCompare.length >= 2) {
-      const queryParams = selectedToCompare
+    // Include current product in the list
+    const productsToCompare = [currentProduct.productName, ...selectedToCompare];
+
+    if (productsToCompare.length >= 2) {
+      const queryParams = productsToCompare
         .map((name) => `product[]=${encodeURIComponent(name)}`)
         .join('&');
       navigate(`/compare?${queryParams}`); // Navigate to a comparison page
     }
   };
 
-  const canCompare = selectedToCompare.length >= 2 && selectedToCompare.length <= 3;
+  const canCompare = selectedToCompare.length >= 1; // Need at least 1 other product to compare
 
   if (!currentProduct || suggestedProducts.length === 0) {
     return null; // Don't render if no current product or no suggestions
@@ -142,10 +145,10 @@ const CompareSimilarProducts = ({ currentProduct, allProducts }) => {
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
           >
-            Compare ({selectedToCompare.length} Selected)
+            Compare ({selectedToCompare.length + 1} Products)
           </button>
-          {!canCompare && selectedToCompare.length < 2 && (
-            <p className="text-xs text-gray-500 mt-2">Select at least 2 products to compare.</p>
+          {!canCompare && selectedToCompare.length < 1 && (
+            <p className="text-xs text-gray-500 mt-2">Select at least 1 other product to compare.</p>
           )}
           {!canCompare && selectedToCompare.length > 3 && ( // Should not happen with current logic but good to have
             <p className="text-xs text-red-500 mt-2">Please select a maximum of 3 products.</p>
