@@ -1,12 +1,12 @@
 // src/features/user/DashboardPage.jsx
+import { processProduct } from "../../services/productService";
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext'; // Adjust path if necessary
-import { supabase } from '../../services/supabaseClient'; // Adjust path if necessary
-import ProductCard from '../../components/ProductCard'; // Adjust path if necessary
-// calculateCriticsScore will be passed as a prop
+import { AuthContext } from '../../contexts/AuthContext';
+import { supabase } from '../../services/supabaseClient';
+import ProductCard from '../../components/ProductCard';
 
-function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsScore prop
+function DashboardPage({ calculateCriticsScore }) {
   const { user, userProfile, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -14,9 +14,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
   const [favoritesLoading, setFavoritesLoading] = useState(true);
   const [favoritesError, setFavoritesError] = useState(null);
 
-
   useEffect(() => {
-    // Redirect to login if not authenticated and loading is complete
     if (!authLoading && !user) {
       navigate('/login');
     }
@@ -24,10 +22,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
 
   useEffect(() => {
     const fetchUserFavorites = async () => {
-      if (authLoading) {
-        return; // Wait for authentication to settle
-      }
-
+      if (authLoading) return;
       if (!user) {
         setFavoritedProducts([]);
         setFavoritesLoading(false);
@@ -38,7 +33,6 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
       setFavoritesError(null);
 
       try {
-        // Step 1: Fetch product_ids from user_favorites
         const { data: favoriteEntries, error: fetchFavoritesError } = await supabase
           .from('user_favorites')
           .select('product_id')
@@ -53,15 +47,13 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
 
         if (favoriteEntries && favoriteEntries.length > 0) {
           const productIds = favoriteEntries.map(entry => entry.product_id);
-
-          // Step 2: Fetch Full Product Details
           const { data: productsData, error: fetchProductsError } = await supabase
-            .from('products') // Assuming your products table is named 'products'
+            .from('products')
             .select(`
               *,
               categories ( name ), 
               critic_reviews ( * )
-            `) // Fetch all product details, and related data if needed by ProductCard
+            `)
             .in('id', productIds);
 
           if (fetchProductsError) {
@@ -69,28 +61,10 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
             setFavoritesError(fetchProductsError.message);
             setFavoritedProducts([]);
           } else {
-            // Process products similar to App.jsx to match ProductCard's expected props
-            const processedProducts = (productsData || []).map(p => ({
-              ...p,
-              id: p.id, // Ensure id is present and correct type
-              productName: p.product_name,
-              imageURL: p.image_url,
-              gallery: p.gallery,
-              keySpecs: p.key_specs,
-              description: p.description,
-              bestBuySku: p.best_buy_sku,
-              aiProsCons: p.ai_pros_cons,
-              category: p.categories?.name || 'Unknown',
-              criticReviews: p.critic_reviews || [],
-              preAggregatedCriticScore: p.pre_aggregated_critic_score,
-              totalCriticReviewCount: p.total_critic_review_count,
-              preAggregatedAudienceScore: p.pre_aggregated_audience_score,
-              totalAudienceReviewCount: p.total_audience_review_count,
-            }));
-            setFavoritedProducts(processedProducts);
+            setFavoritedProducts((productsData || []).map(processProduct));
           }
         } else {
-          setFavoritedProducts([]); // No favorite entries found
+          setFavoritedProducts([]);
         }
       } catch (err) {
         console.error('Unexpected error in fetchUserFavorites:', err);
@@ -104,7 +78,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
     fetchUserFavorites();
   }, [user, authLoading]);
 
-  if (authLoading) { // Initial auth loading
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
@@ -113,10 +87,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
     );
   }
 
-  // This check is mostly a fallback, as useEffect should handle the redirect.
-  if (!user) {
-    return null; // Or a redirecting message, but navigate in useEffect is preferred
-  }
+  if (!user) return null;
 
   return (
     <div className="min-h-screen pt-24 pb-10 px-4 sm:px-6 lg:px-8 md:pt-28">
@@ -130,9 +101,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
         <div className="mt-8 space-y-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-700">Your Account</h2>
-            {/* <p className="text-gray-600 mt-2">User ID: {user.id}</p> */}
             <p className="text-gray-600 mt-1">More profile features coming soon!</p>
-            {/* TODO: Add links to edit profile, change password etc. */}
           </div>
 
           <div className="mt-10">
@@ -158,8 +127,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
                   <ProductCard
                     key={product.id}
                     product={product}
-                    calculateCriticsScore={calculateCriticsScore} // Pass this down
-                    // layoutType can be 'default' or 'carousel', adjust if needed for dashboard
+                    calculateCriticsScore={calculateCriticsScore}
                   />
                 ))}
               </div>

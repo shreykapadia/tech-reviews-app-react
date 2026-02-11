@@ -12,7 +12,7 @@ const PrivacyPolicyPage = lazy(() => import('../features/staticContent/PrivacyPo
 const CookieSettingsPage = lazy(() => import('../features/staticContent/CookieSettingsPage'));
 const ProductPage = lazy(() => import('../features/products/ProductPage'));
 const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
-const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
+const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage'));
 const TechFinderPage = React.lazy(() => import('../features/techFinder/TechFinderPage'));
 
 const LoginPage = lazy(() => import('../features/auth/LoginPage'));
@@ -23,22 +23,13 @@ const DashboardPage = lazy(() => import('../features/user/DashboardPage'));
 const AdminPage = lazy(() => import('../features/admin/AdminPage'));
 
 function AppRoutes({
-  // Props for HomePage
   selectedProduct,
   onBackClick,
-  allProductsArray,
   availableCategories,
   onProductClick,
-  // Props for SearchResultsPage
-  headerSearchQuery,
-  headerSearchResults,
-  // Props for ProductPage & CategoryPage
   calculateCriticsScore,
-  // Props for TechFinderPage (allProductsArray is already listed, calculateCriticsScore is new here)
-  // Props for CategoryPage
   isAppDataLoading,
 }) {
-  // A simple fallback UI for Suspense
   const LoadingFallback = () => (
     <div className="flex justify-center items-center min-h-[calc(100vh-10rem)]">
       <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32"></div>
@@ -52,11 +43,10 @@ function AppRoutes({
         <Route
           path="/"
           element={
-            <HomePage // Updated component
+            <HomePage
               selectedProduct={selectedProduct}
               onBackClick={onBackClick}
               calculateCriticsScore={calculateCriticsScore}
-              allProductsArray={allProductsArray}
               availableCategories={availableCategories}
               onProductClick={onProductClick}
             />
@@ -75,8 +65,6 @@ function AppRoutes({
           path="/search"
           element={
             <SearchResultsPage
-              searchTerm={headerSearchQuery}
-              searchResults={headerSearchResults}
               calculateCriticsScore={calculateCriticsScore}
             />
           }
@@ -85,11 +73,11 @@ function AppRoutes({
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route
           path="/product/:brandSlug/:productNameSlug"
-          element={<ProductPage allProducts={allProductsArray} calculateCriticsScore={calculateCriticsScore} />}
+          element={<ProductPage calculateCriticsScore={calculateCriticsScore} />}
         />
         <Route
           path="/product/:productNameSlug"
-          element={<ProductPage allProducts={allProductsArray} calculateCriticsScore={calculateCriticsScore} />}
+          element={<ProductPage calculateCriticsScore={calculateCriticsScore} />}
         />
         <Route
         path="/tech-finder"
@@ -97,26 +85,18 @@ function AppRoutes({
           <TechFinderPage
             availableCategories={availableCategories}
             isAppDataLoading={isAppDataLoading}
-            allProducts={allProductsArray} // Pass allProductsArray as allProducts
-            calculateCriticsScore={calculateCriticsScore} // Pass calculateCriticsScore
+            calculateCriticsScore={calculateCriticsScore}
           />}
       />
-  {/* The main Footer component is typically rendered outside the Routes, in App.jsx or a Layout component */}
       <Route
-          path="/category/:categorySlug" element={(
-            <>
-              {/* This console.log executes if React Router matches this route and starts rendering the element */}
-              {/* {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')} */}
+          path="/category/:categorySlug" element={
               <CategoryPage
-                allProducts={allProductsArray}
                 allAvailableCategories={availableCategories}
                 calculateCriticsScore={calculateCriticsScore}
                 areGlobalCategoriesLoading={isAppDataLoading}
               />
-            </>
-          )}
+          }
         />
-        {/* Auth Routes */}
         <Route path="/cookie-settings" element={<CookieSettingsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
@@ -144,18 +124,13 @@ function AppRoutes({
 AppRoutes.propTypes = {
   selectedProduct: PropTypes.object,
   onBackClick: PropTypes.func.isRequired,
-  allProductsArray: PropTypes.array.isRequired,
   availableCategories: PropTypes.array.isRequired,
   onProductClick: PropTypes.func.isRequired,
-  headerSearchQuery: PropTypes.string,
-  headerSearchResults: PropTypes.array,
   calculateCriticsScore: PropTypes.func.isRequired,
   isAppDataLoading: PropTypes.bool,
 };
 
 AppRoutes.defaultProps = {
-  headerSearchQuery: '',
-  headerSearchResults: null,
   isAppDataLoading: true,
 };
 
