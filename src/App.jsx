@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'; // Import js-cookie
 import { BrowserRouter as Router, useNavigate, useLocation } from 'react-router-dom';
 import Header from './layouts/Header'; // Updated path
 import Footer from './layouts/Footer'; // Updated path
-import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/scoreCalculations';
+import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/ScoreCalculations';
 import PrivacyPolicyPage from './features/staticContent/PrivacyPolicyPage'; // Updated path
 import CookieConsentBanner from './components/common/CookieConsentBanner'; // Updated path
 import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; // Updated path
