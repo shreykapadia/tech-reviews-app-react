@@ -297,7 +297,7 @@ export const getNumericRamOptions = (ramSpec) => {
         num = parsed;
       }
     }
-    if (num !== null && num > 0) {
+    if (num !== null && num > 0 && Number.isFinite(num)) {
       options.add(num);
     }
   };
