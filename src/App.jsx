@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'; // Import js-cookie
 import { BrowserRouter as Router, useNavigate, useLocation } from 'react-router-dom';
 import Header from './layouts/Header'; // Updated path
 import Footer from './layouts/Footer'; // Updated path
+import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from './utils/ScoreCalculations';
 import { normalizeScore, calculateCriticsScore as importedCalculateCriticsScore } from "./utils/scoreCalculations";
 import { initGA, trackPageView } from "./utils/analytics";
 import PrivacyPolicyPage from './features/staticContent/PrivacyPolicyPage'; // Updated path
@@ -119,6 +120,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
           ...p,
           productName: p.product_name, // Map snake_case from DB to camelCase if needed
           imageURL: p.image_url,
+          gallery: p.gallery || [],
           keySpecs: p.key_specs,
           description: p.description, // Assuming you have a description column
           bestBuySku: p.best_buy_sku,

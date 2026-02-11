@@ -146,6 +146,7 @@ describe('App Cookie Consent Functionality', () => {
     const acceptButton = screen.getByTestId('accept-cookies');
     fireEvent.click(acceptButton);
 
+    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: true, marketing: true }), { expires: 365, path: '/' });
     expect(Cookies.set).toHaveBeenCalledWith(
       'userConsent',
       JSON.stringify({ analytics: true, marketing: true }),
@@ -167,6 +168,7 @@ describe('App Cookie Consent Functionality', () => {
     const declineButton = screen.getByTestId('decline-cookies');
     fireEvent.click(declineButton);
 
+    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: false, marketing: false }), { expires: 365, path: '/' });
     expect(Cookies.set).toHaveBeenCalledWith(
       'userConsent',
       JSON.stringify({ analytics: false, marketing: false }),
@@ -177,6 +179,15 @@ describe('App Cookie Consent Functionality', () => {
     });
   });
 
+  test('logs to console when analytics consent is enabled', async () => {
+    Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    render(<App />);
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('Analytics enabled. Initializing analytics scripts...');
+    });
+    consoleSpy.mockRestore();
   describe('Analytics Integration', () => {
     test('initializes analytics when consent is granted after click', async () => {
       Cookies.get.mockReturnValue(undefined);
