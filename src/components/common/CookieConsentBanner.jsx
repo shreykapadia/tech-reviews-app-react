@@ -1,3 +1,4 @@
+
 // src/components/CookieConsentBanner.jsx
 import React from 'react';
 
