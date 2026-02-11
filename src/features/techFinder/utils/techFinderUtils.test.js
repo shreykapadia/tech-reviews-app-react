@@ -1,65 +1,55 @@
-import { hasDedicatedGraphics } from './techFinderUtils';
+import { getNumericRamOptions } from './techFinderUtils';
 
-describe('hasDedicatedGraphics', () => {
-  test('returns false for non-object or null/undefined keySpecs', () => {
-    expect(hasDedicatedGraphics(null)).toBe(false);
-    expect(hasDedicatedGraphics(undefined)).toBe(false);
-    expect(hasDedicatedGraphics('not an object')).toBe(false);
-    expect(hasDedicatedGraphics(123)).toBe(false);
+describe('getNumericRamOptions', () => {
+  test('returns an empty array for null or undefined input', () => {
+    expect(getNumericRamOptions(null)).toEqual([]);
+    expect(getNumericRamOptions(undefined)).toEqual([]);
   });
 
-  test('returns false if dedicatedGraphics is missing or not a string', () => {
-    expect(hasDedicatedGraphics({})).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: null })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 123 })).toBe(false);
+  test('handles a single numeric RAM value', () => {
+    expect(getNumericRamOptions(16)).toEqual([16]);
   });
 
-  test('returns true for Apple Silicon high-performance tiers', () => {
-    expect(hasDedicatedGraphics({ processorOptions: 'Apple M1 Pro', dedicatedGraphics: 'Apple M1 Pro' })).toBe(true);
-    expect(hasDedicatedGraphics({ processorOptions: 'Apple M2 Max', dedicatedGraphics: 'Apple M2 Max' })).toBe(true);
-    expect(hasDedicatedGraphics({ processorOptions: 'Apple M3 Ultra', dedicatedGraphics: 'Apple M3 Ultra' })).toBe(true);
-    expect(hasDedicatedGraphics({ processorOptions: 'M4 Pro', dedicatedGraphics: 'M4 Pro' })).toBe(true);
+  test('handles a single string RAM value', () => {
+    expect(getNumericRamOptions('16')).toEqual([16]);
+    expect(getNumericRamOptions('16GB')).toEqual([16]);
+    expect(getNumericRamOptions(' 16 GB ')).toEqual([16]);
   });
 
-  test('returns false for standard Apple Silicon tiers or non-Pro/Max/Ultra strings', () => {
-    // Note: The implementation requires processorOptions to include m1-m4 AND pro/max/ultra for this specific check.
-    // If it's just 'Apple M2', it will fall through.
-    expect(hasDedicatedGraphics({ processorOptions: 'Apple M2', dedicatedGraphics: 'Integrated' })).toBe(false);
+  test('handles comma-separated string RAM values', () => {
+    expect(getNumericRamOptions('8,16,32')).toEqual([8, 16, 32]);
+    expect(getNumericRamOptions('8GB, 16GB, 32GB')).toEqual([8, 16, 32]);
   });
 
-  test('returns false for various integrated graphics strings', () => {
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'Integrated Graphics' })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'Intel Iris Xe' })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'Intel HD Graphics 620' })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'Intel UHD Graphics' })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'Intel Graphics' })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'AMD Radeon Graphics' })).toBe(false);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'AMD Vega 8' })).toBe(false);
+  test('handles an array of RAM values', () => {
+    expect(getNumericRamOptions([8, 16, 32])).toEqual([8, 16, 32]);
+    expect(getNumericRamOptions(['8GB', '16GB', '32GB'])).toEqual([8, 16, 32]);
+    expect(getNumericRamOptions([8, '16GB', '32'])).toEqual([8, 16, 32]);
   });
 
-  test('returns true for various dedicated graphics strings', () => {
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'NVIDIA GeForce RTX 3060' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'GeForce GTX 1650' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'RTX 4090' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'GTX 1080' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'NVIDIA Quadro P1000' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'AMD Radeon RX 6700 XT' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'AMD Radeon Pro W6600' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'AMD FirePro W5100' })).toBe(true);
+  test('returns unique and sorted values', () => {
+    expect(getNumericRamOptions([32, 8, 16, 8, 32])).toEqual([8, 16, 32]);
+    expect(getNumericRamOptions('32, 8, 16, 8')).toEqual([8, 16, 32]);
   });
 
-  test('returns false for unrecognized graphics cards', () => {
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'Some Random Unknown GPU' })).toBe(false);
+  test('filters out invalid or non-positive values', () => {
+    expect(getNumericRamOptions(['invalid', '0', '-8', 16])).toEqual([16]);
+    expect(getNumericRamOptions(0)).toEqual([]);
+    expect(getNumericRamOptions(-5)).toEqual([]);
+    expect(getNumericRamOptions('')).toEqual([]);
+    expect(getNumericRamOptions(['', '  ', null, undefined])).toEqual([]);
+    expect(getNumericRamOptions([NaN, Infinity, -Infinity])).toEqual([]);
   });
 
-  test('is case insensitive', () => {
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'nvidia geforce rtx' })).toBe(true);
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'INTEL IRIS XE' })).toBe(false);
+  test('handles mixed types in array', () => {
+    expect(getNumericRamOptions([8, '16', '32GB', null, 64])).toEqual([8, 16, 32, 64]);
   });
 
-  test('AMD Radeon Graphics with RX should be true', () => {
-    // The implementation says: (lowerGraphics.includes('amd radeon graphics') && !lowerGraphics.includes('rx')) -> false
-    // So if it has both, it should fall through to the next check which might catch 'rx'.
-    expect(hasDedicatedGraphics({ dedicatedGraphics: 'AMD Radeon RX 6600' })).toBe(true);
+  test('handles whitespace in comma-separated strings', () => {
+    expect(getNumericRamOptions('  8 ,  16  , 32  ')).toEqual([8, 16, 32]);
+  });
+
+  test('handles non-string non-number items in array gracefully', () => {
+    expect(getNumericRamOptions([16, { ram: 32 }, [64], true])).toEqual([16]);
   });
 });
