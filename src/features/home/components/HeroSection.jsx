@@ -31,7 +31,7 @@ const HeroSection = React.memo(function HeroSection() {
           <div>
             <Link
               to="/tech-finder" // Assuming this is the route for your Tech Finder
-              className="inline-block px-10 py-4 bg-brand-accent text-white text-lg font-semibold rounded-full shadow-xl shadow-orange-900/35 hover:bg-orange-500 focus:outline-none focus:ring-4 focus:ring-orange-200 transition-all duration-300 transform hover:scale-105 active:scale-95"
+              className="inline-block px-10 py-4 bg-orange-500 text-white text-lg font-semibold rounded-full shadow-xl shadow-orange-900/35 hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-200 transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
               Find your perfect device
             </Link>

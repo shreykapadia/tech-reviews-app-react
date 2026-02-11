@@ -2,6 +2,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import AdminRoute from './AdminRoute';
 
 // Lazy load route components
 const HomePage = lazy(() => import('../features/home/HomePage'));
@@ -19,6 +20,7 @@ const SignupPage = lazy(() => import('../features/auth/SignupPage'));
 const RequestPasswordResetPage = lazy(() => import('../features/auth/RequestPasswordResetPage'));
 const UpdatePasswordPage = lazy(() => import('../features/auth/UpdatePasswordPage'));
 const DashboardPage = lazy(() => import('../features/user/DashboardPage'));
+const AdminPage = lazy(() => import('../features/admin/AdminPage'));
 
 function AppRoutes({
   // Props for HomePage
@@ -121,6 +123,14 @@ function AppRoutes({
           element={
             <DashboardPage calculateCriticsScore={calculateCriticsScore} />
           }
+        />
+        <Route
+          path="/admin"
+          element={(
+            <AdminRoute>
+              <AdminPage />
+            </AdminRoute>
+          )}
         />
       </Routes>
     </Suspense>

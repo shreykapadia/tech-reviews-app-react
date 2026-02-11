@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       // console.log(`[AuthContext] Fetching profile for user ID: ${userId}`);
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, full_name, avatar_url, email') // Fetch necessary profile fields
+        .select('username, full_name, avatar_url, email, is_admin')
         .eq('id', userId)
         .single();
 

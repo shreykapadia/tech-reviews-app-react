@@ -75,7 +75,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
   const [searchQuery, setSearchQuery] = useState('');
   const headerRef = useRef(null);
   const mobileSearchInputRef = useRef(null);
-  const { user, signOut, loading: authLoading } = useContext(AuthContext);
+  const { user, userProfile, signOut, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -179,6 +179,9 @@ function Header({ onSearchSubmit, isHomePage = false }) {
     if (user) {
       return (
         <>
+          {userProfile?.is_admin && (
+            <li><Link to="/admin" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Admin</Link></li>
+          )}
           <li><Link to="/dashboard" className={`${baseClass} ${hoverClass}`} onClick={closeMobileNavAndSearch}>Favorites</Link></li>
           <li>
             <button onClick={handleLogout} className={`${baseClass} ${hoverClass} text-red-600 hover:text-red-700 w-full text-center md:text-left`}>
