@@ -29,6 +29,7 @@ const emptyProductForm = {
   brand: '',
   categoryId: '',
   imageURL: '',
+  galleryText: '',
   description: '',
   bestBuySku: '',
   keySpecsText: defaultKeySpecs,
@@ -298,6 +299,7 @@ function AdminPage() {
           brand,
           category_id,
           image_url,
+          gallery,
           description,
           best_buy_sku,
           key_specs,
@@ -475,11 +477,18 @@ function AdminPage() {
       .map((line) => line.trim())
       .filter(Boolean);
 
+    const gallery = productForm.galleryText
+      .split('\n')
+      .map((url) => url.trim())
+      .filter(Boolean)
+      .map((url) => ({ type: 'image', url }));
+
     return {
       product_name: productForm.productName.trim(),
       brand: productForm.brand.trim(),
       category_id: productForm.categoryId || null,
       image_url: productForm.imageURL.trim() || null,
+      gallery: gallery.length > 0 ? gallery : null,
       description: productForm.description.trim() || null,
       best_buy_sku: productForm.bestBuySku.trim() || null,
       key_specs: parsedKeySpecsResultLocal.value,
@@ -644,6 +653,7 @@ function AdminPage() {
       brand: product.brand || '',
       categoryId: product.category_id ? String(product.category_id) : (categories[0]?.id ? String(categories[0].id) : ''),
       imageURL: product.image_url || '',
+      galleryText: Array.isArray(product.gallery) ? product.gallery.map(item => item.url).join('\n') : '',
       description: product.description || '',
       bestBuySku: product.best_buy_sku || '',
       keySpecsText: JSON.stringify(product.key_specs || {}, null, 2),
@@ -662,6 +672,7 @@ function AdminPage() {
       brand: product.brand || '',
       categoryId: product.category_id ? String(product.category_id) : (categories[0]?.id ? String(categories[0].id) : ''),
       imageURL: product.image_url || '',
+      galleryText: Array.isArray(product.gallery) ? product.gallery.map(item => item.url).join('\n') : '',
       description: product.description || '',
       bestBuySku: '',
       keySpecsText: JSON.stringify(product.key_specs || {}, null, 2),
@@ -976,12 +987,23 @@ function AdminPage() {
                     {productFormErrors.categoryId && <p className="text-xs text-red-600 mt-1">{productFormErrors.categoryId}</p>}
                   </label>
                   <label className="text-sm text-slate-700">
-                    Image URL
+                    Main Image URL
                     <input
                       value={productForm.imageURL}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, imageURL: e.target.value }))}
                       className={adminInputClasses}
                       placeholder="/images/products/example.webp or https://..."
+                    />
+                  </label>
+
+                  <label className="text-sm text-slate-700 md:col-span-2">
+                    Gallery Image URLs (one per line)
+                    <textarea
+                      rows={3}
+                      value={productForm.galleryText}
+                      onChange={(e) => setProductForm((prev) => ({ ...prev, galleryText: e.target.value }))}
+                      className={adminInputClasses}
+                      placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
                     />
                   </label>
 

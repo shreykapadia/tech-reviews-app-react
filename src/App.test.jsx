@@ -40,6 +40,13 @@ jest.mock('./services/supabaseClient.js', () => ({
     from: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(),
     order: jest.fn().mockResolvedValue({ data: [], error: null }), // Default mock for any table
+    auth: {
+      getSession: jest.fn().mockResolvedValue({ data: { session: null }, error: null }),
+      onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } }),
+      signInWithPassword: jest.fn(),
+      signUp: jest.fn(),
+      signOut: jest.fn(),
+    },
   },
 }));
 
@@ -129,7 +136,7 @@ describe('App Cookie Consent Functionality', () => {
     const acceptButton = screen.getByTestId('accept-cookies');
     fireEvent.click(acceptButton);
 
-    expect(Cookies.set).toHaveBeenCalledWith('userConsent', 'accepted', { expires: 365, path: '/' });
+    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: true, marketing: true }), { expires: 365, path: '/' });
     await waitFor(() => {
         expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     });
@@ -146,29 +153,21 @@ describe('App Cookie Consent Functionality', () => {
     const declineButton = screen.getByTestId('decline-cookies');
     fireEvent.click(declineButton);
 
-    expect(Cookies.set).toHaveBeenCalledWith('userConsent', 'declined', { expires: 365, path: '/' });
+    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: false, marketing: false }), { expires: 365, path: '/' });
     await waitFor(() => {
         expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     });
   });
 
-  test('logs to console when consent was previously accepted', async () => {
-    Cookies.get.mockReturnValue('accepted');
+  test('logs to console when analytics consent is enabled', async () => {
+    Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     render(<App />);
     await screen.findByTestId('app-routes'); // Wait for app to stabilize
 
-    expect(consoleSpy).toHaveBeenCalledWith('Cookie consent previously accepted.');
-    consoleSpy.mockRestore();
-  });
-
-  test('logs to console when consent was previously declined', async () => {
-    Cookies.get.mockReturnValue('declined');
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    render(<App />);
-    await screen.findByTestId('app-routes'); // Wait for app to stabilize
-
-    expect(consoleSpy).toHaveBeenCalledWith('Cookie consent previously declined.');
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('Analytics enabled. Initializing analytics scripts...');
+    });
     consoleSpy.mockRestore();
   });
 });

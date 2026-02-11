@@ -75,6 +75,7 @@ function DashboardPage({ calculateCriticsScore }) { // Added calculateCriticsSco
               id: p.id, // Ensure id is present and correct type
               productName: p.product_name,
               imageURL: p.image_url,
+              gallery: p.gallery,
               keySpecs: p.key_specs,
               description: p.description,
               bestBuySku: p.best_buy_sku,
