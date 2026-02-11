@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // Removed Link from 'react-router-dom' as it's no longer used for the main button
 import { ChatBubbleLeftEllipsisIcon, ArrowRightIcon, StarIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'; // Added for expand/collapse
-import { normalizeScore } from '../../../utils/ScoreCalculations'; // Corrected path
+import { normalizeScore } from '../../../utils/scoreCalculations';
 const ScoreBreakdownBarInternal = ({ percentage, colorClass, label }) => (
   <div className="flex items-center mb-1.5">
     <div className="w-20 text-xs text-gray-600 capitalize">{label}</div>
