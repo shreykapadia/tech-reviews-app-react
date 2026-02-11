@@ -1,6 +1,6 @@
 // src/features/products/ProductPage.jsx
 import React, { useEffect, useState, useMemo, useCallback, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Breadcrumbs from './components/Breadcrumbs'; 
 import ProductTitleBrand from './components/ProductTitleBrand'; 
 import ProductImageGallery from './components/ProductImageGallery'; 
@@ -18,6 +18,15 @@ import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { AuthContext } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseClient';
+import { buildProductPath, slugifySegment } from '../../utils/productRouting';
+
+const parseSlugAndId = (value = '') => {
+  const match = String(value).match(/^(.*)-(\d+)$/);
+  if (!match) {
+    return { slug: String(value), id: null };
+  }
+  return { slug: match[1], id: Number(match[2]) };
+};
 
 // calculateAudienceScore is no longer needed here for the primary score
 // normalizeScore might still be used if displaying individual critic review scores that need normalization
@@ -26,7 +35,8 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
   // Log props received by ProductPage
   // console.log('[ProductPage] Props received:', { allProducts, calculateCriticsScore });
 
-  const { productNameSlug } = useParams();
+  const { brandSlug, productNameSlug } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,23 +48,58 @@ const ProductPage = ({ allProducts, calculateCriticsScore }) => {
 
   useEffect(() => {
     if (productNameSlug && allProducts.length > 0) {
-      // console.log(`[ProductPage] Searching for product with slug: "${productNameSlug}" in allProducts (count: ${allProducts.length})`);
-      const foundProduct = allProducts.find(
-        (p) => p.productName.toLowerCase().replace(/\s+/g, '-') === productNameSlug
-      );
+      const normalizedProductSlug = slugifySegment(productNameSlug);
+      const exactSlugMatches = allProducts
+        .filter((p) => {
+          const productSlugMatches = slugifySegment(p.productName) === normalizedProductSlug;
+          if (!productSlugMatches) return false;
+          if (!brandSlug) return true;
+          return slugifySegment(p.brand) === slugifySegment(brandSlug);
+        })
+        .sort((a, b) => Number(b.id || 0) - Number(a.id || 0));
+
+      // Important: resolve exact slug first so names ending in numbers (e.g., "...-11")
+      // are not mistaken for an ID-based URL.
+      let foundProduct = exactSlugMatches[0];
+
+      if (!foundProduct) {
+        const { slug, id } = parseSlugAndId(productNameSlug);
+        if (id) {
+          const candidateById = allProducts.find((p) => Number(p.id) === id);
+          if (candidateById) {
+            const candidateSlug = slugifySegment(candidateById.productName);
+            const candidateBrandSlug = slugifySegment(candidateById.brand);
+            const routeBrandMatches = !brandSlug || candidateBrandSlug === slugifySegment(brandSlug);
+            if (candidateSlug === slugifySegment(slug) && routeBrandMatches) {
+              foundProduct = candidateById;
+            }
+          }
+        }
+      }
       if (foundProduct) {
         // console.log('[ProductPage] Product found and set:', foundProduct);
         setProduct(foundProduct);
+        setError(null);
       } else {
         console.error(`[ProductPage] Product with slug "${productNameSlug}" not found.`);
         setError('Product not found.');
+        setProduct(null);
       }
     }
     // Only set loading to false once allProducts has been processed or if productNameSlug is missing
     if (allProducts.length > 0 || !productNameSlug) {
         setLoading(false);
     }
-  }, [productNameSlug, allProducts]);
+  }, [brandSlug, productNameSlug, allProducts]);
+
+  useEffect(() => {
+    if (!product) return;
+    const canonicalPath = buildProductPath(product);
+    const currentPath = brandSlug ? `/product/${brandSlug}/${productNameSlug}` : `/product/${productNameSlug}`;
+    if (canonicalPath !== currentPath) {
+      navigate(canonicalPath, { replace: true });
+    }
+  }, [product, brandSlug, productNameSlug, navigate]);
 
   useEffect(() => {
     const fetchFeatureInsights = async () => {

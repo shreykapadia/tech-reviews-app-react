@@ -6,6 +6,7 @@ import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { AuthContext } from '../contexts/AuthContext'; // Adjust path if necessary
 import { supabase } from '../services/supabaseClient'; // Adjust path if necessary
+import { buildProductPath } from '../utils/productRouting';
 // calculateAudienceScore is no longer needed here as scores are pre-aggregated
 
 const ProductCard = ({ product, layoutType = 'default' }) => {
@@ -52,7 +53,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   // Use 'text-brand-primary' as the default for critics score if no specific color applies
   const criticsScoreColorClass = getScoreColor(criticsScoreDisplay, 'text-brand-primary');
 
-  const productNameSlug = product?.productName?.toLowerCase().replace(/\s+/g, '-') || 'unknown-product';
+  const productPath = buildProductPath(product);
 
   const isCarousel = layoutType === 'carousel';
 
@@ -134,7 +135,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
 
   return (
     <Link
-      to={`/product/${productNameSlug}`} // Direct navigation
+      to={productPath}
       className={`${baseLinkClasses} ${linkLayoutClasses}`} // Criterion I.1, I.3
       aria-label={`View details for ${product.productName}`}
     >

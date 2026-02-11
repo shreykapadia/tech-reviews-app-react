@@ -576,46 +576,54 @@ function AdminPage() {
     setSavingProduct(true);
     setStatus({ type: '', message: '' });
 
-    let payload;
     try {
-      payload = buildProductPayload();
-    } catch (parseError) {
-      setProductFormErrors({ keySpecsText: `Invalid JSON: ${parseError.message}` });
-      setSavingProduct(false);
-      return;
-    }
+      let payload;
+      try {
+        payload = buildProductPayload();
+      } catch (parseError) {
+        setProductFormErrors({ keySpecsText: `Invalid JSON: ${parseError.message}` });
+        return;
+      }
 
-    const response = editingProductId
-      ? await supabase.from('products').update(payload).eq('id', editingProductId)
-      : await supabase.from('products').insert(payload).select('id').single();
+      const response = editingProductId
+        ? await supabase.from('products').update(payload).eq('id', editingProductId)
+        : await supabase.from('products').insert(payload).select('id').single();
 
-    if (response.error) {
+      if (response.error) {
+        setStatus({
+          type: 'error',
+          message: `Could not ${editingProductId ? 'update' : 'create'} product: ${response.error.message}`,
+        });
+        return;
+      }
+
+      if (!editingProductId && response.data?.id) {
+        setCriticReviewCategoryId(productForm.categoryId ? String(productForm.categoryId) : '');
+        setCriticReviewProductId(String(response.data.id));
+        setActiveTab('critic-reviews');
+        setStatus({
+          type: 'success',
+          message: 'Product created successfully. You can now add critic reviews in the Critic Reviews tab.',
+        });
+      } else {
+        setStatus({
+          type: 'success',
+          message: `Product ${editingProductId ? 'updated' : 'created'} successfully.`,
+        });
+      }
+
+      resetProductForm();
+      await loadAdminData();
+    } catch (error) {
       setStatus({
         type: 'error',
-        message: `Could not ${editingProductId ? 'update' : 'create'} product: ${response.error.message}`,
+        message: `Could not ${editingProductId ? 'update' : 'create'} product: ${
+          error instanceof Error ? error.message : 'Unexpected error while saving.'
+        }`,
       });
+    } finally {
       setSavingProduct(false);
-      return;
     }
-
-    if (!editingProductId && response.data?.id) {
-      setCriticReviewCategoryId(productForm.categoryId ? String(productForm.categoryId) : '');
-      setCriticReviewProductId(String(response.data.id));
-      setActiveTab('critic-reviews');
-      setStatus({
-        type: 'success',
-        message: 'Product created successfully. You can now add critic reviews in the Critic Reviews tab.',
-      });
-    } else {
-      setStatus({
-        type: 'success',
-        message: `Product ${editingProductId ? 'updated' : 'created'} successfully.`,
-      });
-    }
-
-    resetProductForm();
-    setSavingProduct(false);
-    await loadAdminData();
   };
 
   const startCategoryEdit = (category) => {

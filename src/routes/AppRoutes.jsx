@@ -84,6 +84,10 @@ function AppRoutes({
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route
+          path="/product/:brandSlug/:productNameSlug"
+          element={<ProductPage allProducts={allProductsArray} calculateCriticsScore={calculateCriticsScore} />}
+        />
+        <Route
           path="/product/:productNameSlug"
           element={<ProductPage allProducts={allProductsArray} calculateCriticsScore={calculateCriticsScore} />}
         />
