@@ -97,6 +97,34 @@ const keySpecTemplatesByCategory = {
   },
 };
 
+const keySpecFieldLabels = {
+  operatingSystem: 'Operating System',
+  screenSize: 'Screen Size',
+  resolution: 'Resolution',
+  displayTech: 'Display Tech',
+  refreshRate: 'Refresh Rate',
+  processor: 'Processor',
+  ram: 'RAM',
+  storage: 'Storage',
+  cameraSpecs_MP: 'Camera Specs (MP)',
+  batteryCapacity: 'Battery Capacity (mAh)',
+  ratedBatteryLife: 'Rated Battery Life',
+  retailPrice: 'Retail Price',
+  formFactor: 'Form Factor',
+  touchScreen: 'Touch Screen',
+  processorOptions: 'Processor Options',
+  dedicatedGraphics: 'Dedicated Graphics',
+  batteryCapacity_Wh: 'Battery Capacity (Wh)',
+  displayPanelType: 'Display Panel Type',
+  displayBacklighting: 'Display Backlighting',
+  peakBrightness_nits: 'Peak Brightness (nits)',
+  smartTV: 'Smart TV Platform',
+  audio: 'Audio',
+};
+
+const LIST_PAGE_SIZE = 8;
+const REVIEW_PAGE_SIZE = 8;
+
 const getCategoryTemplateKey = (categoryName = '') => {
   const normalized = String(categoryName).toLowerCase();
   if (normalized.includes('smartphone')) return 'smartphones';
@@ -105,11 +133,13 @@ const getCategoryTemplateKey = (categoryName = '') => {
   return 'default';
 };
 
-const getKeySpecsTemplateForCategory = (categoryName = '') => {
+const getKeySpecsTemplateObjectForCategory = (categoryName = '') => {
   const templateKey = getCategoryTemplateKey(categoryName);
-  const template = keySpecTemplatesByCategory[templateKey] || keySpecTemplatesByCategory.default;
-  return JSON.stringify(template, null, 2);
+  return keySpecTemplatesByCategory[templateKey] || keySpecTemplatesByCategory.default;
 };
+
+const getKeySpecsTemplateForCategory = (categoryName = '') =>
+  JSON.stringify(getKeySpecsTemplateObjectForCategory(categoryName), null, 2);
 
 const parseNumber = (value, fallback = null) => {
   if (value === '' || value === null || value === undefined) return fallback;
@@ -117,8 +147,28 @@ const parseNumber = (value, fallback = null) => {
   return Number.isFinite(num) ? num : fallback;
 };
 
+const safeParseJson = (text, fallback = {}) => {
+  try {
+    const parsed = JSON.parse(text);
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      return { value: parsed, error: null };
+    }
+    return { value: fallback, error: 'Must be a JSON object.' };
+  } catch (error) {
+    return { value: fallback, error: error.message };
+  }
+};
+
 const adminSelectClasses =
   'mt-1 w-full px-3.5 py-2.5 border border-slate-300 rounded-xl bg-white text-slate-800 shadow-sm focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition';
+
+const adminInputClasses =
+  'mt-1 w-full px-3.5 py-2.5 border border-slate-300 rounded-xl bg-white text-slate-800 shadow-sm focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition';
+
+const paginate = (items, page, pageSize) => {
+  const start = (page - 1) * pageSize;
+  return items.slice(start, start + pageSize);
+};
 
 function AdminPage() {
   const [activeTab, setActiveTab] = useState('products');
@@ -128,24 +178,35 @@ function AdminPage() {
   const [status, setStatus] = useState({ type: '', message: '' });
 
   const [categoryForm, setCategoryForm] = useState(emptyCategoryForm);
+  const [categoryFormErrors, setCategoryFormErrors] = useState({});
   const [slugTouched, setSlugTouched] = useState(false);
   const [savingCategory, setSavingCategory] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [deletingCategoryId, setDeletingCategoryId] = useState(null);
 
   const [productForm, setProductForm] = useState(emptyProductForm);
+  const [productFormErrors, setProductFormErrors] = useState({});
   const [savingProduct, setSavingProduct] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
   const [deletingProductId, setDeletingProductId] = useState(null);
+
   const [criticReviews, setCriticReviews] = useState([]);
   const [loadingCriticReviews, setLoadingCriticReviews] = useState(false);
   const [criticReviewCategoryId, setCriticReviewCategoryId] = useState('');
   const [criticReviewProductSearch, setCriticReviewProductSearch] = useState('');
   const [criticReviewProductId, setCriticReviewProductId] = useState('');
   const [criticReviewForm, setCriticReviewForm] = useState(emptyCriticReviewForm);
+  const [criticReviewFormErrors, setCriticReviewFormErrors] = useState({});
   const [editingCriticReviewId, setEditingCriticReviewId] = useState(null);
   const [savingCriticReview, setSavingCriticReview] = useState(false);
   const [deletingCriticReviewId, setDeletingCriticReviewId] = useState(null);
+
+  const [categoryListSearch, setCategoryListSearch] = useState('');
+  const [categoryPage, setCategoryPage] = useState(1);
+  const [productListSearch, setProductListSearch] = useState('');
+  const [productPage, setProductPage] = useState(1);
+  const [criticReviewListSearch, setCriticReviewListSearch] = useState('');
+  const [criticReviewPage, setCriticReviewPage] = useState(1);
 
   const categoryMap = useMemo(() => {
     const map = new Map();
@@ -157,6 +218,22 @@ function AdminPage() {
     if (!categoryId) return '';
     return categoryMap.get(String(categoryId))?.name || '';
   };
+
+  const parsedKeySpecsResult = useMemo(
+    () => safeParseJson(productForm.keySpecsText, {}),
+    [productForm.keySpecsText]
+  );
+
+  const currentProductCategoryName = getCategoryNameById(productForm.categoryId);
+  const currentKeySpecTemplate = useMemo(
+    () => getKeySpecsTemplateObjectForCategory(currentProductCategoryName),
+    [currentProductCategoryName]
+  );
+
+  const mergedKeySpecsFields = useMemo(() => {
+    const parsed = parsedKeySpecsResult.value || {};
+    return { ...currentKeySpecTemplate, ...parsed };
+  }, [currentKeySpecTemplate, parsedKeySpecsResult.value]);
 
   const criticReviewProducts = useMemo(() => {
     if (!criticReviewCategoryId) return [];
@@ -170,6 +247,40 @@ function AdminPage() {
       `${product.product_name} ${product.brand}`.toLowerCase().includes(term)
     );
   }, [criticReviewProducts, criticReviewProductSearch]);
+
+  const filteredCategories = useMemo(() => {
+    const term = categoryListSearch.trim().toLowerCase();
+    if (!term) return categories;
+    return categories.filter((category) => `${category.name} ${category.slug}`.toLowerCase().includes(term));
+  }, [categories, categoryListSearch]);
+
+  const categoryPageCount = Math.max(1, Math.ceil(filteredCategories.length / LIST_PAGE_SIZE));
+  const pagedCategories = useMemo(() => paginate(filteredCategories, categoryPage, LIST_PAGE_SIZE), [filteredCategories, categoryPage]);
+
+  const filteredProducts = useMemo(() => {
+    const term = productListSearch.trim().toLowerCase();
+    if (!term) return products;
+    return products.filter((product) =>
+      `${product.product_name} ${product.brand} ${product.categories?.name || ''}`.toLowerCase().includes(term)
+    );
+  }, [products, productListSearch]);
+
+  const productPageCount = Math.max(1, Math.ceil(filteredProducts.length / LIST_PAGE_SIZE));
+  const pagedProducts = useMemo(() => paginate(filteredProducts, productPage, LIST_PAGE_SIZE), [filteredProducts, productPage]);
+
+  const filteredCriticReviews = useMemo(() => {
+    const term = criticReviewListSearch.trim().toLowerCase();
+    if (!term) return criticReviews;
+    return criticReviews.filter((review) =>
+      `${review.publication} ${review.summary || ''} ${review.scale || ''}`.toLowerCase().includes(term)
+    );
+  }, [criticReviews, criticReviewListSearch]);
+
+  const criticReviewPageCount = Math.max(1, Math.ceil(filteredCriticReviews.length / REVIEW_PAGE_SIZE));
+  const pagedCriticReviews = useMemo(
+    () => paginate(filteredCriticReviews, criticReviewPage, REVIEW_PAGE_SIZE),
+    [filteredCriticReviews, criticReviewPage]
+  );
 
   const loadAdminData = async () => {
     setLoadingData(true);
@@ -194,7 +305,7 @@ function AdminPage() {
           categories(name)
         `)
         .order('id', { ascending: false })
-        .limit(100),
+        .limit(1000),
     ]);
 
     if (categoriesResponse.error) {
@@ -215,6 +326,30 @@ function AdminPage() {
   useEffect(() => {
     loadAdminData();
   }, []);
+
+  useEffect(() => {
+    setCategoryPage(1);
+  }, [categoryListSearch]);
+
+  useEffect(() => {
+    if (categoryPage > categoryPageCount) setCategoryPage(categoryPageCount);
+  }, [categoryPage, categoryPageCount]);
+
+  useEffect(() => {
+    setProductPage(1);
+  }, [productListSearch]);
+
+  useEffect(() => {
+    if (productPage > productPageCount) setProductPage(productPageCount);
+  }, [productPage, productPageCount]);
+
+  useEffect(() => {
+    setCriticReviewPage(1);
+  }, [criticReviewListSearch, criticReviewProductId]);
+
+  useEffect(() => {
+    if (criticReviewPage > criticReviewPageCount) setCriticReviewPage(criticReviewPageCount);
+  }, [criticReviewPage, criticReviewPageCount]);
 
   useEffect(() => {
     if (!productForm.categoryId && categories.length > 0) {
@@ -274,12 +409,14 @@ function AdminPage() {
 
   const resetCategoryForm = () => {
     setCategoryForm(emptyCategoryForm);
+    setCategoryFormErrors({});
     setSlugTouched(false);
     setEditingCategoryId(null);
   };
 
   const resetCriticReviewForm = () => {
     setCriticReviewForm(emptyCriticReviewForm);
+    setCriticReviewFormErrors({});
     setEditingCriticReviewId(null);
   };
 
@@ -291,8 +428,8 @@ function AdminPage() {
       categoryId: firstCategoryId,
       keySpecsText: getKeySpecsTemplateForCategory(firstCategoryName),
     });
+    setProductFormErrors({});
     setEditingProductId(null);
-    resetCriticReviewForm();
   };
 
   const loadCriticReviews = async (productId) => {
@@ -317,8 +454,18 @@ function AdminPage() {
     setLoadingCriticReviews(false);
   };
 
+  const updateKeySpecField = (key, nextValue) => {
+    const { value: parsed } = safeParseJson(productForm.keySpecsText, {});
+    const updated = { ...parsed, [key]: key === 'retailPrice' ? Number(nextValue || 0) : nextValue };
+    setProductForm((prev) => ({ ...prev, keySpecsText: JSON.stringify(updated, null, 2) }));
+  };
+
   const buildProductPayload = () => {
-    const parsedKeySpecs = JSON.parse(productForm.keySpecsText || '{}');
+    const parsedKeySpecsResultLocal = safeParseJson(productForm.keySpecsText, {});
+    if (parsedKeySpecsResultLocal.error) {
+      throw new Error(parsedKeySpecsResultLocal.error);
+    }
+
     const pros = productForm.prosText
       .split('\n')
       .map((line) => line.trim())
@@ -335,9 +482,43 @@ function AdminPage() {
       image_url: productForm.imageURL.trim() || null,
       description: productForm.description.trim() || null,
       best_buy_sku: productForm.bestBuySku.trim() || null,
-      key_specs: parsedKeySpecs,
+      key_specs: parsedKeySpecsResultLocal.value,
       ai_pros_cons: { pros, cons },
     };
+  };
+
+  const validateCategoryForm = () => {
+    const errors = {};
+    if (!categoryForm.name.trim()) errors.name = 'Name is required.';
+    const computedSlug = slugify(categoryForm.slug || categoryForm.name);
+    if (!computedSlug) errors.slug = 'Slug is required.';
+    if (categoryForm.slug && !/^[a-z0-9-]+$/.test(categoryForm.slug)) {
+      errors.slug = 'Slug should use lowercase letters, numbers, and hyphens only.';
+    }
+    return errors;
+  };
+
+  const validateProductForm = () => {
+    const errors = {};
+    if (!productForm.productName.trim()) errors.productName = 'Product name is required.';
+    if (!productForm.brand.trim()) errors.brand = 'Brand is required.';
+    if (!productForm.categoryId) errors.categoryId = 'Category is required.';
+
+    const parsed = safeParseJson(productForm.keySpecsText, {});
+    if (parsed.error) {
+      errors.keySpecsText = `Invalid JSON: ${parsed.error}`;
+    }
+
+    return errors;
+  };
+
+  const validateCriticReviewForm = () => {
+    const errors = {};
+    if (!criticReviewProductId) errors.product = 'Select a product.';
+    if (!criticReviewForm.publication.trim()) errors.publication = 'Publication is required.';
+    if (parseNumber(criticReviewForm.score) === null) errors.score = 'Score must be a valid number.';
+    if (!criticReviewForm.scale.trim()) errors.scale = 'Scale is required.';
+    return errors;
   };
 
   const onCategoryNameChange = (value) => {
@@ -350,6 +531,10 @@ function AdminPage() {
 
   const handleSaveCategory = async (event) => {
     event.preventDefault();
+    const errors = validateCategoryForm();
+    setCategoryFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     setSavingCategory(true);
     setStatus({ type: '', message: '' });
 
@@ -384,6 +569,10 @@ function AdminPage() {
 
   const handleSaveProduct = async (event) => {
     event.preventDefault();
+    const errors = validateProductForm();
+    setProductFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
     setSavingProduct(true);
     setStatus({ type: '', message: '' });
 
@@ -391,14 +580,14 @@ function AdminPage() {
     try {
       payload = buildProductPayload();
     } catch (parseError) {
-      setStatus({ type: 'error', message: `Key specs must be valid JSON: ${parseError.message}` });
+      setProductFormErrors({ keySpecsText: `Invalid JSON: ${parseError.message}` });
       setSavingProduct(false);
       return;
     }
 
     const response = editingProductId
       ? await supabase.from('products').update(payload).eq('id', editingProductId)
-      : await supabase.from('products').insert(payload);
+      : await supabase.from('products').insert(payload).select('id').single();
 
     if (response.error) {
       setStatus({
@@ -409,10 +598,21 @@ function AdminPage() {
       return;
     }
 
-    setStatus({
-      type: 'success',
-      message: `Product ${editingProductId ? 'updated' : 'created'} successfully.`,
-    });
+    if (!editingProductId && response.data?.id) {
+      setCriticReviewCategoryId(productForm.categoryId ? String(productForm.categoryId) : '');
+      setCriticReviewProductId(String(response.data.id));
+      setActiveTab('critic-reviews');
+      setStatus({
+        type: 'success',
+        message: 'Product created successfully. You can now add critic reviews in the Critic Reviews tab.',
+      });
+    } else {
+      setStatus({
+        type: 'success',
+        message: `Product ${editingProductId ? 'updated' : 'created'} successfully.`,
+      });
+    }
+
     resetProductForm();
     setSavingProduct(false);
     await loadAdminData();
@@ -422,6 +622,7 @@ function AdminPage() {
     setActiveTab('categories');
     setEditingCategoryId(category.id);
     setSlugTouched(true);
+    setCategoryFormErrors({});
     setCategoryForm({
       name: category.name || '',
       slug: category.slug || '',
@@ -436,6 +637,7 @@ function AdminPage() {
     setEditingProductId(product.id);
     setCriticReviewCategoryId(product.category_id ? String(product.category_id) : '');
     setCriticReviewProductId(String(product.id));
+    setProductFormErrors({});
     resetCriticReviewForm();
     setProductForm({
       productName: product.product_name || '',
@@ -451,12 +653,29 @@ function AdminPage() {
     setStatus({ type: '', message: '' });
   };
 
+  const duplicateProductToForm = (product) => {
+    setActiveTab('products');
+    setEditingProductId(null);
+    setProductFormErrors({});
+    setProductForm({
+      productName: `${product.product_name || ''} Copy`.trim(),
+      brand: product.brand || '',
+      categoryId: product.category_id ? String(product.category_id) : (categories[0]?.id ? String(categories[0].id) : ''),
+      imageURL: product.image_url || '',
+      description: product.description || '',
+      bestBuySku: '',
+      keySpecsText: JSON.stringify(product.key_specs || {}, null, 2),
+      prosText: (product.ai_pros_cons?.pros || []).join('\n'),
+      consText: (product.ai_pros_cons?.cons || []).join('\n'),
+    });
+    setStatus({ type: 'success', message: 'Product duplicated into form. Update fields and click Create Product.' });
+  };
+
   const handleSaveCriticReview = async (event) => {
     event.preventDefault();
-    if (!criticReviewProductId) {
-      setStatus({ type: 'error', message: 'Select a product to manage critic reviews.' });
-      return;
-    }
+    const errors = validateCriticReviewForm();
+    setCriticReviewFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
     setSavingCriticReview(true);
     setStatus({ type: '', message: '' });
@@ -469,12 +688,6 @@ function AdminPage() {
       link: criticReviewForm.link.trim() || null,
       summary: criticReviewForm.summary.trim() || null,
     };
-
-    if (!payload.publication || payload.score === null || !payload.scale) {
-      setStatus({ type: 'error', message: 'Publication, score, and scale are required for critic reviews.' });
-      setSavingCriticReview(false);
-      return;
-    }
 
     const response = editingCriticReviewId
       ? await supabase.from('critic_reviews').update(payload).eq('id', editingCriticReviewId)
@@ -501,6 +714,7 @@ function AdminPage() {
 
   const startCriticReviewEdit = (review) => {
     setEditingCriticReviewId(review.id);
+    setCriticReviewFormErrors({});
     setCriticReviewForm({
       publication: review.publication || '',
       score: review.score ?? '',
@@ -591,9 +805,7 @@ function AdminPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-brand-text font-serif">Admin Portal</h1>
-          <p className="text-slate-600 mt-2">
-            Create, edit, and remove categories/products that power your product pages.
-          </p>
+          <p className="text-slate-600 mt-2">Phase 1: schema forms, search/pagination, validation, and duplicate workflows.</p>
         </div>
 
         {status.message && (
@@ -615,9 +827,7 @@ function AdminPage() {
                 <button
                   onClick={() => setActiveTab('products')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    activeTab === 'products'
-                      ? 'bg-brand-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    activeTab === 'products' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Manage Products
@@ -625,9 +835,7 @@ function AdminPage() {
                 <button
                   onClick={() => setActiveTab('categories')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    activeTab === 'categories'
-                      ? 'bg-brand-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    activeTab === 'categories' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Manage Categories
@@ -635,9 +843,7 @@ function AdminPage() {
                 <button
                   onClick={() => setActiveTab('critic-reviews')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    activeTab === 'critic-reviews'
-                      ? 'bg-brand-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    activeTab === 'critic-reviews' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Manage Critic Reviews
@@ -657,9 +863,10 @@ function AdminPage() {
                       required
                       value={categoryForm.name}
                       onChange={(e) => onCategoryNameChange(e.target.value)}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="Smartphones"
                     />
+                    {categoryFormErrors.name && <p className="text-xs text-red-600 mt-1">{categoryFormErrors.name}</p>}
                   </label>
                   <label className="text-sm text-slate-700">
                     Slug
@@ -670,16 +877,17 @@ function AdminPage() {
                         setSlugTouched(true);
                         setCategoryForm((prev) => ({ ...prev, slug: e.target.value }));
                       }}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="smartphones"
                     />
+                    {categoryFormErrors.slug && <p className="text-xs text-red-600 mt-1">{categoryFormErrors.slug}</p>}
                   </label>
                   <label className="text-sm text-slate-700 md:col-span-2">
                     Icon Image URL
                     <input
                       value={categoryForm.iconImageUrl}
                       onChange={(e) => setCategoryForm((prev) => ({ ...prev, iconImageUrl: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="https://..."
                     />
                   </label>
@@ -688,7 +896,7 @@ function AdminPage() {
                     <input
                       value={categoryForm.ariaLabel}
                       onChange={(e) => setCategoryForm((prev) => ({ ...prev, ariaLabel: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="Browse smartphone products"
                     />
                   </label>
@@ -726,9 +934,10 @@ function AdminPage() {
                       required
                       value={productForm.productName}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, productName: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="Galaxy S26 Ultra"
                     />
+                    {productFormErrors.productName && <p className="text-xs text-red-600 mt-1">{productFormErrors.productName}</p>}
                   </label>
                   <label className="text-sm text-slate-700">
                     Brand
@@ -736,9 +945,10 @@ function AdminPage() {
                       required
                       value={productForm.brand}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, brand: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="Samsung"
                     />
+                    {productFormErrors.brand && <p className="text-xs text-red-600 mt-1">{productFormErrors.brand}</p>}
                   </label>
 
                   <label className="text-sm text-slate-700">
@@ -763,13 +973,14 @@ function AdminPage() {
                         </option>
                       ))}
                     </select>
+                    {productFormErrors.categoryId && <p className="text-xs text-red-600 mt-1">{productFormErrors.categoryId}</p>}
                   </label>
                   <label className="text-sm text-slate-700">
                     Image URL
                     <input
                       value={productForm.imageURL}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, imageURL: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                       placeholder="/images/products/example.webp or https://..."
                     />
                   </label>
@@ -780,7 +991,7 @@ function AdminPage() {
                       rows={3}
                       value={productForm.description}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, description: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                     />
                   </label>
 
@@ -789,19 +1000,50 @@ function AdminPage() {
                     <input
                       value={productForm.bestBuySku}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, bestBuySku: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                     />
                   </label>
-                  <div></div>
+
+                  <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2">
+                    <p className="text-sm font-semibold text-slate-700 mb-2">Key Specs Fields (Category Schema)</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {Object.keys(currentKeySpecTemplate).map((key) => (
+                        <label key={key} className="text-sm text-slate-700">
+                          {keySpecFieldLabels[key] || key}
+                          {key === 'retailPrice' ? (
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={mergedKeySpecsFields[key] ?? 0}
+                              onChange={(e) => updateKeySpecField(key, e.target.value)}
+                              className={adminInputClasses}
+                            />
+                          ) : (
+                            <input
+                              value={mergedKeySpecsFields[key] ?? ''}
+                              onChange={(e) => updateKeySpecField(key, e.target.value)}
+                              className={adminInputClasses}
+                            />
+                          )}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
 
                   <label className="text-sm text-slate-700 md:col-span-2">
-                    Key Specs JSON
+                    Raw Key Specs JSON (Advanced)
                     <textarea
-                      rows={10}
+                      rows={8}
                       value={productForm.keySpecsText}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, keySpecsText: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl font-mono text-xs"
+                      className={`${adminInputClasses} font-mono text-xs`}
                     />
+                    {(productFormErrors.keySpecsText || parsedKeySpecsResult.error) && (
+                      <p className="text-xs text-red-600 mt-1">
+                        {productFormErrors.keySpecsText || `Invalid JSON: ${parsedKeySpecsResult.error}`}
+                      </p>
+                    )}
                   </label>
 
                   <label className="text-sm text-slate-700">
@@ -810,7 +1052,7 @@ function AdminPage() {
                       rows={5}
                       value={productForm.prosText}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, prosText: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                     />
                   </label>
                   <label className="text-sm text-slate-700">
@@ -819,11 +1061,11 @@ function AdminPage() {
                       rows={5}
                       value={productForm.consText}
                       onChange={(e) => setProductForm((prev) => ({ ...prev, consText: e.target.value }))}
-                      className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                      className={adminInputClasses}
                     />
                   </label>
 
-                  <div className="md:col-span-2 flex gap-3">
+                  <div className="md:col-span-2 flex gap-3 flex-wrap">
                     <button
                       type="submit"
                       disabled={savingProduct || categories.length === 0}
@@ -887,7 +1129,7 @@ function AdminPage() {
                       value={criticReviewProductSearch}
                       onChange={(e) => setCriticReviewProductSearch(e.target.value)}
                       placeholder="Type product or brand..."
-                      className="mt-1 w-full px-3.5 py-2.5 border border-slate-300 rounded-xl bg-white text-slate-800 shadow-sm focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition"
+                      className={adminInputClasses}
                       disabled={!criticReviewCategoryId}
                     />
                   </label>
@@ -915,11 +1157,9 @@ function AdminPage() {
                         </option>
                       ))}
                     </select>
+                    {criticReviewFormErrors.product && <p className="text-xs text-red-600 mt-1">{criticReviewFormErrors.product}</p>}
                   </label>
                 </div>
-                <p className="text-xs text-slate-500 mt-1 mb-3">
-                  Choose category and product to add/edit/delete rows in `critic_reviews`.
-                </p>
 
                 {!criticReviewProductId ? (
                   <p className="text-sm text-slate-600">Select a product above to manage critic reviews.</p>
@@ -932,9 +1172,10 @@ function AdminPage() {
                           required
                           value={criticReviewForm.publication}
                           onChange={(e) => setCriticReviewForm((prev) => ({ ...prev, publication: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                          className={adminInputClasses}
                           placeholder="The Verge"
                         />
+                        {criticReviewFormErrors.publication && <p className="text-xs text-red-600 mt-1">{criticReviewFormErrors.publication}</p>}
                       </label>
                       <label className="text-sm text-slate-700">
                         Score
@@ -944,9 +1185,10 @@ function AdminPage() {
                           step="0.1"
                           value={criticReviewForm.score}
                           onChange={(e) => setCriticReviewForm((prev) => ({ ...prev, score: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                          className={adminInputClasses}
                           placeholder="8.5"
                         />
+                        {criticReviewFormErrors.score && <p className="text-xs text-red-600 mt-1">{criticReviewFormErrors.score}</p>}
                       </label>
                       <label className="text-sm text-slate-700">
                         Scale
@@ -954,16 +1196,17 @@ function AdminPage() {
                           required
                           value={criticReviewForm.scale}
                           onChange={(e) => setCriticReviewForm((prev) => ({ ...prev, scale: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                          className={adminInputClasses}
                           placeholder="/10, /5, /100"
                         />
+                        {criticReviewFormErrors.scale && <p className="text-xs text-red-600 mt-1">{criticReviewFormErrors.scale}</p>}
                       </label>
                       <label className="text-sm text-slate-700">
                         Review Link
                         <input
                           value={criticReviewForm.link}
                           onChange={(e) => setCriticReviewForm((prev) => ({ ...prev, link: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                          className={adminInputClasses}
                           placeholder="https://..."
                         />
                       </label>
@@ -973,11 +1216,11 @@ function AdminPage() {
                           rows={3}
                           value={criticReviewForm.summary}
                           onChange={(e) => setCriticReviewForm((prev) => ({ ...prev, summary: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-xl"
+                          className={adminInputClasses}
                           placeholder="AI summary or excerpt"
                         />
                       </label>
-                      <div className="md:col-span-2 flex gap-3">
+                      <div className="md:col-span-2 flex gap-3 flex-wrap">
                         <button
                           type="submit"
                           disabled={savingCriticReview}
@@ -998,39 +1241,73 @@ function AdminPage() {
                     </form>
 
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-700 mb-2">Existing reviews for this product</h4>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
+                        <h4 className="text-sm font-semibold text-slate-700">Existing reviews for this product</h4>
+                        <input
+                          value={criticReviewListSearch}
+                          onChange={(e) => setCriticReviewListSearch(e.target.value)}
+                          placeholder="Search reviews..."
+                          className="w-full sm:w-64 px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
                       {loadingCriticReviews ? (
                         <p className="text-sm text-slate-500">Loading critic reviews...</p>
-                      ) : criticReviews.length === 0 ? (
+                      ) : filteredCriticReviews.length === 0 ? (
                         <p className="text-sm text-slate-500">No critic reviews yet.</p>
                       ) : (
-                        <ul className="space-y-2 max-h-80 overflow-auto pr-1">
-                          {criticReviews.map((review) => (
-                            <li key={review.id} className="rounded-lg border border-slate-200 px-3 py-2 bg-white">
-                              <p className="text-sm font-semibold text-slate-800">
-                                {review.publication} - {review.score}{review.scale}
-                              </p>
-                              {review.summary && <p className="text-xs text-slate-600 mt-1 line-clamp-2">{review.summary}</p>}
-                              <div className="mt-2 flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => startCriticReviewEdit(review)}
-                                  className="text-sm px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200"
-                                >
-                                  Edit Review
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteCriticReview(review)}
-                                  disabled={deletingCriticReviewId === review.id}
-                                  className="text-sm px-3.5 py-1.5 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-60"
-                                >
-                                  {deletingCriticReviewId === review.id ? 'Deleting...' : 'Delete Review'}
-                                </button>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
+                        <>
+                          <ul className="space-y-2 max-h-80 overflow-auto pr-1">
+                            {pagedCriticReviews.map((review) => (
+                              <li key={review.id} className="rounded-lg border border-slate-200 px-3 py-2 bg-white">
+                                <p className="text-sm font-semibold text-slate-800">
+                                  {review.publication} - {review.score}
+                                  {review.scale}
+                                </p>
+                                {review.summary && <p className="text-xs text-slate-600 mt-1 line-clamp-2">{review.summary}</p>}
+                                <div className="mt-2 flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => startCriticReviewEdit(review)}
+                                    className="text-sm px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200"
+                                  >
+                                    Edit Review
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteCriticReview(review)}
+                                    disabled={deletingCriticReviewId === review.id}
+                                    className="text-sm px-3.5 py-1.5 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-60"
+                                  >
+                                    {deletingCriticReviewId === review.id ? 'Deleting...' : 'Delete Review'}
+                                  </button>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="mt-3 flex items-center justify-between text-sm">
+                            <span className="text-slate-500">
+                              Page {criticReviewPage} of {criticReviewPageCount}
+                            </span>
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                disabled={criticReviewPage <= 1}
+                                onClick={() => setCriticReviewPage((prev) => Math.max(1, prev - 1))}
+                                className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 disabled:opacity-40"
+                              >
+                                Prev
+                              </button>
+                              <button
+                                type="button"
+                                disabled={criticReviewPage >= criticReviewPageCount}
+                                onClick={() => setCriticReviewPage((prev) => Math.min(criticReviewPageCount, prev + 1))}
+                                className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 disabled:opacity-40"
+                              >
+                                Next
+                              </button>
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -1041,70 +1318,143 @@ function AdminPage() {
 
           <div className="space-y-6">
             <section className="bg-white/90 backdrop-blur-sm border border-white/80 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.12)] p-5">
-              <h3 className="text-lg font-bold text-brand-text font-serif mb-3">Categories</h3>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h3 className="text-lg font-bold text-brand-text font-serif">Categories</h3>
+                <input
+                  value={categoryListSearch}
+                  onChange={(e) => setCategoryListSearch(e.target.value)}
+                  placeholder="Search..."
+                  className="w-40 px-3 py-1.5 border border-slate-300 rounded-lg text-sm"
+                />
+              </div>
               {loadingData ? (
                 <p className="text-sm text-slate-500">Loading...</p>
               ) : (
-                <ul className="space-y-2 max-h-80 overflow-auto pr-1">
-                  {categories.map((category) => (
-                    <li key={category.id} className="rounded-lg border border-slate-200 px-3 py-2 bg-white">
-                      <p className="text-sm font-semibold text-slate-800">{category.name}</p>
-                      <p className="text-xs text-slate-500">{category.slug}</p>
-                      <div className="mt-2 flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => startCategoryEdit(category)}
-                          className="text-sm px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteCategory(category)}
-                          disabled={deletingCategoryId === category.id}
-                          className="text-sm px-3.5 py-1.5 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-60"
-                        >
-                          {deletingCategoryId === category.id ? 'Deleting...' : 'Delete'}
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul className="space-y-2 max-h-80 overflow-auto pr-1">
+                    {pagedCategories.map((category) => (
+                      <li key={category.id} className="rounded-lg border border-slate-200 px-3 py-2 bg-white">
+                        <p className="text-sm font-semibold text-slate-800">{category.name}</p>
+                        <p className="text-xs text-slate-500">{category.slug}</p>
+                        <div className="mt-2 flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => startCategoryEdit(category)}
+                            className="text-sm px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteCategory(category)}
+                            disabled={deletingCategoryId === category.id}
+                            className="text-sm px-3.5 py-1.5 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-60"
+                          >
+                            {deletingCategoryId === category.id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-3 flex items-center justify-between text-sm">
+                    <span className="text-slate-500">
+                      Page {categoryPage} of {categoryPageCount}
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        disabled={categoryPage <= 1}
+                        onClick={() => setCategoryPage((prev) => Math.max(1, prev - 1))}
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 disabled:opacity-40"
+                      >
+                        Prev
+                      </button>
+                      <button
+                        type="button"
+                        disabled={categoryPage >= categoryPageCount}
+                        onClick={() => setCategoryPage((prev) => Math.min(categoryPageCount, prev + 1))}
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 disabled:opacity-40"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </section>
 
             <section className="bg-white/90 backdrop-blur-sm border border-white/80 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.12)] p-5">
-              <h3 className="text-lg font-bold text-brand-text font-serif mb-3">Products</h3>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h3 className="text-lg font-bold text-brand-text font-serif">Products</h3>
+                <input
+                  value={productListSearch}
+                  onChange={(e) => setProductListSearch(e.target.value)}
+                  placeholder="Search..."
+                  className="w-40 px-3 py-1.5 border border-slate-300 rounded-lg text-sm"
+                />
+              </div>
               {loadingData ? (
                 <p className="text-sm text-slate-500">Loading...</p>
               ) : (
-                <ul className="space-y-2 max-h-96 overflow-auto pr-1">
-                  {products.map((product) => (
-                    <li key={product.id} className="rounded-lg border border-slate-200 px-3 py-2 bg-white">
-                      <p className="text-sm font-semibold text-slate-800">{product.product_name}</p>
-                      <p className="text-xs text-slate-500">
-                        {product.brand} • {product.categories?.name || categoryMap.get(String(product.category_id))?.name || 'Unknown'}
-                      </p>
-                      <div className="mt-2 flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => startProductEdit(product)}
-                          className="text-sm px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteProduct(product)}
-                          disabled={deletingProductId === product.id}
-                          className="text-sm px-3.5 py-1.5 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-60"
-                        >
-                          {deletingProductId === product.id ? 'Deleting...' : 'Delete'}
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul className="space-y-2 max-h-96 overflow-auto pr-1">
+                    {pagedProducts.map((product) => (
+                      <li key={product.id} className="rounded-lg border border-slate-200 px-3 py-2 bg-white">
+                        <p className="text-sm font-semibold text-slate-800">{product.product_name}</p>
+                        <p className="text-xs text-slate-500">
+                          {product.brand} • {product.categories?.name || categoryMap.get(String(product.category_id))?.name || 'Unknown'}
+                        </p>
+                        <div className="mt-2 flex gap-2 flex-wrap">
+                          <button
+                            type="button"
+                            onClick={() => startProductEdit(product)}
+                            className="text-sm px-3.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => duplicateProductToForm(product)}
+                            className="text-sm px-3.5 py-1.5 rounded-lg bg-amber-100 text-amber-800 font-semibold hover:bg-amber-200"
+                          >
+                            Duplicate
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteProduct(product)}
+                            disabled={deletingProductId === product.id}
+                            className="text-sm px-3.5 py-1.5 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 disabled:opacity-60"
+                          >
+                            {deletingProductId === product.id ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-3 flex items-center justify-between text-sm">
+                    <span className="text-slate-500">
+                      Page {productPage} of {productPageCount}
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        disabled={productPage <= 1}
+                        onClick={() => setProductPage((prev) => Math.max(1, prev - 1))}
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 disabled:opacity-40"
+                      >
+                        Prev
+                      </button>
+                      <button
+                        type="button"
+                        disabled={productPage >= productPageCount}
+                        onClick={() => setProductPage((prev) => Math.min(productPageCount, prev + 1))}
+                        className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 disabled:opacity-40"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </section>
           </div>
