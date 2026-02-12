@@ -24,7 +24,7 @@ export const parseRam = (ramInput) => {
 
   if (Array.isArray(ramInput)) {
     if (ramInput.length === 0) {
-        return null; // Handle empty array explicitly
+      return null; // Handle empty array explicitly
     }
     for (const ramOption of ramInput) {
       const ramValue = extractRamValue(ramOption);
@@ -36,20 +36,20 @@ export const parseRam = (ramInput) => {
   } else if (typeof ramInput === 'string') {
     // If it's a comma-separated string, find the max
     if (ramInput.includes(',')) {
-        const parts = ramInput.split(',');
-        for (const part of parts) {
-            const ramValue = extractRamValue(part.trim());
-            if (ramValue !== null) {
-                maxRam = Math.max(maxRam, ramValue);
-                foundRam = true;
-            }
-        }
-    } else { // Single string value
-        const ramValue = extractRamValue(ramInput);
+      const parts = ramInput.split(',');
+      for (const part of parts) {
+        const ramValue = extractRamValue(part.trim());
         if (ramValue !== null) {
-          maxRam = ramValue;
+          maxRam = Math.max(maxRam, ramValue);
           foundRam = true;
         }
+      }
+    } else { // Single string value
+      const ramValue = extractRamValue(ramInput);
+      if (ramValue !== null) {
+        maxRam = ramValue;
+        foundRam = true;
+      }
     }
   } else if (typeof ramInput === 'number') {
     if (!isNaN(ramInput) && ramInput > 0) {
@@ -115,7 +115,7 @@ export const parseStorage = (storageSpec) => {
   if ((specStr.startsWith('"') && specStr.endsWith('"')) || (specStr.startsWith("'") && specStr.endsWith("'"))) {
     specStr = specStr.substring(1, specStr.length - 1);
   }
-  
+
   specStr = specStr.toLowerCase(); // Standardize to lowercase for matching "tb" or "gb"
 
   // Check for Terabytes (TB)
@@ -195,26 +195,26 @@ export const hasDedicatedGraphics = (keySpecs) => {
   const lowerProcessor = String(processor || '').toLowerCase();
 
   if ((lowerProcessor.includes('m1') || lowerProcessor.includes('m2') || lowerProcessor.includes('m3') || lowerProcessor.includes('m4')) &&
-      (lowerProcessor.includes('pro') || lowerProcessor.includes('max') || lowerProcessor.includes('ultra'))) {
+    (lowerProcessor.includes('pro') || lowerProcessor.includes('max') || lowerProcessor.includes('ultra'))) {
     return true;
   }
 
   if (lowerGraphics.includes('integrated') ||
-      lowerGraphics.includes('intel iris') ||
-      lowerGraphics.includes('intel hd graphics') ||
-      lowerGraphics.includes('intel uhd graphics') ||
-      lowerGraphics.includes('intel graphics') ||
-      (lowerGraphics.includes('amd radeon graphics') && !lowerGraphics.includes('rx')) ||
-      lowerGraphics.includes('amd vega')) {
+    lowerGraphics.includes('intel iris') ||
+    lowerGraphics.includes('intel hd graphics') ||
+    lowerGraphics.includes('intel uhd graphics') ||
+    lowerGraphics.includes('intel graphics') ||
+    (lowerGraphics.includes('amd radeon graphics') && !lowerGraphics.includes('rx')) ||
+    lowerGraphics.includes('amd vega')) {
     return false;
   }
 
   if (lowerGraphics.includes('nvidia') || lowerGraphics.includes('geforce') ||
-      lowerGraphics.includes('rtx') || lowerGraphics.includes('gtx') ||
-      lowerGraphics.includes('quadro') ||
-      lowerGraphics.includes('amd radeon rx') ||
-      lowerGraphics.includes('amd radeon pro') ||
-      lowerGraphics.includes('firepro')) {
+    lowerGraphics.includes('rtx') || lowerGraphics.includes('gtx') ||
+    lowerGraphics.includes('quadro') ||
+    lowerGraphics.includes('amd radeon rx') ||
+    lowerGraphics.includes('amd radeon pro') ||
+    lowerGraphics.includes('firepro')) {
     return true;
   }
   return false;
@@ -251,8 +251,42 @@ export const parseSmartphoneBatteryLife = (batterySpec) => {
   }
   // If it's a string, you might add parsing logic here similar to other parsers.
   // For now, if it's not an integer, it will fall through or you can explicitly return null.
-  console.warn(`[parseSmartphoneBatteryLife] Unhandled battery spec format: ${batterySpec}. Expected integer or needs string parsing logic.`);
+  // console.warn(`[parseSmartphoneBatteryLife] Unhandled battery spec format: ${batterySpec}. Expected integer or needs string parsing logic.`);
   return null;
+};
+
+/**
+ * Parses smartwatch battery life specification into a number of hours.
+ * Handles strings like "18h", "18 hours", "2 days", "Up to 36h".
+ * @param {string|number|null|undefined} batterySpec - The battery life specification.
+ * @returns {number|null} The battery life in hours, or null if not parsable.
+ */
+export const parseSmartwatchBatteryLife = (batterySpec) => {
+  if (batterySpec === null || batterySpec === undefined) return null;
+
+  if (typeof batterySpec === 'number') {
+    return batterySpec; // Assume hours if number
+  }
+
+  const str = String(batterySpec).toLowerCase().trim();
+
+  // Handle "days"
+  if (str.includes('day')) {
+    const daysMatch = str.match(/(\d+(\.\d+)?)\s*day/);
+    if (daysMatch) {
+      return parseFloat(daysMatch[1]) * 24;
+    }
+  }
+
+  // Handle "hours" or "h"
+  const hoursMatch = str.match(/(\d+(\.\d+)?)\s*(h|hour)/);
+  if (hoursMatch) {
+    return parseFloat(hoursMatch[1]);
+  }
+
+  // Fallback: try parsing as number
+  const num = parseFloat(str);
+  return !isNaN(num) ? num : null;
 };
 
 /*
@@ -262,17 +296,17 @@ export const parseSmartphoneBatteryLife = (batterySpec) => {
 * @returns {number|null} The DXO score if it's a valid integer, or null otherwise.
 */
 export const getDxoScore = (keySpecs) => {
- if (!keySpecs || typeof keySpecs !== 'object') {
-   return null;
- }
+  if (!keySpecs || typeof keySpecs !== 'object') {
+    return null;
+  }
 
- const dxoScore = keySpecs.dxo;
+  const dxoScore = keySpecs.dxo;
 
- if (typeof dxoScore === 'number' && Number.isInteger(dxoScore) && dxoScore >= 0) {
-   return dxoScore;
- }
+  if (typeof dxoScore === 'number' && Number.isInteger(dxoScore) && dxoScore >= 0) {
+    return dxoScore;
+  }
 
- return null; // Return null if dxoScore is not a valid non-negative integer
+  return null; // Return null if dxoScore is not a valid non-negative integer
 };
 
 /**
@@ -313,7 +347,7 @@ export const getNumericRamOptions = (ramSpec) => {
   } else if (typeof ramSpec === 'number') {
     processItem(ramSpec);
   }
-  
+
   return Array.from(options).sort((a, b) => a - b);
 };
 
@@ -348,7 +382,7 @@ export const getNumericStorageOptions = (storageSpecInput) => {
   } else if (typeof storageSpecInput === 'number') {
     processItem(storageSpecInput); // Assumed to be in GB
   }
-  
+
   return Array.from(options).sort((a, b) => a - b);
 };
 

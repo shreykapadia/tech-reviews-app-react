@@ -1,4 +1,44 @@
-import { hasDedicatedGraphics } from './techFinderUtils';
+import { hasDedicatedGraphics, parseSmartwatchBatteryLife } from './techFinderUtils';
+
+describe('parseSmartwatchBatteryLife', () => {
+  test('returns null for null/undefined input', () => {
+    expect(parseSmartwatchBatteryLife(null)).toBe(null);
+    expect(parseSmartwatchBatteryLife(undefined)).toBe(null);
+  });
+
+  test('returns number as is', () => {
+    expect(parseSmartwatchBatteryLife(18)).toBe(18);
+    expect(parseSmartwatchBatteryLife(36.5)).toBe(36.5);
+  });
+
+  test('parses hours from string', () => {
+    expect(parseSmartwatchBatteryLife('18h')).toBe(18);
+    expect(parseSmartwatchBatteryLife('18 hours')).toBe(18);
+    expect(parseSmartwatchBatteryLife('Up to 36h')).toBe(36);
+    expect(parseSmartwatchBatteryLife('Approx 24 hour')).toBe(24);
+  });
+
+  test('parses days and converts to hours', () => {
+    expect(parseSmartwatchBatteryLife('1 day')).toBe(24);
+    expect(parseSmartwatchBatteryLife('2 days')).toBe(48);
+    expect(parseSmartwatchBatteryLife('1.5 days')).toBe(36);
+    expect(parseSmartwatchBatteryLife('Up to 14 days')).toBe(336);
+  });
+
+  test('handles mixed or messy input', () => {
+    expect(parseSmartwatchBatteryLife('  18h  ')).toBe(18);
+    expect(parseSmartwatchBatteryLife('2 days (typical use)')).toBe(48);
+  });
+
+  test('returns number if string is just a number', () => {
+    expect(parseSmartwatchBatteryLife('48')).toBe(48);
+  });
+
+  test('returns null for invalid strings', () => {
+    expect(parseSmartwatchBatteryLife('invalid')).toBe(null);
+    expect(parseSmartwatchBatteryLife('')).toBe(null);
+  });
+});
 
 describe('hasDedicatedGraphics', () => {
   test('returns false for non-object or null/undefined keySpecs', () => {

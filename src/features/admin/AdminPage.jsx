@@ -89,6 +89,16 @@ const keySpecTemplatesByCategory = {
     audio: '',
     retailPrice: 0,
   },
+  smartwatches: {
+    compatibility: '',
+    operatingSystem: '',
+    caseSize: '',
+    batteryLife: '',
+    connectivity: '',
+    healthSensors: '',
+    waterResistance: '',
+    retailPrice: 0,
+  },
   default: {
     screenSize: '',
     processor: '',
@@ -626,9 +636,8 @@ function AdminPage() {
     } catch (error) {
       setStatus({
         type: 'error',
-        message: `Could not ${editingProductId ? 'update' : 'create'} product: ${
-          error instanceof Error ? error.message : 'Unexpected error while saving.'
-        }`,
+        message: `Could not ${editingProductId ? 'update' : 'create'} product: ${error instanceof Error ? error.message : 'Unexpected error while saving.'
+          }`,
       });
     } finally {
       setSavingProduct(false);
@@ -829,11 +838,10 @@ function AdminPage() {
 
         {status.message && (
           <div
-            className={`mb-6 rounded-xl border px-4 py-3 ${
-              status.type === 'error'
+            className={`mb-6 rounded-xl border px-4 py-3 ${status.type === 'error'
                 ? 'bg-red-50 border-red-200 text-red-700'
                 : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-            }`}
+              }`}
           >
             {status.message}
           </div>
@@ -845,25 +853,22 @@ function AdminPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setActiveTab('products')}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    activeTab === 'products' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${activeTab === 'products' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
                 >
                   Manage Products
                 </button>
                 <button
                   onClick={() => setActiveTab('categories')}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    activeTab === 'categories' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${activeTab === 'categories' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
                 >
                   Manage Categories
                 </button>
                 <button
                   onClick={() => setActiveTab('critic-reviews')}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    activeTab === 'critic-reviews' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${activeTab === 'critic-reviews' ? 'bg-brand-primary text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
                 >
                   Manage Critic Reviews
                 </button>

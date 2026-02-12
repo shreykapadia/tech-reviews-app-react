@@ -12,6 +12,7 @@ import {
   getNumericStorageOptions,
   getNumericScreenSizeOptions,
   getMobileScreenSize,
+  parseSmartwatchBatteryLife,
 } from './techFinderUtils';
 
 export const checkProductAgainstCriterion = (product, questionId, answerValue, categoryName, categoryQuestions) => {
@@ -152,21 +153,21 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
       case 'laptop-brand-preference':
         return handleBrandPreferenceFilter(getNestedValue(product, question.productField), answerValue) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Brand Preference" } };
       case 'laptop-budget': {
-          const retailPriceData = keySpecs?.retailPrice;
-          if (!retailPriceData) return { pass: true };
-          let budgetMatches = false;
-          const checkPrice = (p) => {
-              if (answerValue === 'under500') return p < 500;
-              if (answerValue === '500-800') return p >= 500 && p <= 800;
-              if (answerValue === '800-1200') return p > 800 && p <= 1200;
-              if (answerValue === '1200-1800') return p > 1200 && p <= 1800;
-              if (answerValue === 'over1800') return p > 1800;
-              return true;
-          };
-          if (typeof retailPriceData === 'number') budgetMatches = checkPrice(retailPriceData);
-          else if (Array.isArray(retailPriceData)) budgetMatches = retailPriceData.some(item => checkPrice(typeof item === 'object' ? item.price : item));
-          else budgetMatches = true;
-          return budgetMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+        const retailPriceData = keySpecs?.retailPrice;
+        if (!retailPriceData) return { pass: true };
+        let budgetMatches = false;
+        const checkPrice = (p) => {
+          if (answerValue === 'under500') return p < 500;
+          if (answerValue === '500-800') return p >= 500 && p <= 800;
+          if (answerValue === '800-1200') return p > 800 && p <= 1200;
+          if (answerValue === '1200-1800') return p > 1200 && p <= 1800;
+          if (answerValue === 'over1800') return p > 1800;
+          return true;
+        };
+        if (typeof retailPriceData === 'number') budgetMatches = checkPrice(retailPriceData);
+        else if (Array.isArray(retailPriceData)) budgetMatches = retailPriceData.some(item => checkPrice(typeof item === 'object' ? item.price : item));
+        else budgetMatches = true;
+        return budgetMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
       }
       default: return { pass: true };
     }
@@ -179,22 +180,22 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
 
     switch (questionId) {
       case 'smartphone-performance': {
-          let perfMatchesSM = false;
-          const topTierKeywords = ['a18 pro', 'a17 pro', 'snapdragon 8 gen 4', 'snapdragon 8 gen 3', 'dimensity 9300', 'snapdragon 8 elite'];
-          const highTierKeywords = ['a18', 'a16', 'snapdragon 8 gen 2', 'tensor g3', 'tensor g4', 'dimensity 9200', 'dimensity 9000'];
-          const midTierKeywords = ['a15', 'snapdragon 7 gen 3', 'snapdragon 7 gen 2', 'snapdragon 8 gen 1', 'snapdragon 888', 'tensor g2', 'dimensity 8000', 'dimensity 7000'];
-          const matchesKwList = (txt, kws) => kws.some(k => txt.toLowerCase().includes(k.toLowerCase()));
-          if (answerValue === 'everyday_multitasking_sm') perfMatchesSM = matchesKwList(processor, midTierKeywords);
-          else if (answerValue === 'demanding_apps_sm') {
-              const lowerP = processor.toLowerCase();
-              const isHigh = highTierKeywords.some(kw => lowerP.includes(kw.toLowerCase()));
-              const isNonProTop = topTierKeywords.filter(kw => !kw.includes('pro') && !kw.includes('ultra') && !kw.includes('max') && !kw.includes('elite')).some(kw => lowerP.includes(kw.toLowerCase()));
-              const isExcluded = lowerP.includes('pro');
-              perfMatchesSM = (isHigh || isNonProTop) && !isExcluded;
-          }
-          else if (answerValue === 'top_tier_sm') perfMatchesSM = matchesKwList(processor, topTierKeywords);
-          else perfMatchesSM = true;
-          return perfMatchesSM ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Performance" } };
+        let perfMatchesSM = false;
+        const topTierKeywords = ['a18 pro', 'a17 pro', 'snapdragon 8 gen 4', 'snapdragon 8 gen 3', 'dimensity 9300', 'snapdragon 8 elite'];
+        const highTierKeywords = ['a18', 'a16', 'snapdragon 8 gen 2', 'tensor g3', 'tensor g4', 'dimensity 9200', 'dimensity 9000'];
+        const midTierKeywords = ['a15', 'snapdragon 7 gen 3', 'snapdragon 7 gen 2', 'snapdragon 8 gen 1', 'snapdragon 888', 'tensor g2', 'dimensity 8000', 'dimensity 7000'];
+        const matchesKwList = (txt, kws) => kws.some(k => txt.toLowerCase().includes(k.toLowerCase()));
+        if (answerValue === 'everyday_multitasking_sm') perfMatchesSM = matchesKwList(processor, midTierKeywords);
+        else if (answerValue === 'demanding_apps_sm') {
+          const lowerP = processor.toLowerCase();
+          const isHigh = highTierKeywords.some(kw => lowerP.includes(kw.toLowerCase()));
+          const isNonProTop = topTierKeywords.filter(kw => !kw.includes('pro') && !kw.includes('ultra') && !kw.includes('max') && !kw.includes('elite')).some(kw => lowerP.includes(kw.toLowerCase()));
+          const isExcluded = lowerP.includes('pro');
+          perfMatchesSM = (isHigh || isNonProTop) && !isExcluded;
+        }
+        else if (answerValue === 'top_tier_sm') perfMatchesSM = matchesKwList(processor, topTierKeywords);
+        else perfMatchesSM = true;
+        return perfMatchesSM ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Performance" } };
       }
       case 'smartphone-camera-priority':
         if (currentDxoScore === null) return { pass: true }; // No DXO score, can't filter
@@ -232,16 +233,72 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
       case 'smartphone-brand-preference':
         return handleBrandPreferenceFilter(getNestedValue(product, question.productField), answerValue) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Brand Preference" } };
       case 'smartphone-budget': {
-          const price = keySpecs?.retailPrice;
-          if (typeof price !== 'number') return { pass: true }; // No price info
-          let budgetMatchesSM = false;
-          if (answerValue === 'budget_under300_sm') budgetMatchesSM = price < 300;
-          else if (answerValue === 'budget_300_600_sm') budgetMatchesSM = price >= 300 && price <= 600;
-          else if (answerValue === 'budget_600_900_sm') budgetMatchesSM = price > 600 && price <= 900;
-          else if (answerValue === 'budget_over900_sm') budgetMatchesSM = price > 900;
-          else budgetMatchesSM = true;
-          return budgetMatchesSM ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+        const price = keySpecs?.retailPrice;
+        if (typeof price !== 'number') return { pass: true }; // No price info
+        let budgetMatchesSM = false;
+        if (answerValue === 'budget_under300_sm') budgetMatchesSM = price < 300;
+        else if (answerValue === 'budget_300_600_sm') budgetMatchesSM = price >= 300 && price <= 600;
+        else if (answerValue === 'budget_600_900_sm') budgetMatchesSM = price > 600 && price <= 900;
+        else if (answerValue === 'budget_over900_sm') budgetMatchesSM = price > 900;
+        else budgetMatchesSM = true;
+        return budgetMatchesSM ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
       }
+      default: return { pass: true };
+    }
+  } else if (categoryName === 'Smartwatches') {
+    const compatibility = String(keySpecs.compatibility || '').toLowerCase();
+    const batteryHours = parseSmartwatchBatteryLife(keySpecs.batteryLife);
+    const caseSizeStr = String(keySpecs.caseSize || '');
+    const caseSize = parseNumericValue(caseSizeStr);
+    const retailPrice = parseNumericValue(keySpecs.retailPrice || product.retailPrice); // Handle flat or specs price
+    const sensors = String(keySpecs.healthSensors || '').toLowerCase();
+    const type = String(keySpecs.type || '').toLowerCase(); // Hypothetical 'rugged' type or implied by other fields
+
+    switch (questionId) {
+      case 'smartwatch-compatibility':
+        let compatMatches = false;
+        if (answerValue === 'iphone') compatMatches = compatibility.includes('iphone') || compatibility.includes('ios') || compatibility.includes('apple');
+        else if (answerValue === 'android') compatMatches = compatibility.includes('android') || compatibility.includes('wear os') || compatibility.includes('google') || compatibility.includes('samsung');
+        else compatMatches = true;
+        return compatMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Compatibility" } };
+
+      case 'smartwatch-primary-use':
+        let useMatches = false;
+        if (answerValue === 'fitness_health') useMatches = sensors.includes('heart') || sensors.includes('oxygen') || sensors.includes('ecg') || sensors.includes('temp');
+        else if (answerValue === 'notifications') useMatches = true; // Most smartwatches do this
+        else if (answerValue === 'style') useMatches = !caseSizeStr.toLowerCase().includes('rugged') && !caseSizeStr.toLowerCase().includes('ultra'); // Crude proxy
+        else if (answerValue === 'adventure') useMatches = caseSizeStr.toLowerCase().includes('rugged') || caseSizeStr.toLowerCase().includes('ultra') || String(product.productName).toLowerCase().includes('ultra') || String(product.productName).toLowerCase().includes('pro');
+        else useMatches = true;
+        return useMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Primary Use" } };
+
+      case 'smartwatch-battery-life':
+        if (batteryHours === null) return { pass: true };
+        let batteryMatches = false;
+        if (answerValue === 'daily_charge') batteryMatches = batteryHours <= 24;
+        else if (answerValue === 'multi_day') batteryMatches = batteryHours > 24 && batteryHours <= 168; // Up to 7 days
+        else if (answerValue === 'long_battery') batteryMatches = batteryHours > 168; // > 7 days
+        else batteryMatches = true;
+        return batteryMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Battery Life" } };
+
+      case 'smartwatch-size':
+        if (caseSize === null) return { pass: true };
+        let sizeMatches = false;
+        if (answerValue === 'small_size') sizeMatches = caseSize <= 42;
+        else if (answerValue === 'medium_size') sizeMatches = caseSize >= 43 && caseSize <= 45;
+        else if (answerValue === 'large_size') sizeMatches = caseSize >= 46;
+        else sizeMatches = true;
+        return sizeMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Size" } };
+
+      case 'smartwatch-budget':
+        if (retailPrice === null) return { pass: true };
+        let budgetMatches = false;
+        if (answerValue === 'under200') budgetMatches = retailPrice < 200;
+        else if (answerValue === '200-400') budgetMatches = retailPrice >= 200 && retailPrice <= 400;
+        else if (answerValue === '400-700') budgetMatches = retailPrice > 400 && retailPrice <= 700;
+        else if (answerValue === 'over700') budgetMatches = retailPrice > 700;
+        else budgetMatches = true;
+        return budgetMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+
       default: return { pass: true };
     }
   } else {

@@ -3,87 +3,87 @@ export const questionnaires = {
   Smartphones: [
     {
       id: 'smartphone-performance',
-      text: 'How important is raw speed and performance?',
+      text: 'What do you mostly use your phone for?',
       type: 'radio',
       // No direct productField, complex logic on keySpecs.Processor
       options: [
-        { label: 'Everyday Multitasking (smooth general use, some gaming)', value: 'everyday_multitasking_sm' },
-        { label: 'Demanding Apps/Gaming (heavy gaming, video editing)', value: 'demanding_apps_sm' },
-        { label: 'Absolute Top-Tier (future proofing, maximum power)', value: 'top_tier_sm' },
-        { label: 'No preference', value: 'any' },
+        { label: 'Basic tasks (Messaging, Web Browsing, Social Media)', value: 'everyday_multitasking_sm' },
+        { label: 'Streaming, Photos, & Light Gaming', value: 'demanding_apps_sm' },
+        { label: 'Heavy Gaming & High-Performance Work', value: 'top_tier_sm' },
+        { label: 'No specific preference', value: 'any' },
       ],
     },
     {
       id: 'smartphone-camera-priority',
-      text: 'What kind of photos and videos do you primarily want to capture?',
+      text: 'How much do you care about photo & video quality?',
       type: 'radio',
-      // No direct productField, complex logic on keySpecs.Camera, productName
+      // No direct productField, complex logic on keySpecs.Camera
       options: [
-        { label: 'Just the basics (QR codes, occasional snaps)', value: 'camera_basics_sm' },
-        { label: 'Good quality for everyday memories', value: 'camera_everyday_sm' },
-        { label: 'Top-notch photography/videography (pro-level features)', value: 'camera_top_notch_sm' },
-        { label: 'Not a major concern', value: 'any' },
+        { label: 'I just need to capture clear photos occasionally', value: 'camera_basics_sm' },
+        { label: 'I want good looking photos for social media', value: 'camera_everyday_sm' },
+        { label: 'I want professional-quality photos and videos', value: 'camera_top_notch_sm' },
+        { label: 'Not a major priority', value: 'any' },
       ],
     },
     {
       id: 'smartphone-battery-life',
-      text: "How long do you need your smartphone's battery to last?",
+      text: "How often are you okay with charging your phone?",
       type: 'radio',
-      // No direct productField, complex logic on keySpecs.Battery or keySpecs.ratedBatteryLife
+      // No direct productField, complex logic on keySpecs.Battery
       options: [
-        { label: 'Light Use (charge every night is fine, ~10-14 hours)', value: 'battery_light_sm' },
-        { label: 'Moderate Use (get through a full day, ~15-20 hours)', value: 'battery_moderate_sm' },
-        { label: 'Heavy Use (power user, need it to last, 20+ hours)', value: 'battery_heavy_sm' },
+        { label: 'Every night is fine', value: 'battery_light_sm' },
+        { label: 'Ideally once a day, but it should last comfortably', value: 'battery_moderate_sm' },
+        { label: 'I need it to last more than a day on a single charge', value: 'battery_heavy_sm' },
         { label: 'Not a major concern', value: 'any' },
       ],
     },
     {
       id: 'smartphone-storage',
-      text: 'How much internal storage do you need?',
+      text: 'Do you store a lot of photos, videos, and apps locally?',
       type: 'radio',
-      // productField: 'keySpecs.Storage' (custom parsing, use existing parseStorage)
+      // productField: 'keySpecs.Storage'
       options: [
-        { label: 'Basic (64GB-128GB - for light users, cloud storage)', value: 'storage_128gb_sm' },
-        { label: 'Standard (256GB - good for most users)', value: 'storage_256gb_sm' },
-        { label: 'Large (512GB - for many apps, photos, videos)', value: 'storage_512gb_sm' },
-        { label: 'Very Large (1TB+ - for power users, extensive media)', value: 'storage_1tb_plus_sm' },
+        { label: 'No, I use cloud storage mostly (64GB-128GB)', value: 'storage_128gb_sm' },
+        { label: 'A moderate amount (256GB)', value: 'storage_256gb_sm' },
+        { label: 'A lot of photos and apps (512GB)', value: 'storage_512gb_sm' },
+        { label: 'Everything I can download (1TB+)', value: 'storage_1tb_plus_sm' },
         { label: 'Any amount is fine', value: 'any' },
       ],
     },
     {
       id: 'smartphone-screen-size',
-      text: 'What is your preferred screen size for the smartphone?',
+      text: 'Do you prefer a smaller phone or a larger screen?',
       type: 'radio',
-      // productField: 'keySpecs.Screen Size' (custom parsing, use existing parseScreenSize)
+      // productField: 'keySpecs.Screen Size'
       options: [
-        { label: 'Compact (Under 6.0 inches - easier one-handed use)', value: 'screen_compact_sm' },
-        { label: 'Medium (6.0 to 6.4 inches - balanced size)', value: 'screen_medium_sm' },
-        { label: 'Large (6.5 inches and above - immersive viewing)', value: 'screen_large_sm' },
-        { label: 'No strong preference', value: 'any' },
+        { label: 'Smaller / Easier to hold (Under 6.4 inches)', value: 'screen_compact_sm' },
+        { label: 'Standard size (6.4 - 6.6 inches)', value: 'screen_medium_sm' },
+        { label: 'Large screen for videos/gaming (6.7 inches and above)', value: 'screen_large_sm' },
+        { label: 'No preference', value: 'any' },
       ],
     },
     {
       id: 'smartphone-brand-preference',
-      text: 'Do you have a preferred smartphone brand?',
+      text: 'Do you prefer a specific brand?',
       type: 'multiselect_checkbox',
       productField: 'brand',
       options: [
         { label: 'Any Brand', value: 'any' },
-        { label: 'Apple', value: 'Apple' },
+        { label: 'Apple (iPhone)', value: 'Apple' },
         { label: 'Samsung', value: 'Samsung' },
-        { label: 'Google', value: 'Google' },
+        { label: 'Google (Pixel)', value: 'Google' },
         { label: 'OnePlus', value: 'OnePlus' },
       ],
     },
     {
       id: 'smartphone-budget',
-      text: 'What is your approximate budget for a new smartphone?',
+      text: 'What is your approximate budget?',
       type: 'radio',
       options: [
-        { label: 'Under $300 (Budget-friendly)', value: 'budget_under300_sm' },
-        { label: '$300 - $600 (Mid-range)', value: 'budget_300_600_sm' },
-        { label: '$600 - $900 (Upper Mid-range / Older Flagship)', value: 'budget_600_900_sm' },
-        { label: 'Over $900 (Premium / Latest Flagship)', value: 'budget_over900_sm' },
+        { label: 'Under $300', value: 'budget_under300_sm' },
+        { label: '$300 - $600', value: 'budget_300_600_sm' },
+        { label: '$600 - $900', value: 'budget_600_900_sm' },
+        { label: 'Over $900', value: 'budget_over900_sm' },
         { label: 'Any Budget', value: 'any' },
       ],
     },
@@ -95,50 +95,50 @@ export const questionnaires = {
       type: 'radio',
       // No direct productField, complex logic
       options: [
-        { label: 'General Use (web, email, office)', value: 'general_use' },
-        { label: 'Productivity/Work (demanding office apps, multitasking)', value: 'productivity_work' },
+        { label: 'Everyday things (Browsing, Youtube, Email)', value: 'general_use' },
+        { label: 'Work & Productivity (Office apps, Multitasking)', value: 'productivity_work' },
         { label: 'Gaming', value: 'gaming' },
-        { label: 'Creative Work (design, video editing)', value: 'creative_work' },
-        { label: 'Student Use (notes, research, portability)', value: 'student_use' },
-        { label: 'Any of the above / Not sure', value: 'any' },
+        { label: 'Creative Work (Video editing, 3D design)', value: 'creative_work' },
+        { label: 'School / College (Research, Writing, Portable)', value: 'student_use' },
+        { label: 'Any of the above', value: 'any' },
       ],
     },
     {
       id: 'laptop-performance-level',
-      text: 'How powerful do you need your laptop to be for smooth performance?',
+      text: 'How fast do you need it to be?',
       type: 'radio',
       // No direct productField, complex logic
       options: [
-        { label: 'Basic (web browsing, email, light document editing)', value: 'basic_performance' },
-        { label: 'Good (smooth multitasking, office applications, some photo editing)', value: 'good_performance' },
-        { label: 'High (demanding applications, moderate gaming, video editing)', value: 'high_performance' },
-        { label: 'Max Performance (heavy gaming, professional creative work, complex tasks)', value: 'max_performance' },
+        { label: 'Just basics is fine', value: 'basic_performance' },
+        { label: 'Snappy and responsive', value: 'good_performance' },
+        { label: 'Very fast for heavy tasks', value: 'high_performance' },
+        { label: 'Maximum possible performance', value: 'max_performance' },
         { label: 'No strong preference', value: 'any' },
       ],
     },
     {
       id: 'laptop-storage-needs',
-      text: 'How much space do you need for files, photos, and software?',
+      text: 'How much space do you need for files?',
       type: 'radio',
-      // productField: 'keySpecs.Storage' (custom parsing)
+      // productField: 'keySpecs.Storage'
       options: [
-        { label: 'Light (256GB or less - for cloud users or minimal local storage)', value: 'storage_256gb_less' },
-        { label: 'Medium (512GB - good for most users)', value: 'storage_512gb' },
-        { label: 'Large (1TB - for large media files, many apps)', value: 'storage_1tb' },
-        { label: 'Very Large (2TB+ - for professionals, extensive libraries)', value: 'storage_2tb_plus' },
-        { label: 'Any amount is fine', value: 'any' },
+        { label: 'Not much (I use cloud storage)', value: 'storage_256gb_less' },
+        { label: 'Standard (512GB)', value: 'storage_512gb' },
+        { label: 'A lot (1TB)', value: 'storage_1tb' },
+        { label: 'A huge amount (2TB+)', value: 'storage_2tb_plus' },
+        { label: 'Any amount', value: 'any' },
       ],
     },
     {
       id: 'laptop-portability-form-factor',
-      text: "What's most important for portability and versatility?",
+      text: "Will you be carrying this laptop around often?",
       type: 'radio',
-      // productField: 'keySpecs.Screen Size', 'keySpecs.Design', etc. (custom parsing)
+      // productField: 'keySpecs.Screen Size'
       options: [
-        { label: 'Ultra-Portable (Thin & light, typically <14" screen)', value: 'ultra_portable' },
-        { label: 'Balanced (Good mix of screen size and portability, 14"-15" screen)', value: 'balanced_portability' },
-        { label: 'Large Screen (More immersive, desktop replacement style, >15" screen)', value: 'large_screen_portability' },
-        { label: '2-in-1 / Tablet Mode (Versatile, often with touchscreen)', value: '2_in_1_convertible' },
+        { label: 'Yes, I want something very light and portable', value: 'ultra_portable' },
+        { label: 'Sometimes, so a balance of size and weight is good', value: 'balanced_portability' },
+        { label: 'Rarely, I prefer a larger screen', value: 'large_screen_portability' },
+        { label: 'I want a 2-in-1 / Tablet hybrid', value: '2_in_1_convertible' },
         { label: 'No strong preference', value: 'any' },
       ],
     },
@@ -147,7 +147,7 @@ export const questionnaires = {
       text: 'Do you have a preferred laptop brand?',
       type: 'multiselect_checkbox',
       productField: 'brand',
-      options: [ // These could be dynamically populated from available laptop brands
+      options: [
         { label: 'Any Brand', value: 'any' },
         { label: 'Apple', value: 'Apple' },
         { label: 'Dell', value: 'Dell' },
@@ -156,14 +156,13 @@ export const questionnaires = {
         { label: 'Microsoft', value: 'Microsoft' },
         { label: 'Asus', value: 'Asus' },
         { label: 'Acer', value: 'Acer' },
-        // Add other common brands
       ],
     },
     {
       id: 'laptop-budget',
-      text: 'What is your approximate budget for a new laptop?',
+      text: 'What is your approximate budget?',
       type: 'radio',
-      // productField: 'retailPrice' (custom parsing)
+      // productField: 'retailPrice'
       options: [
         { label: 'Under $500', value: 'under500' },
         { label: '$500 - $800', value: '500-800' },
@@ -176,100 +175,155 @@ export const questionnaires = {
   ],
   TVs: [
     {
-      id: 'tv-size', // Existing
-      text: 'What screen size are you considering for your TV?',
+      id: 'tv-size',
+      text: 'Approx. how far will you sit from the TV? (Helps pick size)',
       type: 'radio',
-      // productField: 'keySpecs.Screen Size', // Custom logic in useEffect
+      // productField: 'keySpecs.Screen Size'
       options: [
-        { label: 'Medium (40-55 inch)', value: '55-inch' }, // Value might need to be more flexible for matching
-        { label: 'Large (60-70 inch)', value: '65-inch' },
-        { label: 'Extra Large (75+ inch)', value: '75-inch' },
+        { label: 'Close (Bedroom / Small room) - 40-55 inches', value: '55-inch' },
+        { label: 'Average Living Room distance - 60-70 inches', value: '65-inch' },
+        { label: 'Far away / Large Home Theater - 75+ inches', value: '75-inch' },
         { label: 'Flexible on size', value: 'any' },
       ],
     },
     {
-      id: 'tv-resolution', // Existing
-      text: 'Which display resolution are you looking for?',
+      id: 'tv-resolution',
+      text: 'What resolution do you want?',
       type: 'radio',
-      // productField: 'keySpecs.Resolution', // Custom logic in useEffect
+      // productField: 'keySpecs.Resolution'
       options: [
-        { label: '4K UHD (Great for most content)', value: '4K UHD' },
-        { label: '8K UHD (Future-proof, premium)', value: '8K UHD' },
-        { label: 'HD/Full HD (Budget options)', value: 'Full HD' },
+        { label: '4K UHD (Standard best choice)', value: '4K UHD' },
+        { label: '8K UHD (Premium/Future-proof)', value: '8K UHD' },
+        { label: 'Full HD (Budget)', value: 'Full HD' },
         { label: 'Any resolution', value: 'any' },
       ],
     },
     {
       id: 'tv-color-vibrancy',
-      text: 'How colorful and vibrant do you want your TV\'s display to be?',
+      text: 'How much do vibrant colors matter to you?',
       type: 'radio',
-      // productField: 'keySpecs.displayPanelType', // Custom logic
+      // productField: 'keySpecs.displayPanelType'
       options: [
-        { label: 'Standard Colors', value: 'standard_colors' }, // "LED/LCD"
-        { label: 'Rich Colors', value: 'rich_colors' }, // "QLED" or "OLED"
-        { label: 'Most Vibrant Colors', value: 'most_vibrant_colors' }, // "OLED (QD-OLED)"
+        { label: 'Standard is fine', value: 'standard_colors' }, //"LED/LCD"
+        { label: 'I want rich, punchy colors (QLED/OLED)', value: 'rich_colors' }, //"QLED/OLED"
+        { label: 'I want the absolute best color possible', value: 'most_vibrant_colors' }, //"OLED/QD-OLED"
         { label: 'No strong preference', value: 'any' },
       ],
     },
     {
       id: 'tv-contrast-level',
-      text: 'How important are deep blacks and bright whites for dynamic contrast?',
+      text: 'How important are deep blacks (for movie nights)?',
       type: 'radio',
-      // productField: 'keySpecs.displayBacklighting', // Custom logic
+      // productField: 'keySpecs.displayBacklighting'
       options: [
-        { label: 'Good Contrast', value: 'good_contrast' }, // "Direct Lit" or "Edge Lit"
-        { label: 'Excellent Contrast', value: 'excellent_contrast' }, // "Full Array Local Dimming"
-        { label: 'Perfect Contrast', value: 'perfect_contrast' }, // "OLED" or "Mini-LED"
+        { label: 'Good is enough', value: 'good_contrast' },
+        { label: 'Very important', value: 'excellent_contrast' },
+        { label: 'Crucial (Perfect blacks)', value: 'perfect_contrast' },
         { label: 'No strong preference', value: 'any' },
       ],
     },
     {
       id: 'tv-viewing-environment',
-      text: 'Where will you be watching your TV mostly?',
+      text: 'Where will you mostly watch TV?',
       type: 'radio',
-      // Custom logic using peakBrightness_nits, displayPanelType, displayBacklighting
+      // Custom logic
       options: [
-        { label: 'Bright Room (e.g., living room with windows)', value: 'bright_room' },
-        { label: 'Dim/Dark Room (e.g., dedicated home theater)', value: 'dark_room' },
-        { label: 'Mixed Lighting Conditions', value: 'any' },
+        { label: 'Bright room (Lots of windows/lights)', value: 'bright_room' },
+        { label: 'Dark room (Home theater style)', value: 'dark_room' },
+        { label: 'Mixed / Average lighting', value: 'any' },
       ],
     },
     {
       id: 'tv-motion-smoothness',
-      text: 'How important is smooth motion for sports or gaming?',
+      text: 'Do you watch a lot of fast sports or play video games?',
       type: 'radio',
-      // productField: 'keySpecs.refreshRate', // Custom logic
+      // productField: 'keySpecs.refreshRate'
       options: [
-        { label: 'Very Important (120Hz+ for ultra-smoothness)', value: 'very_important_motion' }, // >= 120Hz
-        { label: 'Not Important (Standard 60Hz or less is fine)', value: 'not_important_motion' }, // <= 60Hz
+        { label: 'Yes, smooth motion is key (120Hz+)', value: 'very_important_motion' },
+        { label: 'No, standard TV watching (60Hz)', value: 'not_important_motion' },
         { label: 'No strong preference', value: 'any' },
       ],
     },
     {
       id: 'tv-brand-preference',
-      text: 'Do you have a preferred TV brand?',
-      type: 'multiselect_checkbox', // Or 'select' if many brands
-      productField: 'brand', // Can use generic logic if options are direct brand names
-      options: [ // These should ideally be populated dynamically from available TV brands
+      text: 'Preferred TV Brand?',
+      type: 'multiselect_checkbox',
+      productField: 'brand',
+      options: [
         { label: 'Any Brand', value: 'any' },
         { label: 'Samsung', value: 'Samsung' },
         { label: 'LG', value: 'LG' },
         { label: 'Sony', value: 'Sony' },
         { label: 'TCL', value: 'TCL' },
         { label: 'Hisense', value: 'Hisense' }
-        // Add other common TV brands
       ],
     },
     {
       id: 'tv-budget',
-      text: 'What is your approximate budget for a new TV?',
-      type: 'radio', // Simplified to radio for now, could be range input
-      // productField: 'retailPrice', // Custom logic
+      text: 'What is your approximate budget?',
+      type: 'radio',
       options: [
         { label: 'Under $500', value: 'under500' },
         { label: '$500 - $1000', value: '500-1000' },
         { label: '$1000 - $2000', value: '1000-2000' },
         { label: 'Over $2000', value: 'over2000' },
+        { label: 'Any Budget', value: 'any' },
+      ],
+    },
+  ],
+  Smartwatches: [
+    {
+      id: 'smartwatch-compatibility',
+      text: 'What phone do you currently use?',
+      type: 'radio',
+      options: [
+        { label: 'iPhone', value: 'iphone' },
+        { label: 'Android (Samsung, Pixel, etc.)', value: 'android' },
+      ],
+    },
+    {
+      id: 'smartwatch-primary-use',
+      text: 'What is the main reason you want a smartwatch?',
+      type: 'radio',
+      options: [
+        { label: 'Fitness & Health Tracking', value: 'fitness_health' },
+        { label: 'Notifications & Communication', value: 'notifications' },
+        { label: 'Style & Fashion', value: 'style' },
+        { label: 'Outdoor Adventure (Rugged)', value: 'adventure' },
+        { label: 'Any', value: 'any' },
+      ],
+    },
+    {
+      id: 'smartwatch-battery-life',
+      text: 'How often are you okay with charging it?',
+      type: 'radio',
+      options: [
+        { label: 'Daily charging is fine', value: 'daily_charge' },
+        { label: 'Every couple of days', value: 'multi_day' },
+        { label: 'Once a week or less', value: 'long_battery' },
+        { label: 'No preference', value: 'any' },
+      ],
+    },
+    {
+      id: 'smartwatch-size',
+      text: 'Do you prefer a smaller or larger watch?',
+      type: 'radio',
+      options: [
+        { label: 'Smaller / Sleek (40-42mm)', value: 'small_size' },
+        { label: 'Standard / Medium (44-45mm)', value: 'medium_size' },
+        { label: 'Large / Bold (46mm+)', value: 'large_size' },
+        { label: 'No preference', value: 'any' },
+      ],
+    },
+    {
+      id: 'smartwatch-budget',
+      text: 'What is your approximate budget?',
+      type: 'radio',
+      options: [
+        { label: 'Under $200', value: 'under200' },
+        { label: '$200 - $400', value: '200-400' },
+        { label: '$400 - $700', value: '400-700' },
+        { label: 'Over $700', value: 'over700' },
         { label: 'Any Budget', value: 'any' },
       ],
     },
