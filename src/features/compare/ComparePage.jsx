@@ -201,7 +201,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
         <div className="min-h-screen pt-24 pb-12 bg-gray-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center justify-between">
-                    <button onClick={() => navigate(-1)} className="flex items-center text-gray-600 hover:text-brand-primary transition-colors">
+                    <button onClick={() => navigate(-1)} className="flex items-center text-gray-600 dark:text-slate-400 hover:text-brand-primary transition-colors">
                         <ChevronLeftIcon className="h-5 w-5 mr-1" />
                         Back
                     </button>
@@ -211,7 +211,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
 
                 <div className="overflow-x-auto pb-6">
                     <div
-                        className="min-w-max grid bg-white shadow-xl rounded-xl border border-gray-100"
+                        className="min-w-max grid bg-white dark:bg-slate-800 shadow-xl dark:shadow-[0_16px_44px_rgba(0,0,0,0.35)] rounded-xl border border-gray-100 dark:border-slate-700"
                         style={{
                             gridTemplateColumns: isMobile
                                 ? `120px repeat(${comparingProducts.length}, minmax(160px, 1fr))`
@@ -220,11 +220,11 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                     >
 
                         {/* Header Row: Product Info */}
-                        <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-500 flex items-center sticky left-0 z-10 col-start-1 text-sm md:text-base">
+                        <div className="p-2 md:p-4 border-b border-r border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50 font-semibold text-gray-500 dark:text-slate-400 flex items-center sticky left-0 z-10 col-start-1 text-sm md:text-base">
                             Product
                         </div>
                         {comparingProducts.map(product => (
-                            <div key={product.productName} className="p-3 md:p-6 border-b border-gray-100 flex flex-col items-center text-center relative hover:bg-gray-50 transition-colors group">
+                            <div key={product.productName} className="p-3 md:p-6 border-b border-gray-100 dark:border-slate-700 flex flex-col items-center text-center relative hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors group">
                                 <button
                                     onClick={() => handleRemoveProduct(product.productName)}
                                     className="absolute top-2 right-2 p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all opacity-0 group-hover:opacity-100"
@@ -244,13 +244,13 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                                         {product.productName}
                                     </h3>
                                 </Link>
-                                <p className="text-xs md:text-sm text-gray-500 mb-2">{product.brand}</p>
+                                <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mb-2">{product.brand}</p>
                                 {/* Add price here if available in data */}
                             </div>
                         ))}
 
                         {/* Info Row: Scores */}
-                        <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 z-10 col-start-1 flex items-center gap-1 text-sm md:text-base">
+                        <div className="p-2 md:p-4 border-b border-r border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50 font-semibold text-gray-700 dark:text-slate-300 sticky left-0 z-10 col-start-1 flex items-center gap-1 text-sm md:text-base">
                             Scores
                             <div
                                 className="cursor-help"
@@ -275,18 +275,18 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                             };
 
                             return (
-                                <div key={product.productName} className="p-2 md:p-4 border-b border-gray-100 flex justify-around items-center">
+                                <div key={product.productName} className="p-2 md:p-4 border-b border-gray-100 dark:border-slate-700 flex justify-around items-center">
                                     <div className="text-center">
                                         <div className={`text-lg md:text-2xl font-bold ${getRefColor(cScore)}`}>
                                             {cScore || '--'}
                                         </div>
-                                        <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">Critics</div>
+                                        <div className="text-[10px] md:text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">Critics</div>
                                     </div>
                                     <div className="text-center">
                                         <div className={`text-lg md:text-2xl font-bold ${getRefColor(aScore)}`}>
                                             {aScore || '--'}
                                         </div>
-                                        <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">Audience</div>
+                                        <div className="text-[10px] md:text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wide">Audience</div>
                                     </div>
                                 </div>
                             );
@@ -299,7 +299,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
 
                             return (
                                 <React.Fragment key={key}>
-                                    <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 capitalize sticky left-0 z-10 group-hover/row:bg-blue-50 transition-colors col-start-1 flex items-center gap-1 text-sm md:text-base">
+                                    <div className="p-2 md:p-4 border-b border-r border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50 font-semibold text-gray-700 dark:text-slate-300 capitalize sticky left-0 z-10 group-hover/row:bg-blue-50 dark:group-hover/row:bg-slate-600/50 transition-colors col-start-1 flex items-center gap-1 text-sm md:text-base">
                                         {label}
                                         {tooltipText && (
                                             <div
@@ -324,7 +324,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                                         }
 
                                         return (
-                                            <div key={`${product.productName}-${key}`} className="p-2 md:p-4 border-b border-gray-100 text-center text-gray-600 hover:bg-blue-50 transition-colors text-xs md:text-sm">
+                                            <div key={`${product.productName}-${key}`} className="p-2 md:p-4 border-b border-gray-100 dark:border-slate-700 text-center text-gray-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors text-xs md:text-sm">
                                                 {value}
                                             </div>
                                         );
@@ -334,11 +334,11 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                         })}
 
                         {/* Pros Row */}
-                        <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 align-top z-10 col-start-1 text-sm md:text-base">
+                        <div className="p-2 md:p-4 border-b border-r border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50 font-semibold text-gray-700 dark:text-slate-300 sticky left-0 align-top z-10 col-start-1 text-sm md:text-base">
                             Top Pros
                         </div>
                         {comparingProducts.map(product => (
-                            <div key={`${product.productName}-pros`} className="p-2 md:p-4 border-b border-gray-100 h-full hover:bg-blue-50 transition-colors">
+                            <div key={`${product.productName}-pros`} className="p-2 md:p-4 border-b border-gray-100 dark:border-slate-700 h-full hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">
                                 {product.aiProsCons && product.aiProsCons.pros && product.aiProsCons.pros.length > 0 ? (
                                     <ul className="text-xs md:text-sm text-left space-y-1">
                                         {product.aiProsCons.pros.slice(0, 3).map((pro, idx) => (
@@ -354,11 +354,11 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                         ))}
 
                         {/* Cons Row */}
-                        <div className="p-2 md:p-4 border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 align-top z-10 col-start-1 text-sm md:text-base">
+                        <div className="p-2 md:p-4 border-r border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-700/50 font-semibold text-gray-700 dark:text-slate-300 sticky left-0 align-top z-10 col-start-1 text-sm md:text-base">
                             Top Cons
                         </div>
                         {comparingProducts.map(product => (
-                            <div key={`${product.productName}-cons`} className="p-2 md:p-4 border-gray-100 hover:bg-blue-50 transition-colors">
+                            <div key={`${product.productName}-cons`} className="p-2 md:p-4 border-gray-100 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700/50 transition-colors">
                                 {product.aiProsCons && product.aiProsCons.cons && product.aiProsCons.cons.length > 0 ? (
                                     <ul className="text-xs md:text-sm text-left space-y-1">
                                         {product.aiProsCons.cons.slice(0, 3).map((con, idx) => (

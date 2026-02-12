@@ -57,7 +57,7 @@ const allArticlesData = [
 ];
 
 const ArticleCard = ({ article }) => (
-  <Link to={article.link} className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden group">
+  <Link to={article.link} className="block bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] hover:shadow-lg transition-shadow duration-200 overflow-hidden group">
     {article.thumbnailUrl && (
       <img src={article.thumbnailUrl} alt={article.title} className="w-full h-32 sm:h-36 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
     )}

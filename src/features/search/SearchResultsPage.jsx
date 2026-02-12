@@ -19,8 +19,8 @@ function SearchResultsPage({ calculateCriticsScore }) {
   useEffect(() => {
     const performSearch = async () => {
       if (!searchTerm) {
-          setResults([]);
-          return;
+        setResults([]);
+        return;
       }
       setLoading(true);
       try {
@@ -37,11 +37,11 @@ function SearchResultsPage({ calculateCriticsScore }) {
 
   const availableCategories = useMemo(() =>
     Array.from(new Set(results.map(p => p.category))).sort()
-  , [results]);
+    , [results]);
 
   const availableBrands = useMemo(() =>
     Array.from(new Set(results.map(p => p.brand))).sort()
-  , [results]);
+    , [results]);
 
   useEffect(() => {
     let filtered = results.filter(product => {
@@ -50,8 +50,8 @@ function SearchResultsPage({ calculateCriticsScore }) {
 
       const price = product.keySpecs?.retailPrice;
       if (typeof price === 'number') {
-          if (priceRange.min && price < parseFloat(priceRange.min)) return false;
-          if (priceRange.max && price > parseFloat(priceRange.max)) return false;
+        if (priceRange.min && price < parseFloat(priceRange.min)) return false;
+        if (priceRange.max && price > parseFloat(priceRange.max)) return false;
       }
       return true;
     });
@@ -73,12 +73,12 @@ function SearchResultsPage({ calculateCriticsScore }) {
   const FilterSection = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(true);
     return (
-      <div className="mb-4 border border-slate-200 rounded-xl shadow-sm overflow-hidden bg-white/90">
+      <div className="mb-4 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden bg-white/90 dark:bg-slate-800/90">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex justify-between items-center p-4 bg-slate-50 hover:bg-slate-100"
+          className="w-full flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600"
         >
-          <h3 className="text-lg font-semibold text-brand-text">{title}</h3>
+          <h3 className="text-lg font-semibold text-brand-text dark:text-slate-100">{title}</h3>
         </button>
         {isOpen && <div className="p-4">{children}</div>}
       </div>
@@ -118,8 +118,8 @@ function SearchResultsPage({ calculateCriticsScore }) {
 
         <section className="w-full md:w-3/4 lg:w-4/5">
           {displayedProducts.length === 0 ? (
-            <div className="text-center py-10 bg-white p-6 rounded-2xl shadow border">
-              <p className="text-2xl text-gray-700 mb-4">No products found.</p>
+            <div className="text-center py-10 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow dark:shadow-[0_16px_44px_rgba(0,0,0,0.3)] border dark:border-slate-700">
+              <p className="text-2xl text-gray-700 dark:text-slate-300 mb-4">No products found.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6">

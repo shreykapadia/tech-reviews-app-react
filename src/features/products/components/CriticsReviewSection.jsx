@@ -7,17 +7,17 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'; // A
 import { normalizeScore } from '../../../utils/scoreCalculations';
 const ScoreBreakdownBarInternal = ({ percentage, colorClass, label }) => (
   <div className="flex items-center mb-1.5">
-    <div className="w-20 text-xs text-gray-600 capitalize">{label}</div>
+    <div className="w-20 text-xs text-gray-600 dark:text-slate-400 capitalize">{label}</div>
     <div className="flex-1 bg-gray-200 rounded-full h-3 sm:h-3.5 overflow-hidden mr-2">
       <div
         className={`${colorClass} h-full rounded-full transition-all duration-500 ease-out`}
         style={{ width: `${percentage}%` }}
       />
     </div>
-    <div className="w-10 text-xs text-gray-700 font-medium">{percentage.toFixed(0)}%</div>
+    <div className="w-10 text-xs text-gray-700 dark:text-slate-300 font-medium">{percentage.toFixed(0)}%</div>
   </div>
 );
-    const ScoreBreakdownBar = React.memo(ScoreBreakdownBarInternal);
+const ScoreBreakdownBar = React.memo(ScoreBreakdownBarInternal);
 
 const CriticsReviewSectionComponent = ({ product }) => {
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -33,7 +33,7 @@ const CriticsReviewSectionComponent = ({ product }) => {
   console.log(`[CriticsReviewSection] Product: ${productName} - Raw criticReviews:`, criticReviews.map(r => ({ score: r.score, scale: r.scale, publication: r.publication })));
 
   const normalizedScores = criticReviews.map(review => normalizeScore(review.score, review.scale)).filter(score => score !== null);
-  
+
   // Log normalized scores to see what `normalizeScore` is producing
   console.log(`[CriticsReviewSection] Product: ${productName} - Normalized scores for sentiment (expected 0-100):`, normalizedScores);
 
@@ -65,7 +65,7 @@ const CriticsReviewSectionComponent = ({ product }) => {
   };
 
   return (
-    <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
+    <div className="py-8 sm:py-10 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Critics' Insights
@@ -80,7 +80,7 @@ const CriticsReviewSectionComponent = ({ product }) => {
                 <ScoreBreakdownBar percentage={positivePercentage} colorClass="bg-green-500" label="Positive" />
                 <ScoreBreakdownBar percentage={neutralPercentage} colorClass="bg-yellow-400" label="Neutral" />
                 <ScoreBreakdownBar percentage={negativePercentage} colorClass="bg-red-500" label="Negative" />
-                <p className="text-xs text-gray-500 mt-2">Based on {totalScores} critic reviews.</p>
+                <p className="text-xs text-gray-500 dark:text-slate-500 mt-2">Based on {totalScores} critic reviews.</p>
               </div>
             )}
 
@@ -95,7 +95,7 @@ const CriticsReviewSectionComponent = ({ product }) => {
                     <p className="text-sm font-medium text-green-700 mb-1">Praised for:</p>
                     <ul className="list-disc list-inside space-y-1 pl-1">
                       {keyInsights.pros.slice(0, 3).map((pro, index) => ( // Show top 3 pros
-                        <li key={`pro-${index}`} className="text-xs text-gray-700 leading-relaxed">{pro}</li>
+                        <li key={`pro-${index}`} className="text-xs text-gray-700 dark:text-slate-300 leading-relaxed">{pro}</li>
                       ))}
                     </ul>
                   </div>
@@ -105,12 +105,12 @@ const CriticsReviewSectionComponent = ({ product }) => {
                     <p className="text-sm font-medium text-red-700 mb-1">Points of Concern:</p>
                     <ul className="list-disc list-inside space-y-1 pl-1">
                       {keyInsights.cons.slice(0, 3).map((con, index) => ( // Show top 3 cons
-                        <li key={`con-${index}`} className="text-xs text-gray-700 leading-relaxed">{con}</li>
+                        <li key={`con-${index}`} className="text-xs text-gray-700 dark:text-slate-300 leading-relaxed">{con}</li>
                       ))}
                     </ul>
                   </div>
                 )}
-                <p className="mt-3 text-xs text-gray-500 italic">
+                <p className="mt-3 text-xs text-gray-500 dark:text-slate-500 italic">
                   AI-generated summary based on overall product analysis.
                 </p>
               </div>
@@ -123,18 +123,18 @@ const CriticsReviewSectionComponent = ({ product }) => {
             {reviewsToDisplay.length > 0 ? (
               <div className="space-y-4">
                 {reviewsToDisplay.map((review, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow text-left">
+                  <div key={index} className="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600 hover:shadow-sm transition-shadow text-left">
                     <div className="flex justify-between items-start mb-1">
                       <span className="font-semibold text-sm text-brand-text">{review.publication}</span>
                       {/* Individual score removed as per request */}
                     </div>
                     {review.summary ? (
                       <>
-                        <p className="text-xs text-gray-700 mb-1 leading-relaxed">{review.summary}</p>
-                        <p className="text-xs text-gray-500 italic mb-2">AI-generated summary</p>
+                        <p className="text-xs text-gray-700 dark:text-slate-300 mb-1 leading-relaxed">{review.summary}</p>
+                        <p className="text-xs text-gray-500 dark:text-slate-500 italic mb-2">AI-generated summary</p>
                       </>
                     ) : (
-                      <p className="text-xs text-gray-600 italic mb-2">
+                      <p className="text-xs text-gray-600 dark:text-slate-400 italic mb-2">
                         Summary not available. Read the full review for more details.
                       </p>
                     )}
@@ -150,16 +150,16 @@ const CriticsReviewSectionComponent = ({ product }) => {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-500">No featured critic reviews available for this product yet.</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400">No featured critic reviews available for this product yet.</p>
             )}
 
             {/* Only show button if there are more reviews than initially featured */}
             {criticReviews.length > featuredReviews.length && (
               <div className="mt-6 text-center sm:text-right">
                 <button
-                type="button"
-                onClick={handleToggleShowAll}
-                className="inline-flex items-center px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200"
+                  type="button"
+                  onClick={handleToggleShowAll}
+                  className="inline-flex items-center px-5 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-colors duration-200"
                 >
                   {showAllReviews ? 'Show Fewer Reviews' : `See All ${criticReviews.length} Critic Reviews`}
                   {showAllReviews ? <ChevronUpIcon className="h-4 w-4 ml-2" /> : <ChevronDownIcon className="h-4 w-4 ml-2" />}

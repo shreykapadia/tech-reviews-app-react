@@ -19,7 +19,7 @@ const AudienceRatingDisplayComponent = ({ scoreOutOf100, reviewCount }) => {
     if (isNaN(numericScore)) return defaultColorClass;
     if (numericScore >= 85) return 'text-green-600';
     if (numericScore >= 70) return 'text-yellow-600';
-    if (numericScore < 70 && numericScore >=0) return 'text-red-600';
+    if (numericScore < 70 && numericScore >= 0) return 'text-red-600';
     return defaultColorClass;
   };
   const scoreColorClass = getScoreColor(scoreToDisplay100, 'text-brand-secondary');
@@ -46,15 +46,15 @@ const AudienceRatingDisplayComponent = ({ scoreOutOf100, reviewCount }) => {
 
 
   return (
-    <div className="bg-white p-4 sm:p-5 rounded-lg shadow-md flex items-center justify-between relative border border-gray-200 animate-fade-in-up">
+    <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] flex items-center justify-between relative border border-gray-200 dark:border-slate-700 animate-fade-in-up">
       <div className="flex items-center">
         <UserGroupIcon className="h-9 w-9 sm:h-10 sm:w-10 text-brand-secondary mr-3 sm:mr-4 flex-shrink-0" aria-hidden="true" />
         <div>
           <p className={`text-3xl sm:text-4xl font-bold ${scoreColorClass} leading-tight`}>
             {scoreToDisplay100}
           </p>
-          <p className="text-xs sm:text-sm text-gray-600 font-medium mt-0.5">Audience Score</p>
-          <p className="text-xs text-gray-500 mt-0.5">{reviewCountDisplay}</p>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 font-medium mt-0.5">Audience Score</p>
+          <p className="text-xs text-gray-500 dark:text-slate-500 mt-0.5">{reviewCountDisplay}</p>
           <div className="flex items-baseline mt-0.5">
           </div>
         </div>
@@ -66,7 +66,7 @@ const AudienceRatingDisplayComponent = ({ scoreOutOf100, reviewCount }) => {
           aria-label="More information about Audience Rating"
           aria-expanded={isTooltipVisible}
           aria-controls="audience-rating-tooltip"
-          className="p-1 rounded-full text-gray-500 hover:text-brand-secondary hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:ring-offset-2 transition-colors"
+          className="p-1 rounded-full text-gray-500 dark:text-slate-400 hover:text-brand-secondary hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-secondary focus:ring-offset-2 transition-colors"
         >
           <InformationCircleIcon className="h-6 w-6 sm:h-7 sm:w-7" />
         </button>

@@ -58,7 +58,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
   const isCarousel = layoutType === 'carousel';
 
   // Base classes for the Link, Criterion I.3
-  const baseLinkClasses = "group bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] hover:shadow-[0_24px_48px_rgba(8,38,67,0.16)] transition-all duration-300 ease-in-out overflow-hidden border border-white/80 animate-fade-in-up";
+  const baseLinkClasses = "group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] dark:shadow-[0_16px_34px_rgba(0,0,0,0.3)] hover:shadow-[0_24px_48px_rgba(8,38,67,0.16)] dark:hover:shadow-[0_24px_48px_rgba(0,0,0,0.4)] transition-all duration-300 ease-in-out overflow-hidden border border-white/80 dark:border-slate-700/80 animate-fade-in-up";
   // Layout specific classes for the Link, Criterion I.1
   const linkLayoutClasses = isCarousel
     ? "flex flex-col h-full relative" // Carousel: Vertical stack, h-full, relative for fav button
@@ -158,8 +158,8 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
       <div
         className={
           isCarousel
-            ? "relative w-full h-56 bg-brand-surface-soft px-6 pt-6"
-            : "relative w-24 sm:w-32 flex-shrink-0 bg-brand-surface-soft"
+            ? "relative w-full h-56 bg-brand-surface-soft dark:bg-slate-700/50 px-6 pt-6"
+            : "relative w-24 sm:w-32 flex-shrink-0 bg-brand-surface-soft dark:bg-slate-700/50"
         }
       >
         <img
@@ -185,29 +185,29 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
         <div> {/* This container ensures Name/Brand are grouped at the top of the info section */}
           {isCarousel ? (
             <>
-              <h3 className="text-xl font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-1 truncate" title={product.productName}>
+              <h3 className="text-xl font-semibold text-brand-text dark:text-slate-100 group-hover:text-brand-primary transition-colors mb-1 truncate" title={product.productName}>
                 {product.productName}
               </h3>
-              <p className="text-base text-gray-500 mb-2">{product.brand}</p>
+              <p className="text-base text-gray-500 dark:text-slate-400 mb-2">{product.brand}</p>
             </>
           ) : (
             <>
-              <h3 className="text-base sm:text-lg font-semibold text-brand-text group-hover:text-brand-primary transition-colors mb-0.5 truncate" title={product.productName}>
+              <h3 className="text-base sm:text-lg font-semibold text-brand-text dark:text-slate-100 group-hover:text-brand-primary transition-colors mb-0.5 truncate" title={product.productName}>
                 {product.productName}
               </h3>
-              <p className="text-sm text-gray-500 mb-1">{product.brand}</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400 mb-1">{product.brand}</p>
             </>
           )}
 
           {!isCarousel && product.description && ( // Description for default layout
-            <p className="text-sm text-gray-600 mt-1 line-clamp-2 sm:line-clamp-1 md:line-clamp-2" title={product.description}>
+            <p className="text-sm text-gray-600 dark:text-slate-400 mt-1 line-clamp-2 sm:line-clamp-1 md:line-clamp-2" title={product.description}>
               {product.description}
             </p>
           )}
           {/* Description for carousel is omitted as per Criterion V to prioritize main elements.
               If needed, it would go here with a tight line-clamp, e.g.:
               isCarousel && product.description && (
-                <p className="text-xs text-gray-600 mt-1 line-clamp-1 mb-2" title={product.description}>{product.description}</p>
+                <p className="text-xs text-gray-600 dark:text-slate-400 mt-1 line-clamp-1 mb-2" title={product.description}>{product.description}</p>
               )
           */}
         </div>
@@ -223,7 +223,7 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
             <span className={`${isCarousel ? "text-2xl font-bold" : "font-semibold"} ${criticsScoreColorClass}`}>
               {criticsScoreDisplay}
             </span>
-            <span className={`text-gray-500 ${isCarousel ? "text-xs mt-0.5" : "ml-0.5"}`}>Critics</span>
+            <span className={`text-gray-500 dark:text-slate-400 ${isCarousel ? "text-xs mt-0.5" : "ml-0.5"}`}>Critics</span>
           </div>
 
           {/* Audience Score Block */}

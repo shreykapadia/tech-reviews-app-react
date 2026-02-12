@@ -27,12 +27,12 @@ function PrivacyPolicyPage() {
     // Adjust pt (padding-top) to match your fixed header's height + desired spacing
     <div className="min-h-screen py-8 pt-20 md:pt-24">
       <div className="container mx-auto px-4">
-        <article className="bg-white/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] rounded-2xl border border-white/80 p-6 sm:p-8 md:p-10 lg:p-12">
-          <header className="mb-8 md:mb-10 border-b pb-6 border-gray-200">
+        <article className="bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.35)] rounded-2xl border border-white/80 dark:border-slate-700/80 p-6 sm:p-8 md:p-10 lg:p-12">
+          <header className="mb-8 md:mb-10 border-b pb-6 border-gray-200 dark:border-slate-600">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-primary font-serif mb-3">
               Privacy Policy
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-slate-400">
               Last updated: June 6, 2025
             </p>
           </header>

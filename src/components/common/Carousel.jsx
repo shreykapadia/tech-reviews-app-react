@@ -35,7 +35,7 @@ function Carousel({
   const itemsToDisplay = items.slice(0, config.maxItems);
 
   if (!items || items.length === 0) {
-    return <p className="text-center text-gray-600 py-8">No items to display.</p>;
+    return <p className="text-center text-gray-600 dark:text-slate-400 py-8">No items to display.</p>;
   }
 
   const totalPages = Math.ceil(itemsToDisplay.length / config.itemsPerPageDesktop);
@@ -57,7 +57,7 @@ function Carousel({
       {title && <h2 className={titleClassName}>{title}</h2>}
 
       {itemsToDisplay.length === 0 ? (
-        <p className="text-center text-gray-600">No items to display in carousel.</p>
+        <p className="text-center text-gray-600 dark:text-slate-400">No items to display in carousel.</p>
       ) : (
         <div className="relative md:px-16"> {/* Desktop arrows need padding */}
           {/* Previous Arrow */}
@@ -116,7 +116,7 @@ function Carousel({
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages - 1}
-              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 hover:bg-white rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 dark:bg-slate-700/85 hover:bg-white dark:hover:bg-slate-600 rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] dark:shadow-[0_14px_28px_rgba(0,0,0,0.3)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               aria-label="Next page"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-brand-primary">

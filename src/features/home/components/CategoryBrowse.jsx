@@ -12,14 +12,14 @@ const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLo
   return (
     <section className="py-10 sm:py-14 md:py-16 bg-transparent animate-fade-in-up">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl sm:text-4xl font-bold text-brand-text mb-6 sm:mb-10 text-center font-serif">
+        <h2 className="text-3xl sm:text-4xl font-bold text-brand-text dark:text-slate-100 mb-6 sm:mb-10 text-center font-serif">
           Browse by Product Type
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-          {effectiveIsLoading && !effectiveError && <p className="col-span-full text-center text-gray-500">Loading categories...</p>}
+          {effectiveIsLoading && !effectiveError && <p className="col-span-full text-center text-gray-500 dark:text-slate-400">Loading categories...</p>}
           {effectiveError && <p className="col-span-full text-center text-red-500">Error loading categories: {String(effectiveError)}</p>}
           {!effectiveIsLoading && !effectiveError && categoriesData.length === 0 && (
-            <p className="col-span-full text-center text-gray-500">No categories found.</p>
+            <p className="col-span-full text-center text-gray-500 dark:text-slate-400">No categories found.</p>
           )}
           {!effectiveIsLoading && !effectiveError && categoriesData.length > 0 && (
             categoriesData.map((category) => (
@@ -27,21 +27,21 @@ const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLo
                 key={category.id || category.slug} // Prefer category.id if available, fallback to slug
                 href={`/category/${category.slug}`} // Updated URL to match CategoryPage route
                 aria-label={category.ariaLabel}
-                className="group bg-white/85 backdrop-blur-sm rounded-2xl shadow-[0_18px_35px_rgba(6,39,70,0.12)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_44px_rgba(6,39,70,0.16)] transition-all duration-300 border border-white/70 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
-                // aspect-square ensures the card is a square, good for consistent tap targets
+                className="group bg-white/85 dark:bg-slate-800/85 backdrop-blur-sm rounded-2xl shadow-[0_18px_35px_rgba(6,39,70,0.12)] dark:shadow-[0_18px_35px_rgba(0,0,0,0.3)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_44px_rgba(6,39,70,0.16)] dark:hover:shadow-[0_22px_44px_rgba(0,0,0,0.4)] transition-all duration-300 border border-white/70 dark:border-slate-700/70 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
+              // aspect-square ensures the card is a square, good for consistent tap targets
               >
                 {category.iconImageUrl ? (
                   <img
                     src={category.iconImageUrl}
                     alt="" // Alt text is empty as the link's aria-label describes the purpose.
-                         // If the icon conveys unique info, provide descriptive alt text here.
-                    aria-hidden="true" 
+                    // If the icon conveys unique info, provide descriptive alt text here.
+                    aria-hidden="true"
                     className="h-24 w-24 sm:h-32 sm:w-32 object-contain mb-3 sm:mb-4 group-hover:opacity-80 transition-opacity"
                   />
                 ) : (
-                  <div aria-hidden="true" className="h-24 w-24 sm:h-32 sm:w-32 bg-gray-200 rounded-md mb-3 sm:mb-4 flex items-center justify-center text-gray-400 text-4xl">?</div>
+                  <div aria-hidden="true" className="h-24 w-24 sm:h-32 sm:w-32 bg-gray-200 dark:bg-slate-700 rounded-md mb-3 sm:mb-4 flex items-center justify-center text-gray-400 dark:text-slate-500 text-4xl">?</div>
                 )}
-                <span className="text-lg sm:text-xl md:text-2xl font-semibold text-brand-text group-hover:text-brand-primary">
+                <span className="text-lg sm:text-xl md:text-2xl font-semibold text-brand-text dark:text-slate-100 group-hover:text-brand-primary">
                   {category.name}
                 </span>
               </a>

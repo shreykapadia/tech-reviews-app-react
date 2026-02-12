@@ -7,7 +7,7 @@ const CategorySelector = ({ availableCategories, onCategorySelect, isLoading, er
     return (
       <div className="flex justify-center items-center min-h-[200px]">
         <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
-        <p className="ml-3 text-gray-500">Loading categories...</p>
+        <p className="ml-3 text-gray-500 dark:text-slate-400">Loading categories...</p>
       </div>
     );
   }
@@ -17,7 +17,7 @@ const CategorySelector = ({ availableCategories, onCategorySelect, isLoading, er
   }
 
   if (!availableCategories || availableCategories.length === 0) {
-    return <p className="col-span-full text-center text-gray-500">No categories available.</p>;
+    return <p className="col-span-full text-center text-gray-500 dark:text-slate-400">No categories available.</p>;
   }
 
   return (
@@ -27,7 +27,7 @@ const CategorySelector = ({ availableCategories, onCategorySelect, isLoading, er
           key={category.id || category.slug}
           onClick={() => onCategorySelect(category)}
           aria-label={`Select category: ${category.name}`}
-          className="group bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_42px_rgba(8,38,67,0.16)] transition-all duration-300 border border-white/80 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
+          className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] dark:shadow-[0_16px_34px_rgba(0,0,0,0.3)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_42px_rgba(8,38,67,0.16)] transition-all duration-300 border border-white/80 dark:border-slate-700/80 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
         >
           {category.iconImageUrl ? (
             <img
@@ -39,7 +39,7 @@ const CategorySelector = ({ availableCategories, onCategorySelect, isLoading, er
           ) : (
             <div aria-hidden="true" className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 bg-gray-200 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-400 text-4xl sm:text-5xl">?</div>
           )}
-          <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 group-hover:text-brand-primary transition-colors">
+          <span className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 dark:text-slate-200 group-hover:text-brand-primary transition-colors">
             {category.name}
           </span>
         </button>

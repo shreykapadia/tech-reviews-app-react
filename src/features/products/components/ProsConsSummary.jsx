@@ -22,7 +22,7 @@ const ProsConsSummaryComponent = ({ aiProsCons }) => {
   };
 
   return (
-    <div className="bg-white p-4 sm:p-5 rounded-lg shadow-md border border-gray-200 animate-fade-in-up">
+    <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up">
       <h3 className="text-lg sm:text-xl font-semibold text-brand-text font-sans mb-4">
         Pros & Cons at a Glance
       </h3>
@@ -30,7 +30,7 @@ const ProsConsSummaryComponent = ({ aiProsCons }) => {
       <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4">
         {pros.length > 0 && (
           <div>
-            <h4 className="text-sm font-medium text-green-700 mb-2">Pros</h4>
+            <h4 className="text-sm font-medium text-green-700 dark:text-green-400 mb-2">Pros</h4>
             <ul className="space-y-1">
               {pros.map((pro, index) => (
                 <ListItem key={`pro-${index}`} type="pro">{pro}</ListItem>
@@ -41,7 +41,7 @@ const ProsConsSummaryComponent = ({ aiProsCons }) => {
 
         {cons.length > 0 && (
           <div>
-            <h4 className="text-sm font-medium text-red-700 mb-2">Cons</h4>
+            <h4 className="text-sm font-medium text-red-700 dark:text-red-400 mb-2">Cons</h4>
             <ul className="space-y-1">
               {cons.map((con, index) => (
                 <ListItem key={`con-${index}`} type="con">{con}</ListItem>
@@ -51,7 +51,7 @@ const ProsConsSummaryComponent = ({ aiProsCons }) => {
         )}
       </div>
 
-      <p className="mt-4 text-xs text-gray-500 italic text-right">
+      <p className="mt-4 text-xs text-gray-500 dark:text-slate-500 italic text-right">
         AI-generated summary
       </p>
     </div>

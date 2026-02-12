@@ -29,7 +29,7 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
   const effectiveCalculateCriticsScore = calculateCriticsScore || calculateCriticsScoreUtil;
 
 
-    const handleCategorySelect = (category) => {
+  const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     setUserAnswers({});
     setCurrentQuestionIndex(0);
@@ -201,8 +201,7 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
 
     const productNames = newFilteredProducts.map(p => p.productName).join(', ');
     console.log(
-      `[TechFinderPage Filtering useEffect] Filter complete. Found ${newFilteredProducts.length} products matching criteria: ${
-        productNames || 'None'
+      `[TechFinderPage Filtering useEffect] Filter complete. Found ${newFilteredProducts.length} products matching criteria: ${productNames || 'None'
       }`
     );
   }, [userAnswers, allProductsForCategory, selectedCategory, isCategoryDataReady]);
@@ -262,7 +261,7 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
   const handleNavigateNextQuestion = () => {
     const categoryQuestions = questionnaires[selectedCategory?.name] || [];
     const currentQuestion = categoryQuestions[currentQuestionIndex];
-    const isLastQuestion = currentQuestionIndex >= categoryQuestions.length -1;
+    const isLastQuestion = currentQuestionIndex >= categoryQuestions.length - 1;
     if (currentQuestion?.type === 'radio' && !userAnswers[currentQuestion?.id] && !isLastQuestion) {
       return;
     }
@@ -285,12 +284,12 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
             <h1 className="text-4xl sm:text-5xl font-bold text-brand-text text-center mt-12 sm:mt-20 mb-6 font-serif">
               Find Your Perfect Tech
             </h1>
-            <p className="text-lg text-gray-700 text-center mb-10 sm:mb-12">
+            <p className="text-lg text-gray-700 dark:text-slate-300 text-center mb-10 sm:mb-12">
               First, let's pick a product type. We'll then ask a few questions to help you discover the ideal device for your needs!
             </p>
 
             <section className="py-8">
-              <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6 sm:mb-10 text-center">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 dark:text-slate-200 mb-6 sm:mb-10 text-center">
                 What are you looking for?
               </h2>
               <CategorySelector
@@ -304,7 +303,7 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
         )}
 
         {currentStep === 2 && selectedCategory && (
-          <div className="py-10 bg-white/75 backdrop-blur-sm rounded-2xl shadow-[0_18px_34px_rgba(8,38,67,0.12)] border border-white/80 px-4 sm:px-8">
+          <div className="py-10 bg-white/75 dark:bg-slate-800/75 backdrop-blur-sm rounded-2xl shadow-[0_18px_34px_rgba(8,38,67,0.12)] dark:shadow-[0_18px_34px_rgba(0,0,0,0.3)] border border-white/80 dark:border-slate-700/80 px-4 sm:px-8">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-brand-text">
                 {selectedCategory.name} Finder

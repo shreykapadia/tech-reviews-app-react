@@ -14,7 +14,7 @@ const QuestionnaireNavigation = ({
       <button
         onClick={onPrevious}
         disabled={isPreviousDisabled}
-        className="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+        className="px-6 py-3 bg-gray-200 dark:bg-slate-600 text-gray-700 dark:text-slate-200 font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500 transition-colors disabled:opacity-50"
       >
         Previous
       </button>

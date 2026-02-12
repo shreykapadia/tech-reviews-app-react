@@ -38,7 +38,7 @@ const SuggestedProductCard = ({ product, onSelect, isSelected }) => {
   return (
     <div
       className={`relative p-3 sm:p-4 border rounded-lg cursor-pointer transition-all duration-200 ease-in-out
-                  ${isSelected ? 'border-brand-primary ring-2 ring-brand-primary shadow-lg' : 'border-gray-200 bg-white hover:shadow-md'}`}
+                  ${isSelected ? 'border-brand-primary ring-2 ring-brand-primary shadow-lg' : 'border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:shadow-md'}`}
       onClick={() => onSelect(product.productName)}
       role="checkbox"
       aria-checked={isSelected}

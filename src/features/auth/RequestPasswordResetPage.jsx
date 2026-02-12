@@ -36,24 +36,24 @@ function RequestPasswordResetPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] border border-white/80">
+      <div className="max-w-md w-full space-y-8 bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] dark:shadow-[0_20px_44px_rgba(0,0,0,0.35)] border border-white/80 dark:border-slate-700/80">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-slate-100">
             Reset your password
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-slate-400">
             Enter your email address and we will send you a link to reset your password.
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {message && <p className="text-sm text-green-600 bg-green-100 p-3 rounded-md">{message}</p>}
           {error && <p className="text-sm text-red-600 bg-red-100 p-3 rounded-md">{error}</p>}
-          
+
           {!message && ( // Hide form if message is shown
             <>
               <div>
                 <label htmlFor="email-address" className="sr-only">Email address</label>
-                <input id="email-address" name="email" type="email" autoComplete="email" required className="appearance-none rounded-xl relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} />
+                <input id="email-address" name="email" type="email" autoComplete="email" required className="appearance-none rounded-xl relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 placeholder-slate-500 text-gray-900 dark:text-slate-100 dark:bg-slate-700 focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} />
               </div>
               <div>
                 <button type="submit" disabled={loading} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary disabled:opacity-50 shadow-md shadow-brand-primary/25">

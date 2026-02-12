@@ -2,14 +2,14 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseClient';
- 
+
 // Helper component: StarIcon
 // (Ideally, this would be in a shared components directory)
 const StarIcon = ({ fillLevel, sizeClasses = "h-6 w-6" }) => {
   // React.useId is preferred for unique IDs, with a fallback for older React versions
   const uniqueId = React.useId ? React.useId() : `grad-${Math.random().toString(36).substring(2, 9)}`;
   const starPath = "M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.116 3.986 1.241 5.385c.275 1.183-.984 2.126-2.056 1.532L12 18.22l-4.994 2.695c-1.072.593-2.331-.35-2.056-1.532l1.24-5.385L1.08 10.955c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z";
- 
+
   return (
     <svg className={`${sizeClasses} inline-block`} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -62,7 +62,7 @@ const StarRating = ({ rating, setRating, disabled }) => {
 
     let newRating = (offsetX / width) * MAX_RATING;
     newRating = Math.max(MIN_RATING, Math.min(MAX_RATING, newRating));
-    
+
     // Round to nearest 0.1
     newRating = Math.round(newRating * 10) / 10;
     return newRating;
@@ -248,7 +248,7 @@ function SubmitReviewForm({
   if (!user) {
     return (
       <div className="my-6 p-4 bg-gray-100 rounded-md text-center">
-        <p className="text-gray-700">Please <a href="/login" className="text-brand-primary hover:underline">log in</a> to write a review.</p>
+        <p className="text-gray-700 dark:text-slate-300">Please <a href="/login" className="text-brand-primary hover:underline">log in</a> to write a review.</p>
       </div>
     );
   }
@@ -258,29 +258,29 @@ function SubmitReviewForm({
       <div className="my-6 p-4 bg-green-100 text-green-700 rounded-md text-center" role="alert">
         <p>{successMessage}</p>
         {onCancel && !isEditMode && ( // Provide a way to close form after non-edit success
-            <button onClick={onCancel} className="mt-2 text-sm text-brand-primary hover:underline">Close Form</button>
+          <button onClick={onCancel} className="mt-2 text-sm text-brand-primary hover:underline">Close Form</button>
         )}
       </div>
     )
   }
 
   return (
-    <div className="my-6 p-4 border border-gray-200 rounded-lg shadow">
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">{isEditMode ? 'Edit Your Review' : 'Write a Review'}</h3>
+    <div className="my-6 p-4 border border-gray-200 dark:border-slate-600 rounded-lg shadow dark:bg-slate-800">
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-slate-100 mb-4">{isEditMode ? 'Edit Your Review' : 'Write a Review'}</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Your Rating</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Your Rating</label>
           <StarRating rating={rating} setRating={setRating} disabled={submitting} />
         </div>
         <div>
-          <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="comment" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
             Your Review (Optional)
           </label>
           <textarea
             id="comment"
             name="comment"
             rows="4"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm disabled:bg-gray-50"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-md shadow-sm focus:ring-brand-primary focus:border-brand-primary sm:text-sm disabled:bg-gray-50 dark:disabled:bg-slate-600"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             disabled={submitting}
@@ -298,7 +298,7 @@ function SubmitReviewForm({
               {submitting ? (isEditMode ? 'Updating...' : 'Submitting...') : (isEditMode ? 'Update Review' : 'Submit Review')}
             </button>
             {onCancel && (
-              <button type="button" onClick={onCancel} disabled={submitting} className="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary-light disabled:opacity-50">
+              <button type="button" onClick={onCancel} disabled={submitting} className="w-full sm:w-auto inline-flex justify-center items-center px-6 py-2 border border-gray-300 dark:border-slate-600 text-base font-medium rounded-md shadow-sm text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary-light disabled:opacity-50">
                 Cancel
               </button>
             )}

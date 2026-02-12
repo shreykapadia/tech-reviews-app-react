@@ -56,9 +56,9 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] border border-white/80">
+      <div className="max-w-md w-full space-y-8 bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] dark:shadow-[0_20px_44px_rgba(0,0,0,0.35)] border border-white/80 dark:border-slate-700/80">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-slate-100">
             Sign in to your account
           </h2>
         </div>
@@ -73,7 +73,7 @@ function LoginPage() {
                 type="text" // Changed to text to allow username
                 autoComplete="username email" // Helps password managers
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-t-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 placeholder-slate-500 text-gray-900 dark:text-slate-100 dark:bg-slate-700 rounded-t-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                 placeholder="Email or Username"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
@@ -88,7 +88,7 @@ function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 placeholder-slate-500 text-gray-900 dark:text-slate-100 dark:bg-slate-700 rounded-b-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -109,8 +109,8 @@ function LoginPage() {
             </button>
           </div>
         </form>
-       
-        <p className="mt-8 text-center text-sm text-gray-600">
+
+        <p className="mt-8 text-center text-sm text-gray-600 dark:text-slate-400">
           Don't have an account?{' '}
           <Link to="/signup" className="font-medium text-brand-primary hover:text-brand-primary-dark">
             Sign up

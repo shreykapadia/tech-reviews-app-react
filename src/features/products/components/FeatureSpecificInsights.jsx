@@ -51,8 +51,8 @@ const getSentimentCategory = (score) => {
 
   if (numericScore >= 80) return 'positive';
   if (numericScore >= 60) return 'neutral';
-  if (numericScore < 60) return 'negative'; 
-  return 'unknown'; 
+  if (numericScore < 60) return 'negative';
+  return 'unknown';
 };
 
 const getSentimentColor = (sentiment) => {
@@ -68,7 +68,7 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
   // console.log('[FeatureInsightItem] Processing feature:', feature); // Log individual feature
 
   const IconComponent = iconMap[(feature.feature_category || '').toLowerCase()] || QuestionMarkCircleIcon;
-  
+
   // Robust score handling
   const rawScore = feature.consensus_sentiment_score;
   let numericScore = typeof rawScore === 'string' ? parseFloat(rawScore) : rawScore;
@@ -80,7 +80,7 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
   const displayScore = numericScore !== null ? Math.max(0, Math.min(100, numericScore)) : 0;
 
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
+    <div className="border-b border-gray-200 dark:border-slate-600 last:border-b-0">
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
@@ -95,7 +95,7 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
         </div>
         <div className="flex items-center">
           {/* Display score text */}
-          <span className="text-xs sm:text-sm text-gray-600 font-medium w-10 text-right mr-2">
+          <span className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 font-medium w-10 text-right mr-2">
             {numericScore !== null ? `${numericScore.toFixed(0)}%` : 'N/A'}
           </span>
 
@@ -117,12 +117,12 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
         </div>
       </button>
       {isOpen && (
-        <div id={`feature-details-${feature.id}`} className="p-3 sm:p-4 bg-gray-50 border-t border-gray-200">
-          <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-2">
+        <div id={`feature-details-${feature.id}`} className="p-3 sm:p-4 bg-gray-50 dark:bg-slate-700/50 border-t border-gray-200 dark:border-slate-600">
+          <p className="text-xs sm:text-sm text-gray-700 dark:text-slate-300 leading-relaxed mb-2">
             {feature.feature_summary || 'No summary available for this feature.'}
           </p>
           {feature.feature_summary && ( // Only show "AI-generated" if there's a summary
-            <p className="text-xs text-gray-500 italic">AI-generated summary</p>
+            <p className="text-xs text-gray-500 dark:text-slate-400 italic">AI-generated summary</p>
           )}
         </div>
       )}
@@ -149,12 +149,12 @@ const FeatureSpecificInsights = ({ product, insightsData }) => {
   };
 
   return (
-    <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
+    <div className="py-8 sm:py-10 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Feature Insights
         </h3>
-        <div className="border border-gray-200 rounded-md">
+        <div className="border border-gray-200 dark:border-slate-600 rounded-md">
           {featureSentiments.map((feature) => (
             <FeatureInsightItem // Ensure feature has a unique 'id' or use index as last resort
               key={feature.id}

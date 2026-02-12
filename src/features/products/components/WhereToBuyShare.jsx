@@ -9,7 +9,7 @@ import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid'; // For fi
 
 // Updated RetailerLink to include a "Shop Now" button
 const RetailerLink = ({ retailer }) => (
-  <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+  <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-200 dark:border-slate-600">
     <div className="flex items-center w-full sm:w-auto mb-3 sm:mb-0">
       {retailer.logo && (
         <img src={retailer.logo} alt={`${retailer.name} logo`} className="h-10 w-10 sm:h-12 sm:w-12 mr-3 sm:mr-4 object-contain flex-shrink-0" />
@@ -19,7 +19,7 @@ const RetailerLink = ({ retailer }) => (
           {retailer.name}
         </span>
         {retailer.priceInfo && (
-          <div className="text-sm text-gray-600 mt-0.5">
+          <div className="text-sm text-gray-600 dark:text-slate-400 mt-0.5">
             {retailer.priceInfo.salePrice < retailer.priceInfo.regularPrice && (
               <span className="text-red-600 font-bold mr-1.5 text-base">${retailer.priceInfo.salePrice.toFixed(2)}</span>
             )}
@@ -72,7 +72,7 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
   const [bestBuyError, setBestBuyError] = useState(null);
 
   const { productName, bestBuySku, retailersData = [] } = product;
-  
+
   // Determine if the Best Buy API should be used based on the presence of the API key
   const IS_BESTBUY_API_ENABLED = import.meta.env.VITE_BESTBUY_API_KEY;
 
@@ -108,8 +108,8 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
       };
       fetchBestBuyPrice();
     } else if (bestBuySku && !IS_BESTBUY_API_ENABLED) {
-        console.warn('Best Buy API key is missing. Price fetching disabled.');
-        setBestBuyError('Best Buy API key not configured.');
+      console.warn('Best Buy API key is missing. Price fetching disabled.');
+      setBestBuyError('Best Buy API key not configured.');
     }
   }, [bestBuySku, IS_BESTBUY_API_ENABLED]);
 
@@ -135,20 +135,20 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
         });
       } else { // API enabled, SKU exists, but no data yet (loading or error)
         baseRetailers.unshift({
-            name: 'Best Buy',
-            url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`,
-            logo: '/images/retailer-logos/bestbuy.svg',
-            pricePlaceholder: isLoadingBestBuy ? 'Checking price...' : (bestBuyError ? 'Price unavailable' : 'Check price'),
-            ratingInfo: { average: null, count: null }
+          name: 'Best Buy',
+          url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`,
+          logo: '/images/retailer-logos/bestbuy.svg',
+          pricePlaceholder: isLoadingBestBuy ? 'Checking price...' : (bestBuyError ? 'Price unavailable' : 'Check price'),
+          ratingInfo: { average: null, count: null }
         });
       }
     } else if (bestBuySku) { // API is NOT enabled (key missing) but SKU exists - hardcode Best Buy
       baseRetailers.unshift({
-          name: 'Best Buy',
-          url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`, // Fallback search URL
-          logo: '/images/retailer-logos/bestbuy.svg',
-          pricePlaceholder: '$XXX.XX', // Hardcoded price placeholder
-          ratingInfo: { average: 4.5, count: 12345, scale: 5 }, // Hardcoded rating
+        name: 'Best Buy',
+        url: `https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(productName)}`, // Fallback search URL
+        logo: '/images/retailer-logos/bestbuy.svg',
+        pricePlaceholder: '$XXX.XX', // Hardcoded price placeholder
+        ratingInfo: { average: 4.5, count: 12345, scale: 5 }, // Hardcoded rating
       });
     }
 
@@ -205,12 +205,12 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
   };
 
   return (
-    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 animate-fade-in-up">
+    <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up">
       <div className="flex justify-between items-center mb-4 sm:mb-5">
         <h3 className="text-xl sm:text-2xl font-semibold text-brand-primary font-serif">Find Best Deals</h3>
         <button
           onClick={handleShare}
-          className="flex items-center text-sm text-gray-600 hover:text-brand-primary p-2 rounded-md hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-1"
+          className="flex items-center text-sm text-gray-600 dark:text-slate-400 hover:text-brand-primary p-2 rounded-md hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-1"
           aria-label="Share this product"
         >
           <ShareIcon className="h-5 w-5 mr-1.5" />

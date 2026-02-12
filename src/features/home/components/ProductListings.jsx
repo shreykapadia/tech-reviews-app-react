@@ -37,7 +37,7 @@ function ProductListings({ calculateCriticsScore }) {
   }
 
   if (featuredProducts.length === 0) {
-    return <p className="text-center text-gray-600 py-8">No products found.</p>;
+    return <p className="text-center text-gray-600 dark:text-slate-400 py-8">No products found.</p>;
   }
 
   const renderProductItem = (product) => (

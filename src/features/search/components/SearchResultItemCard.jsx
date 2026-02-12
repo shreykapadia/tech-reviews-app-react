@@ -22,7 +22,7 @@ function SearchResultItemCard({ item, onCardClick, calculateCriticsScore }) {
 
   return (
     <div
-      className="bg-white rounded-xl shadow-lg transform hover:scale-[1.01] transition-all duration-300 border border-gray-100 hover:border-blue-200 flex flex-col md:flex-row items-stretch cursor-pointer group overflow-hidden"
+      className="bg-white dark:bg-slate-800 rounded-xl shadow-lg dark:shadow-[0_16px_44px_rgba(0,0,0,0.3)] transform hover:scale-[1.01] transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-blue-200 flex flex-col md:flex-row items-stretch cursor-pointer group overflow-hidden"
       onClick={() => onCardClick(item)}
     >
       {/* Image Section */}
@@ -37,19 +37,19 @@ function SearchResultItemCard({ item, onCardClick, calculateCriticsScore }) {
       {/* Content Section */}
       <div className="flex-grow p-4 md:p-6 flex flex-col justify-between">
         <div>
-          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-1 leading-tight">{productName}</h3>
-          <p className="text-xs sm:text-sm text-gray-500 mb-1">Brand: <span className="font-semibold text-gray-600">{brand}</span></p>
-          <p className="text-sm text-gray-600 leading-relaxed my-2 hidden sm:block"> {/* Adjusted margin and visibility */}
+          <h3 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-slate-100 mb-1 leading-tight">{productName}</h3>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mb-1">Brand: <span className="font-semibold text-gray-600 dark:text-slate-300">{brand}</span></p>
+          <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed my-2 hidden sm:block"> {/* Adjusted margin and visibility */}
             {shortDescription}
           </p>
           <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 sm:gap-x-4 mb-3">
             <div className="flex items-center space-x-2">
               <span className={`score-badge ${scoreBadgeClass}`}>{scoreDisplay}</span>
-              <span className="text-xs sm:text-sm font-medium text-gray-600">Critics Score</span>
+              <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-slate-400">Critics Score</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-base sm:text-lg text-yellow-500">&#9733;</span>
-              <span className="text-xs sm:text-sm font-medium text-gray-600">{audienceRating} Audience Rating</span>
+              <span className="text-xs sm:text-sm font-medium text-gray-600 dark:text-slate-400">{audienceRating} Audience Rating</span>
             </div>
           </div>
         </div>

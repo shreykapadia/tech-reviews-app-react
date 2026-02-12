@@ -82,7 +82,7 @@ function DashboardPage({ calculateCriticsScore }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-        <p className="text-lg text-gray-700">Loading user data...</p>
+        <p className="text-lg text-gray-700 dark:text-slate-300">Loading user data...</p>
       </div>
     );
   }
@@ -92,24 +92,24 @@ function DashboardPage({ calculateCriticsScore }) {
   return (
     <div className="min-h-screen pt-24 pb-10 px-4 sm:px-6 lg:px-8 md:pt-28">
       <div className="mx-auto bg-white/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] rounded-2xl border border-white/80 p-6 md:p-10">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-slate-100 mb-6">
           Welcome, <span className="text-brand-primary break-all">{userProfile?.username || user?.email || 'User'}</span>!
         </h1>
-        <p className="text-gray-700 mb-4">
+        <p className="text-gray-700 dark:text-slate-300 mb-4">
           This is your personal dashboard. You can manage your profile and settings here.
         </p>
         <div className="mt-8 space-y-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-700">Your Account</h2>
-            <p className="text-gray-600 mt-1">More profile features coming soon!</p>
+            <h2 className="text-xl font-semibold text-gray-700 dark:text-slate-200">Your Account</h2>
+            <p className="text-gray-600 dark:text-slate-400 mt-1">More profile features coming soon!</p>
           </div>
 
           <div className="mt-10">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-3">Your Favorited Products</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-slate-100 mb-6 border-b dark:border-slate-700 pb-3">Your Favorited Products</h2>
             {favoritesLoading && (
               <div className="flex justify-center items-center py-10">
                 <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-10 w-10"></div>
-                <p className="ml-3 text-gray-600">Loading your favorites...</p>
+                <p className="ml-3 text-gray-600 dark:text-slate-400">Loading your favorites...</p>
               </div>
             )}
             {favoritesError && (
@@ -119,7 +119,7 @@ function DashboardPage({ calculateCriticsScore }) {
               </div>
             )}
             {!favoritesLoading && !favoritesError && favoritedProducts.length === 0 && (
-              <p className="text-gray-600 text-center py-10">You haven't favorited any products yet. Start exploring!</p>
+              <p className="text-gray-600 dark:text-slate-400 text-center py-10">You haven't favorited any products yet. Start exploring!</p>
             )}
             {!favoritesLoading && !favoritesError && favoritedProducts.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

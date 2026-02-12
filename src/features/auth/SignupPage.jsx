@@ -36,10 +36,10 @@ function SignupPage() {
       // Supabase sends a confirmation email if enabled.
       // The user object might be in data.user, but session will be null until confirmation.
       if (data?.user && !data?.session) {
-         setMessage('Registration successful! Please check your email for a verification link to activate your account.');
-         setEmail(''); // Clear form
-         setUsername('');
-         setPassword('');
+        setMessage('Registration successful! Please check your email for a verification link to activate your account.');
+        setEmail(''); // Clear form
+        setUsername('');
+        setPassword('');
       } else if (data?.session) {
         // This case might happen if auto-confirm is on or for social logins (though not used here)
         setMessage('Registration successful! You are now logged in.');
@@ -67,9 +67,9 @@ function SignupPage() {
       {/* Overlay to darken the background image a bit for better readability of the form, optional */}
       {/* <div className="absolute inset-0 bg-black opacity-30"></div> */}
 
-      <div className="max-w-md w-full space-y-8 bg-white/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] border border-white/80">
+      <div className="max-w-md w-full space-y-8 bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm p-10 rounded-2xl shadow-[0_20px_44px_rgba(8,38,67,0.16)] dark:shadow-[0_20px_44px_rgba(0,0,0,0.35)] border border-white/80 dark:border-slate-700/80">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-slate-100">
             Create your account
           </h2>
         </div>
@@ -88,7 +88,7 @@ function SignupPage() {
                     type="text"
                     autoComplete="username"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-t-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 placeholder-slate-500 text-gray-900 dark:text-slate-100 dark:bg-slate-700 rounded-t-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                     placeholder="Username (3-20 chars, a-z, 0-9, _)"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -103,7 +103,7 @@ function SignupPage() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 placeholder-slate-500 text-gray-900 dark:text-slate-100 dark:bg-slate-700 focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                     placeholder="Email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -118,7 +118,7 @@ function SignupPage() {
                     type="password"
                     autoComplete="new-password"
                     required
-                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 placeholder-slate-500 text-gray-900 rounded-b-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
+                    className="appearance-none rounded-none relative block w-full px-3 py-3 border border-slate-300 dark:border-slate-600 placeholder-slate-500 text-gray-900 dark:text-slate-100 dark:bg-slate-700 rounded-b-xl focus:outline-none focus:ring-brand-primary focus:border-brand-primary focus:z-10 sm:text-sm"
                     placeholder="Password (min. 6 characters)"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -134,7 +134,7 @@ function SignupPage() {
             </>
           )}
         </form>
-        <p className="mt-8 text-center text-sm text-gray-600">
+        <p className="mt-8 text-center text-sm text-gray-600 dark:text-slate-400">
           Already have an account?{' '}
           <Link to="/login" className="font-medium text-brand-primary hover:text-brand-primary-dark">
             Sign in

@@ -92,7 +92,7 @@ const ProductSpecifications = ({ product }) => {
   }
 
   return (
-    <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
+    <div className="py-8 sm:py-10 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Full Specifications
@@ -101,7 +101,7 @@ const ProductSpecifications = ({ product }) => {
         {/* Display Starting Retail Price */}
         {startingPrice !== null && (
           <div className="mb-6 sm:mb-8">
-            <p className="text-lg sm:text-xl font-semibold text-gray-700">
+            <p className="text-lg sm:text-xl font-semibold text-gray-700 dark:text-slate-300">
               Starting Retail Price:
               <span className="ml-2 text-xl sm:text-2xl font-bold text-brand-accent">
                 ${startingPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -113,7 +113,7 @@ const ProductSpecifications = ({ product }) => {
         {orderedCategories.map((categoryName) => {
           let specsToProcess = Object.entries(specDetailsMap)
             .filter(([, detail]) => detail.category === categoryName);
-          
+
           const specsForCategory = specsToProcess
             .map(([key, detail]) => {
               let value;
@@ -134,18 +134,18 @@ const ProductSpecifications = ({ product }) => {
             .filter(Boolean);
 
           if (specsForCategory.length === 0) {
-            return null; 
+            return null;
           }
 
           return (
             <div key={categoryName} className="mb-6 sm:mb-8 last:mb-0">
-              <h4 className="text-lg sm:text-xl font-semibold text-brand-text font-sans mb-3 sm:mb-4 border-b border-gray-200 pb-2">
+              <h4 className="text-lg sm:text-xl font-semibold text-brand-text dark:text-slate-100 font-sans mb-3 sm:mb-4 border-b border-gray-200 dark:border-slate-600 pb-2">
                 {categoryName}
               </h4>
               <dl className="space-y-3">
                 {specsForCategory.map((spec) => (
                   <div key={spec.label} className="grid grid-cols-1 sm:grid-cols-12 gap-1 sm:gap-4 items-baseline">
-                    <dt className="text-sm font-medium text-gray-600 sm:col-span-4 md:col-span-3">{spec.label}:</dt>
+                    <dt className="text-sm font-medium text-gray-600 dark:text-slate-400 sm:col-span-4 md:col-span-3">{spec.label}:</dt>
                     <dd className="text-sm text-brand-text sm:col-span-8 md:col-span-9">
                       {Array.isArray(spec.value)
                         ? spec.value.join(' / ') // Join array values with ' / '

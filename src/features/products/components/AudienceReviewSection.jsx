@@ -36,14 +36,14 @@ const StarIcon = ({ fillLevel, sizeClasses = "h-6 w-6" }) => {
 
 const RatingDistributionBar = ({ rating, percentage, count, colorClass = 'bg-yellow-400' }) => (
   <div className="flex items-center space-x-2 mb-1 text-xs">
-    <span className="w-12 text-gray-600">{rating} star</span>
+    <span className="w-12 text-gray-600 dark:text-slate-400">{rating} star</span>
     <div className="flex-1 bg-gray-200 rounded-full h-2.5 sm:h-3 overflow-hidden">
       <div
         className={`${colorClass} h-full rounded-full transition-all duration-500 ease-out`}
         style={{ width: `${percentage}%` }}
       />
     </div>
-    <span className="w-10 text-gray-700 font-medium text-right">{count}</span>
+    <span className="w-10 text-gray-700 dark:text-slate-300 font-medium text-right">{count}</span>
   </div>
 );
 
@@ -68,7 +68,7 @@ const UserReviewCard = ({ review, currentUserId, onEdit, onDelete }) => {
   const reviewDate = review.created_at ? new Date(review.created_at).toLocaleDateString() : 'N/A';
 
   return (
-    <div className="p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow">
+    <div className="p-4 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600 hover:shadow-sm transition-shadow">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center">
           <span className="font-semibold text-sm text-brand-text mr-2">{displayName}</span>
@@ -78,9 +78,9 @@ const UserReviewCard = ({ review, currentUserId, onEdit, onDelete }) => {
           )} */}
           <div className="flex">{renderStars(review.rating)}</div>
         </div>
-        <span className="text-xs text-gray-500">{reviewDate}</span>
+        <span className="text-xs text-gray-500 dark:text-slate-400">{reviewDate}</span>
       </div>
-      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{review.comment}</p>
+      <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">{review.comment}</p>
       {currentUserId === review.user_id && (
         <div className="mt-3 flex items-center space-x-3">
           <button
@@ -260,7 +260,7 @@ const AudienceReviewSection = ({ product }) => {
   const keyInsights = aiProsCons || { pros: [], cons: [] };
 
   return (
-    <div className="py-8 sm:py-10 bg-white rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
+    <div className="py-8 sm:py-10 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Community Rating
@@ -299,7 +299,7 @@ const AudienceReviewSection = ({ product }) => {
                     <p className="text-sm font-medium text-green-700 mb-1">Often Praised:</p>
                     <ul className="list-disc list-inside space-y-1 pl-1">
                       {keyInsights.pros.slice(0, 2).map((pro, index) => ( // Show top 2 pros
-                        <li key={`audience-pro-${index}`} className="text-xs text-gray-700 leading-relaxed">{pro}</li>
+                        <li key={`audience-pro-${index}`} className="text-xs text-gray-700 dark:text-slate-300 leading-relaxed">{pro}</li>
                       ))}
                     </ul>
                   </div>
@@ -309,7 +309,7 @@ const AudienceReviewSection = ({ product }) => {
                     <p className="text-sm font-medium text-red-700 mb-1">Common Concerns:</p>
                     <ul className="list-disc list-inside space-y-1 pl-1">
                       {keyInsights.cons.slice(0, 2).map((con, index) => ( // Show top 2 cons
-                        <li key={`audience-con-${index}`} className="text-xs text-gray-700 leading-relaxed">{con}</li>
+                        <li key={`audience-con-${index}`} className="text-xs text-gray-700 dark:text-slate-300 leading-relaxed">{con}</li>
                       ))}
                     </ul>
                   </div>
@@ -334,19 +334,19 @@ const AudienceReviewSection = ({ product }) => {
                   {currentUserReview ? 'Edit Your Review' : 'Write Your Review'}
                 </button>
               )}
-               {!authLoading && !user && (
-                 <Link 
-                    to="/login" 
-                    state={{ from: location }} // Pass current location to redirect back after login
-                    className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-white text-sm font-medium rounded-md shadow-sm bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition-colors duration-200"
-                  >
-                    Log in to write a review
-                 </Link>
-               )}
+              {!authLoading && !user && (
+                <Link
+                  to="/login"
+                  state={{ from: location }} // Pass current location to redirect back after login
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-white text-sm font-medium rounded-md shadow-sm bg-brand-primary hover:bg-brand-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary transition-colors duration-200"
+                >
+                  Log in to write a review
+                </Link>
+              )}
             </div>
 
             {/* This div can be used to scroll to the form if needed */}
-            <div id="submit-review-form-section"> 
+            <div id="submit-review-form-section">
               {showReviewForm && user && (
                 <SubmitReviewForm
                   productId={productId}
@@ -357,9 +357,9 @@ const AudienceReviewSection = ({ product }) => {
               )}
             </div>
 
-            {isLoadingReviews && <p className="text-sm text-gray-500 py-4 text-center">Loading reviews...</p>}
+            {isLoadingReviews && <p className="text-sm text-gray-500 dark:text-slate-400 py-4 text-center">Loading reviews...</p>}
             {reviewsError && <p className="text-sm text-red-500 py-4 text-center">{reviewsError}</p>}
-            
+
             {!isLoadingReviews && !reviewsError && userReviews.length > 0 ? (
               <div className="space-y-4">
                 {userReviews.map((review) => (
@@ -373,7 +373,7 @@ const AudienceReviewSection = ({ product }) => {
                 ))}
               </div>
             ) : (!isLoadingReviews && !reviewsError && !showReviewForm && ( // Don't show "no reviews" if form is open
-              <p className="text-sm text-gray-500 py-4 text-center">No user reviews available for this product yet. Be the first to write one!</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400 py-4 text-center">No user reviews available for this product yet. Be the first to write one!</p>
             ))}
 
             {/* "See All User Reviews" link - adjust if you have a separate page for all reviews */}

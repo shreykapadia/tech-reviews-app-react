@@ -33,7 +33,7 @@ const TechFinderResults = ({
     return (
       <div className="flex flex-col justify-center items-center min-h-[200px] py-10">
         <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-        <p className="text-lg text-gray-600">Generating your recommendations...</p>
+        <p className="text-lg text-gray-600 dark:text-slate-400">Generating your recommendations...</p>
       </div>
     );
   }
@@ -46,13 +46,13 @@ const TechFinderResults = ({
         </h3>
         {products.length > 0 && (
           <div className="flex items-center space-x-2">
-            <label htmlFor="sort-options" className="text-sm font-medium text-gray-700">Sort by:</label>
+            <label htmlFor="sort-options" className="text-sm font-medium text-gray-700 dark:text-slate-300">Sort by:</label>
             <div className="relative">
               <select
                 id="sort-options"
                 value={sortOption}
                 onChange={(e) => onSortChange(e.target.value)}
-                className="appearance-none block w-full bg-white/95 border border-slate-300 hover:border-brand-primary px-3 py-2 pr-8 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary text-sm transition-all duration-150 ease-in-out cursor-pointer"
+                className="appearance-none block w-full bg-white/95 dark:bg-slate-800/95 border border-slate-300 dark:border-slate-600 hover:border-brand-primary px-3 py-2 pr-8 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary text-sm dark:text-slate-200 transition-all duration-150 ease-in-out cursor-pointer"
               >
                 <option value="default">Relevance & Score</option>
                 <option value="price_asc">Starting Price Price: Low to High</option>
@@ -78,7 +78,7 @@ const TechFinderResults = ({
           ))}
         </div>
       ) : (
-        <div className="text-center text-lg text-gray-600 py-10 bg-white/90 rounded-2xl shadow-[0_16px_32px_rgba(8,38,67,0.12)] border border-white/80 p-6">
+        <div className="text-center text-lg text-gray-600 dark:text-slate-400 py-10 bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-[0_16px_32px_rgba(8,38,67,0.12)] dark:shadow-[0_16px_32px_rgba(0,0,0,0.3)] border border-white/80 dark:border-slate-700/80 p-6">
           <p className="text-xl font-semibold mb-3">No exact matches found for all your criteria.</p>
           {!hasCloseMatches && (
             <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>
@@ -87,7 +87,7 @@ const TechFinderResults = ({
       )}
 
       {hasCloseMatches && (
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-slate-600">
           <h4 className="text-xl sm:text-2xl font-semibold text-brand-text text-center sm:text-left mb-6">
             {hasExactMatches ? "You Might Also Consider" : "Here are some close matches:"}
           </h4>
@@ -96,7 +96,7 @@ const TechFinderResults = ({
             .map(([count, productsInGroup]) => (
               parseInt(count, 10) > 0 && productsInGroup.length > 0 && ( // Ensure count is positive and group not empty
                 <div key={`group-failed-${count}`} className="mb-8">
-                  <h5 className="text-lg font-medium text-gray-700 mt-4 mb-3 pl-1">
+                  <h5 className="text-lg font-medium text-gray-700 dark:text-slate-300 mt-4 mb-3 pl-1">
                     Missed by {count} filter{count > 1 ? 's' : ''}:
                   </h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

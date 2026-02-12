@@ -6,12 +6,12 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
   if (!question) return null;
 
   return (
-    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl">
-      <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6">{question.text}</h3>
+    <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-lg shadow-xl dark:shadow-[0_16px_44px_rgba(0,0,0,0.35)]">
+      <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-slate-200 mb-6">{question.text}</h3>
       {question.type === 'radio' && (
         <div className="space-y-3">
           {question.options.map(option => (
-            <label key={option.value + '-' + question.id} className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
+            <label key={option.value + '-' + question.id} className="flex items-center p-3 border border-gray-200 dark:border-slate-600 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 cursor-pointer transition-colors">
               <input
                 type="radio"
                 name={question.id}
@@ -20,7 +20,7 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
                 onChange={() => onAnswerSelect(question.id, option.value)}
                 className="h-5 w-5 text-brand-primary focus:ring-brand-primary border-gray-300"
               />
-              <span className="ml-3 text-gray-700">{option.label}</span>
+              <span className="ml-3 text-gray-700 dark:text-slate-300">{option.label}</span>
             </label>
           ))}
         </div>
@@ -28,7 +28,7 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
       {question.type === 'multiselect_checkbox' && (
         <div className="space-y-3">
           {question.options.map(option => (
-            <label key={option.value + '-' + question.id} className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
+            <label key={option.value + '-' + question.id} className="flex items-center p-3 border border-gray-200 dark:border-slate-600 rounded-md hover:bg-gray-50 dark:hover:bg-slate-700 cursor-pointer transition-colors">
               <input
                 type="checkbox"
                 name={question.id}
@@ -38,7 +38,7 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
                 onChange={(e) => onAnswerSelect(question.id, option.value, e.target.checked)}
                 className="h-5 w-5 text-brand-primary focus:ring-brand-primary border-gray-300 rounded" // Added rounded for checkbox
               />
-              <span className="ml-3 text-gray-700">{option.label}</span>
+              <span className="ml-3 text-gray-700 dark:text-slate-300">{option.label}</span>
             </label>
           ))}
         </div>

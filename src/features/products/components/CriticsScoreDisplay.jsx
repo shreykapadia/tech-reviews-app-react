@@ -19,7 +19,7 @@ const CriticsScoreDisplayComponent = ({ criticsScore }) => {
 
     if (numericScore >= 85) return 'text-green-600';
     if (numericScore >= 70) return 'text-yellow-600';
-    if (numericScore < 70 && numericScore >=0) return 'text-red-600';
+    if (numericScore < 70 && numericScore >= 0) return 'text-red-600';
     return defaultColorClass;
   };
   const scoreColorClass = getScoreColor(scoreToDisplay, 'text-brand-primary');
@@ -46,14 +46,14 @@ const CriticsScoreDisplayComponent = ({ criticsScore }) => {
   }, [isTooltipVisible]);
 
   return (
-    <div className="bg-white p-4 sm:p-5 rounded-lg shadow-md flex items-center justify-between relative border border-gray-200 animate-fade-in-up">
+    <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] flex items-center justify-between relative border border-gray-200 dark:border-slate-700 animate-fade-in-up">
       <div className="flex items-center">
         <ShieldCheckIcon className="h-9 w-9 sm:h-10 sm:w-10 text-brand-primary mr-3 sm:mr-4 flex-shrink-0" aria-hidden="true" />
         <div>
           <p className={`text-3xl sm:text-4xl font-bold ${scoreColorClass} leading-tight`}>
             {scoreToDisplay}
           </p>
-          <p className="text-xs sm:text-sm text-gray-600 font-medium">Critics Score</p>
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 font-medium">Critics Score</p>
         </div>
       </div>
       <div className="relative">
@@ -63,7 +63,7 @@ const CriticsScoreDisplayComponent = ({ criticsScore }) => {
           aria-label="More information about Critics Score"
           aria-expanded={isTooltipVisible}
           aria-controls="critics-score-tooltip"
-          className="p-1 rounded-full text-gray-500 hover:text-brand-primary hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors"
+          className="p-1 rounded-full text-gray-500 dark:text-slate-400 hover:text-brand-primary hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors"
         >
           <InformationCircleIcon className="h-6 w-6 sm:h-7 sm:w-7" />
         </button>

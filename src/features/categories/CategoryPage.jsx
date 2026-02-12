@@ -7,7 +7,7 @@ import { fetchProductsByCategory, fetchBrandsByCategory } from '../../services/p
 
 const FilterSection = React.memo(({ title, children, className }) => (
   <div className={`mb-6 ${className || ''}`}>
-    <h3 className="text-lg font-semibold mb-3 text-gray-700 border-b border-gray-200 pb-2">
+    <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-slate-300 border-b border-gray-200 dark:border-slate-600 pb-2">
       {title}
     </h3>
     <div className="space-y-2">{children}</div>
@@ -16,7 +16,7 @@ const FilterSection = React.memo(({ title, children, className }) => (
 FilterSection.displayName = 'FilterSection';
 
 const CheckboxFilterItem = React.memo(({ item, isSelected, onChange, isDisabled }) => (
-  <label className={`flex items-center space-x-2 text-sm ${isDisabled ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer hover:text-brand-primary'} text-gray-600`}>
+  <label className={`flex items-center space-x-2 text-sm ${isDisabled ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer hover:text-brand-primary'} text-gray-600 dark:text-slate-400`}>
     <input
       type="checkbox"
       className={`h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-brand-primary/50 transition-colors duration-150 ${isDisabled ? 'text-gray-400 bg-gray-100' : 'text-brand-primary'}`}
@@ -141,13 +141,13 @@ function CategoryPage({
       <div className="pt-16 md:pt-20">
         <Breadcrumbs crumbs={categoryPageCrumbs} />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-brand-text mb-6 sm:mb-8 font-serif">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-brand-text dark:text-slate-100 mb-6 sm:mb-8 font-serif">
             {categoryDetails.name}
           </h1>
 
           <div className="lg:flex lg:space-x-8">
             <aside className={`lg:w-1/4 xl:w-1/5 mb-8 lg:mb-0`}>
-              <div className="sticky top-24 space-y-6 p-4 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100">
+              <div className="sticky top-24 space-y-6 p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-[0_16px_44px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-slate-700">
                 <FilterSection title="Brand">
                   {availableBrands.map(brand => (
                     <CheckboxFilterItem
@@ -163,7 +163,7 @@ function CategoryPage({
                     <input
                       type="number"
                       placeholder="Min Price"
-                      className="p-2 border rounded"
+                      className="p-2 border dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 rounded"
                       value={activeFilters.minPrice}
                       onChange={(e) => handlePriceFilterChange('minPrice', e.target.value)}
                     />
@@ -182,7 +182,7 @@ function CategoryPage({
             <div className="lg:w-3/4 xl:w-4/5">
               {products.length === 0 && !loadingProducts && (
                 <div className="text-center py-12">
-                  <h2 className="text-xl font-medium text-gray-800">No Products Found</h2>
+                  <h2 className="text-xl font-medium text-gray-800 dark:text-slate-300">No Products Found</h2>
                 </div>
               )}
 

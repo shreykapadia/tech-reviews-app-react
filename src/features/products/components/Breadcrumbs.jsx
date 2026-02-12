@@ -11,19 +11,19 @@ const BreadcrumbsComponent = ({ crumbs }) => {
 
   return (
     <nav aria-label="Breadcrumb" className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <ol role="list" className="flex items-center space-x-1.5 sm:space-x-2 text-sm text-gray-500">
+      <ol role="list" className="flex items-center space-x-1.5 sm:space-x-2 text-sm text-gray-500 dark:text-slate-400">
         {crumbs.map((crumb, index) => (
           <li key={crumb.label + index}>
             <div className="flex items-center">
               {index > 0 && (
-                <ChevronRightIcon className="h-4 w-4 flex-shrink-0 text-gray-400 mr-1.5 sm:mr-2" aria-hidden="true" />
+                <ChevronRightIcon className="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-slate-500 mr-1.5 sm:mr-2" aria-hidden="true" />
               )}
               {crumb.path ? (
                 <Link to={crumb.path} className="hover:text-brand-primary hover:underline">
                   {crumb.label}
                 </Link>
               ) : (
-                <span className="font-medium text-brand-text">{crumb.label}</span>
+                <span className="font-medium text-brand-text dark:text-slate-200">{crumb.label}</span>
               )}
             </div>
           </li>

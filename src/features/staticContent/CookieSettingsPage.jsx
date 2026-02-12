@@ -14,7 +14,7 @@ const Paragraph = ({ children }) => (
 );
 
 const ToggleSwitch = ({ id, label, checked, onChange, disabled }) => (
-  <label htmlFor={id} className={`flex items-center justify-between py-4 border-b border-gray-200 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+  <label htmlFor={id} className={`flex items-center justify-between py-4 border-b border-gray-200 dark:border-slate-600 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
     <span className={`font-medium text-lg ${disabled ? 'text-gray-400' : 'text-brand-text'}`}>{label}</span>
     <div className="relative">
       <input
@@ -86,8 +86,8 @@ function CookieSettingsPage() {
   return (
     <div className="min-h-screen py-8 pt-20 md:pt-24">
       <div className="container mx-auto px-4">
-        <div className="bg-white/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] rounded-2xl border border-white/80 p-6 sm:p-8 md:p-10 lg:p-12 max-w-4xl mx-auto">
-          <header className="mb-8 border-b pb-6 border-gray-200">
+        <div className="bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.35)] rounded-2xl border border-white/80 dark:border-slate-700/80 p-6 sm:p-8 md:p-10 lg:p-12 max-w-4xl mx-auto">
+          <header className="mb-8 border-b pb-6 border-gray-200 dark:border-slate-600">
             <h1 className="text-3xl sm:text-4xl font-bold text-brand-primary font-serif mb-3">
               Cookie Settings
             </h1>
@@ -138,7 +138,7 @@ function CookieSettingsPage() {
             </div>
           </section>
 
-          <footer className="mt-10 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-end gap-4">
+          <footer className="mt-10 pt-6 border-t border-gray-200 dark:border-slate-600 flex flex-col sm:flex-row items-center justify-end gap-4">
             {isSaved && <p className="text-green-600 font-semibold mr-auto">Preferences Saved!</p>}
             <button
               onClick={handleSavePreferences}

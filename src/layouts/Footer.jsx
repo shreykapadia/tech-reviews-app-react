@@ -6,7 +6,7 @@ function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-16 overflow-hidden border-t border-slate-200/70 bg-slate-950 text-slate-200 py-12 sm:py-14">
+    <footer className="relative mt-16 overflow-hidden border-t border-slate-200/70 dark:border-slate-700/70 bg-slate-950 text-slate-200 py-12 sm:py-14">
       <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-brand-accent/25 blur-3xl"></div>
       <div className="container mx-auto px-4 text-center relative z-10">
         <nav className="mb-6">

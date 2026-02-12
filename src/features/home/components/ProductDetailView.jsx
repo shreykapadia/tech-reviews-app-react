@@ -20,11 +20,11 @@ function ProductDetailView({ product, onBackClick, calculateCriticsScore }) {
   const formatKey = (key) => key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
 
   return (
-    <div id="product-detail" className="mt-8 p-6 bg-white rounded-lg shadow-lg container mx-auto">
-      <div className="bg-white rounded-xl shadow-lg p-8 relative">
+    <div id="product-detail" className="mt-8 p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg dark:shadow-[0_16px_44px_rgba(0,0,0,0.35)] container mx-auto">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg dark:shadow-[0_16px_44px_rgba(0,0,0,0.35)] p-8 relative">
         <button
           id="back-to-products-btn"
-          className="absolute top-4 right-4 px-4 py-2 bg-brand-light-gray text-brand-text rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 text-sm font-medium"
+          className="absolute top-4 right-4 px-4 py-2 bg-brand-light-gray dark:bg-slate-700 text-brand-text dark:text-slate-200 rounded-full hover:bg-gray-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200 text-sm font-medium"
           onClick={onBackClick}
         >
           &larr; Back to Products
@@ -63,7 +63,7 @@ function ProductDetailView({ product, onBackClick, calculateCriticsScore }) {
               </div>
             </div>
 
-            <div className="mb-8 p-6 bg-brand-light-gray rounded-lg shadow-sm border border-gray-100 text-left">
+            <div className="mb-8 p-6 bg-brand-light-gray dark:bg-slate-700/50 rounded-lg shadow-sm border border-gray-100 dark:border-slate-600 text-left">
               <h3 className="text-2xl font-bold text-brand-text mb-4 font-serif">Key Specifications</h3>
               <ul id="product-detail-key-specs" className="list-disc list-inside space-y-2 text-brand-text">
                 {Object.entries(product.keySpecs).map(([key, value]) => (

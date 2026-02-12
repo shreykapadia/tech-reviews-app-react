@@ -7,7 +7,7 @@ const ProductTitleBrandComponent = ({ productName, brand }) => {
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-primary mb-1 font-serif break-words">
         {productName}
       </h1>
-      <p className="text-base sm:text-lg text-gray-600">{brand}</p>
+      <p className="text-base sm:text-lg text-gray-600 dark:text-slate-400">{brand}</p>
     </div>
   );
 };

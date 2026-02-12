@@ -22,7 +22,7 @@ const TechFinderQuestionnaire = ({
     return (
       <div className="text-center py-10">
         <h2 className="text-2xl sm:text-3xl font-bold text-brand-text mb-4">No questions available for {categoryName}</h2>
-        <p className="text-lg text-gray-700 mb-8">We don't have a guided questionnaire for this category yet. You can browse all {categoryName} products directly.</p>
+        <p className="text-lg text-gray-700 dark:text-slate-300 mb-8">We don't have a guided questionnaire for this category yet. You can browse all {categoryName} products directly.</p>
         {allProductsForCategory && ProductCardComponent && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             {allProductsForCategory.map(product => (

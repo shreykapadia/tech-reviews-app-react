@@ -164,7 +164,7 @@ const ProductPage = ({ calculateCriticsScore }) => {
     return (
       <div className="container mx-auto px-4 py-10 text-center mt-16 md:mt-20">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto"></div>
-        <p className="mt-4 text-lg text-gray-600">Loading Product Details...</p>
+        <p className="mt-4 text-lg text-gray-600 dark:text-slate-400">Loading Product Details...</p>
       </div>
     );
   }
@@ -224,8 +224,8 @@ const ProductPage = ({ calculateCriticsScore }) => {
                   disabled={favoritingLoading}
                   className={`w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-150 ease-in-out
                     ${isFavorited
-                      ? 'bg-red-100 text-red-700 hover:bg-red-200 focus:ring-red-500'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-brand-primary'}
+                      ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 focus:ring-red-500'
+                      : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600 focus:ring-brand-primary'}
                     ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {isFavorited ? <HeartSolidIcon className="h-6 w-6 mr-2 text-red-600" /> : <HeartOutlineIcon className="h-6 w-6 mr-2" />}

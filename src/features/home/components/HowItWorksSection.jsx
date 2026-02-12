@@ -47,7 +47,7 @@ const HowItWorksSection = () => {
         {/* Grid for Critics Score and Audience Rating - Criterion 7.1, 9.1 */}
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mb-10 sm:mb-16">
           {/* Critics Score Section - Criterion 3.x */}
-          <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] border border-white/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] transition-shadow duration-300">
+          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] dark:shadow-[0_20px_42px_rgba(0,0,0,0.3)] border border-white/80 dark:border-slate-700/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] dark:hover:shadow-[0_26px_52px_rgba(0,0,0,0.35)] transition-shadow duration-300">
             <SectionSubTitle icon={ShieldCheckIcon}>Critics Score</SectionSubTitle>
             <Paragraph>
               The Critics Score is a single, aggregated numerical score on a <strong>0-100 scale</strong>. It represents the consensus of professional tech reviewers and reputable tech content creators, including established YouTubers.
@@ -69,13 +69,13 @@ const HowItWorksSection = () => {
             <Paragraph>
               We are committed to transparency in our weighting and normalization processes. While the exact weights are dynamic and algorithmically adjusted, the principles guiding them remain consistent.
             </Paragraph>
-            <Paragraph className="text-sm text-gray-600 italic">
+            <Paragraph className="text-sm text-gray-600 dark:text-slate-400 italic">
               For example, a highly detailed review from a top-tier publication might contribute more significantly to the final Critics Score than a brief mention from a less established source. All scores are converted to a 0-100 scale before averaging.
             </Paragraph>
           </div>
 
           {/* Audience Rating Section - Criterion 4.x */}
-          <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] border border-white/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] transition-shadow duration-300">
+          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] dark:shadow-[0_20px_42px_rgba(0,0,0,0.3)] border border-white/80 dark:border-slate-700/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] dark:hover:shadow-[0_26px_52px_rgba(0,0,0,0.35)] transition-shadow duration-300">
             <SectionSubTitle icon={UserGroupIcon}>Audience Rating</SectionSubTitle>
             <Paragraph>
               The Audience Rating is a separate numerical score, also on a <strong>0-100 scale</strong>, reflecting the collective sentiment of everyday users and consumers.
@@ -101,7 +101,7 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Bias Mitigation Statement - Criterion 5.x */}
-        <div className="bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] border border-white/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] transition-shadow duration-300 mb-10 sm:mb-16">
+        <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-[0_20px_42px_rgba(6,39,70,0.12)] dark:shadow-[0_20px_42px_rgba(0,0,0,0.3)] border border-white/80 dark:border-slate-700/80 hover:shadow-[0_26px_52px_rgba(6,39,70,0.15)] dark:hover:shadow-[0_26px_52px_rgba(0,0,0,0.35)] transition-shadow duration-300 mb-10 sm:mb-16">
           <SectionSubTitle icon={LightBulbIcon}>Our Commitment to Mitigating Bias</SectionSubTitle>
           <Paragraph>
             TechScore is deeply committed to fairness and objectivity. We actively work to mitigate potential biases that can arise in both AI-driven aggregation models and human-led review processes.

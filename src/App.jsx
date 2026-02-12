@@ -244,7 +244,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const isCurrentPageHome = location.pathname === '/';
 
   return (
-    <div className="flex flex-col min-h-screen font-sans antialiased text-brand-text">
+    <div className="flex flex-col min-h-screen font-sans antialiased text-brand-text dark:text-slate-200">
       <Header onSearchSubmit={handleHeaderSearchSubmit} isHomePage={isCurrentPageHome} />
       {/* 
         Pass `handleSearchChange` and `searchTerm` to components that need live input for the main filter,
