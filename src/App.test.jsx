@@ -188,6 +188,7 @@ describe('App Cookie Consent Functionality', () => {
       expect(consoleSpy).toHaveBeenCalledWith('Analytics enabled. Initializing analytics scripts...');
     });
     consoleSpy.mockRestore();
+  });
   describe('Analytics Integration', () => {
     test('initializes analytics when consent is granted after click', async () => {
       Cookies.get.mockReturnValue(undefined);

@@ -1,3 +1,4 @@
+import { fetchProductsByCategory } from "../../services/productService";
 // src/features/techFinder/TechFinderPage.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
@@ -38,26 +39,25 @@ function TechFinderPage({ availableCategories, isAppDataLoading, allProducts, ca
   };
 
   useEffect(() => {
-    console.log('[TechFinderPage Category Sync useEffect] Attempting to sync. Selected Category:', selectedCategory?.name, 'AllProducts available:', Array.isArray(allProducts) && allProducts.length > 0);
-    if (selectedCategory && Array.isArray(allProducts)) {
-      console.log(`[TechFinderPage Category Sync useEffect] Filtering allProducts (count: ${allProducts.length}) for category: "${selectedCategory.name}"`);
-      if (allProducts.length > 0) {
-        const sampleCategories = [...new Set(allProducts.slice(0, 20).map(p => p.category))];
-        console.log('[TechFinderPage Category Sync useEffect] Sample categories found in allProducts:', sampleCategories);
+    const loadProducts = async () => {
+      if (selectedCategory) {
+        setIsCategoryDataReady(false);
+        try {
+          const { products } = await fetchProductsByCategory(selectedCategory.name, { limit: 200 });
+          setAllProductsForCategory(products);
+          setFilteredProducts(products);
+          setIsCategoryDataReady(true);
+        } catch (err) {
+          console.error("Error fetching category products for Tech Finder:", err);
+        }
+      } else {
+        setAllProductsForCategory([]);
+        setFilteredProducts([]);
+        setIsCategoryDataReady(false);
       }
-
-      const productsInCategory = allProducts.filter(p => p.category === selectedCategory.name);
-      setAllProductsForCategory(productsInCategory);
-      setFilteredProducts(productsInCategory);
-      setIsCategoryDataReady(true);
-      console.log(`[TechFinderPage Category Sync useEffect] Populated products for ${selectedCategory.name}. Count: ${productsInCategory.length}`);
-    } else if (!selectedCategory) {
-      setAllProductsForCategory([]);
-      setFilteredProducts([]);
-      setIsCategoryDataReady(false);
-      console.log('[TechFinderPage Category Sync useEffect] Cleared category-specific products.');
-    }
-  }, [selectedCategory, allProducts]);
+    };
+    loadProducts();
+  }, [selectedCategory]);
 
 
   const handleAnswerSelect = (questionId, selectedValue, isChecked) => {
