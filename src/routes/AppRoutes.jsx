@@ -12,7 +12,8 @@ const PrivacyPolicyPage = lazy(() => import('../features/staticContent/PrivacyPo
 const CookieSettingsPage = lazy(() => import('../features/staticContent/CookieSettingsPage'));
 const ProductPage = lazy(() => import('../features/products/ProductPage'));
 const CategoryPage = lazy(() => import('../features/categories/CategoryPage'));
-const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage'));
+const AllCategoriesPage = lazy(() => import('../features/categories/AllCategoriesPage')); // Import the new page
+const ComparePage = lazy(() => import('../features/compare/ComparePage')); // Import the new page
 const TechFinderPage = React.lazy(() => import('../features/techFinder/TechFinderPage'));
 
 const LoginPage = lazy(() => import('../features/auth/LoginPage'));
@@ -69,6 +70,15 @@ function AppRoutes({
             />
           }
         />
+        <Route
+          path="/compare"
+          element={
+            <ComparePage
+              allProducts={allProductsArray}
+              calculateCriticsScore={calculateCriticsScore}
+            />
+          }
+        />
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route
@@ -80,16 +90,21 @@ function AppRoutes({
           element={<ProductPage calculateCriticsScore={calculateCriticsScore} />}
         />
         <Route
-        path="/tech-finder"
-        element={
-          <TechFinderPage
-            availableCategories={availableCategories}
-            isAppDataLoading={isAppDataLoading}
-            calculateCriticsScore={calculateCriticsScore}
-          />}
-      />
-      <Route
-          path="/category/:categorySlug" element={
+          path="/tech-finder"
+          element={
+            <TechFinderPage
+              availableCategories={availableCategories}
+              isAppDataLoading={isAppDataLoading}
+              allProducts={allProductsArray} // Pass allProductsArray as allProducts
+              calculateCriticsScore={calculateCriticsScore} // Pass calculateCriticsScore
+            />}
+        />
+        {/* The main Footer component is typically rendered outside the Routes, in App.jsx or a Layout component */}
+        <Route
+          path="/category/:categorySlug" element={(
+            <>
+              {/* This console.log executes if React Router matches this route and starts rendering the element */}
+              {/* {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')} */}
               <CategoryPage
                 allAvailableCategories={availableCategories}
                 calculateCriticsScore={calculateCriticsScore}

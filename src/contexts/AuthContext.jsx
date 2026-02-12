@@ -1,6 +1,7 @@
 // src/contexts/AuthContext.jsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from '../services/supabaseClient'; // Adjust path as necessary
+import Spinner from '../components/common/Spinner';
 
 export const AuthContext = createContext();
 
@@ -17,11 +18,21 @@ export const AuthProvider = ({ children }) => {
     }
     try {
       // console.log(`[AuthContext] Fetching profile for user ID: ${userId}`);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('username, full_name, avatar_url, email, is_admin')
-        .eq('id', userId)
-        .single();
+
+      // Create a timeout promise that rejects after 5 seconds
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile fetch timed out')), 5000)
+      );
+
+      // Race the supabase query against the timeout
+      const { data, error } = await Promise.race([
+        supabase
+          .from('profiles')
+          .select('username, full_name, avatar_url, email, is_admin')
+          .eq('id', userId)
+          .single(),
+        timeoutPromise
+      ]);
 
       if (error && error.code !== 'PGRST116') { // PGRST116: No rows found, not an error here
         console.error('Error fetching user profile:', error);
@@ -33,7 +44,8 @@ export const AuthProvider = ({ children }) => {
       return data || null;
     } catch (error) {
       console.error('Unexpected error fetching user profile:', error);
-      setUserProfile(null);
+      // Don't clear userProfile if it simply timed out, just return null for this fetch
+      // But initially userProfile is null anyway.
       return null;
     }
   };
@@ -119,7 +131,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  
+
 
   const resetPassword = async (email) => {
     setLoading(true);
@@ -149,7 +161,7 @@ export const AuthProvider = ({ children }) => {
   const value = { user, userProfile, session, loading, signIn, signUp, resetPassword, signOut, fetchUserProfile };
 
   // console.log('[AuthContext] Providing value:', { user, userProfile, loading });
-  return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{loading ? <Spinner /> : children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
