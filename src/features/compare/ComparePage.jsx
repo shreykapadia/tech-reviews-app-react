@@ -57,12 +57,34 @@ const PortalTooltip = ({ activeTooltip }) => {
     );
 };
 
-const ComparePage = ({ allProducts, calculateCriticsScore }) => {
+// Simple hook for window size (can be moved to utils if reused)
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({
+        width: undefined,
+        height: undefined,
+    });
+    useEffect(() => {
+        function handleResize() {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        }
+        window.addEventListener("resize", handleResize);
+        handleResize();
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+    return windowSize;
+};
+
+const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternalLoading }) => {
     const query = useQuery();
     const navigate = useNavigate();
     const [comparingProducts, setComparingProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTooltip, setActiveTooltip] = useState(null);
+    const size = useWindowSize(); // Call hook at the top level
+    const isMobile = size.width < 768; // Tailwind md breakpoint
 
     // Close tooltip on scroll
     useEffect(() => {
@@ -93,12 +115,19 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
     };
 
     useEffect(() => {
-        if (allProducts.length > 0) {
-            const selected = allProducts.filter(p => productNames.includes(p.productName));
+        if (!isExternalLoading) {
+            const selected = allProducts.filter(p => {
+                // Try exact match or case-insensitive match
+                const match = productNames.some(name =>
+                    p.productName === name ||
+                    p.productName.toLowerCase() === name.toLowerCase()
+                );
+                return match;
+            });
             setComparingProducts(selected);
             setLoading(false);
         }
-    }, [allProducts, productNames]);
+    }, [allProducts, productNames, isExternalLoading]);
 
     const handleRemoveProduct = (productName) => {
         const newProductNames = productNames.filter(name => name !== productName);
@@ -183,15 +212,19 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
                 <div className="overflow-x-auto pb-6">
                     <div
                         className="min-w-max grid bg-white shadow-xl rounded-xl border border-gray-100"
-                        style={{ gridTemplateColumns: `200px repeat(${comparingProducts.length}, minmax(280px, 1fr))` }}
+                        style={{
+                            gridTemplateColumns: isMobile
+                                ? `120px repeat(${comparingProducts.length}, minmax(160px, 1fr))`
+                                : `200px repeat(${comparingProducts.length}, minmax(280px, 1fr))`
+                        }}
                     >
 
                         {/* Header Row: Product Info */}
-                        <div className="p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-500 flex items-center sticky left-0 z-10 col-start-1">
+                        <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-500 flex items-center sticky left-0 z-10 col-start-1 text-sm md:text-base">
                             Product
                         </div>
                         {comparingProducts.map(product => (
-                            <div key={product.productName} className="p-6 border-b border-gray-100 flex flex-col items-center text-center relative hover:bg-gray-50 transition-colors group">
+                            <div key={product.productName} className="p-3 md:p-6 border-b border-gray-100 flex flex-col items-center text-center relative hover:bg-gray-50 transition-colors group">
                                 <button
                                     onClick={() => handleRemoveProduct(product.productName)}
                                     className="absolute top-2 right-2 p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all opacity-0 group-hover:opacity-100"
@@ -199,25 +232,25 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
                                 >
                                     <XMarkIcon className="h-5 w-5" />
                                 </button>
-                                <Link to={`/product/${encodeURIComponent(product.productName)}`} className="block mb-4">
+                                <Link to={`/product/${encodeURIComponent(product.productName)}`} className="block mb-2 md:mb-4">
                                     <img
                                         src={product.imageURL || '/images/placeholder-image.webp'}
                                         alt={product.productName}
-                                        className="h-40 object-contain hover:scale-105 transition-transform duration-300"
+                                        className="h-24 md:h-40 object-contain hover:scale-105 transition-transform duration-300"
                                     />
                                 </Link>
                                 <Link to={`/product/${encodeURIComponent(product.productName)}`}>
-                                    <h3 className="font-bold text-lg text-brand-primary hover:underline mb-1">
+                                    <h3 className="font-bold text-sm md:text-lg text-brand-primary hover:underline mb-1">
                                         {product.productName}
                                     </h3>
                                 </Link>
-                                <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
+                                <p className="text-xs md:text-sm text-gray-500 mb-2">{product.brand}</p>
                                 {/* Add price here if available in data */}
                             </div>
                         ))}
 
                         {/* Info Row: Scores */}
-                        <div className="p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 z-10 col-start-1 flex items-center gap-1">
+                        <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 z-10 col-start-1 flex items-center gap-1 text-sm md:text-base">
                             Scores
                             <div
                                 className="cursor-help"
@@ -242,18 +275,18 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
                             };
 
                             return (
-                                <div key={product.productName} className="p-4 border-b border-gray-100 flex justify-around items-center">
+                                <div key={product.productName} className="p-2 md:p-4 border-b border-gray-100 flex justify-around items-center">
                                     <div className="text-center">
-                                        <div className={`text-2xl font-bold ${getRefColor(cScore)}`}>
+                                        <div className={`text-lg md:text-2xl font-bold ${getRefColor(cScore)}`}>
                                             {cScore || '--'}
                                         </div>
-                                        <div className="text-xs text-gray-500 uppercase tracking-wide">Critics</div>
+                                        <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">Critics</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className={`text-2xl font-bold ${getRefColor(aScore)}`}>
+                                        <div className={`text-lg md:text-2xl font-bold ${getRefColor(aScore)}`}>
                                             {aScore || '--'}
                                         </div>
-                                        <div className="text-xs text-gray-500 uppercase tracking-wide">Audience</div>
+                                        <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">Audience</div>
                                     </div>
                                 </div>
                             );
@@ -266,7 +299,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
 
                             return (
                                 <React.Fragment key={key}>
-                                    <div className="p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 capitalize sticky left-0 z-10 group-hover/row:bg-blue-50 transition-colors col-start-1 flex items-center gap-1">
+                                    <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 capitalize sticky left-0 z-10 group-hover/row:bg-blue-50 transition-colors col-start-1 flex items-center gap-1 text-sm md:text-base">
                                         {label}
                                         {tooltipText && (
                                             <div
@@ -291,7 +324,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
                                         }
 
                                         return (
-                                            <div key={`${product.productName}-${key}`} className="p-4 border-b border-gray-100 text-center text-gray-600 hover:bg-blue-50 transition-colors">
+                                            <div key={`${product.productName}-${key}`} className="p-2 md:p-4 border-b border-gray-100 text-center text-gray-600 hover:bg-blue-50 transition-colors text-xs md:text-sm">
                                                 {value}
                                             </div>
                                         );
@@ -301,13 +334,13 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
                         })}
 
                         {/* Pros Row */}
-                        <div className="p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 align-top z-10 col-start-1">
+                        <div className="p-2 md:p-4 border-b border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 align-top z-10 col-start-1 text-sm md:text-base">
                             Top Pros
                         </div>
                         {comparingProducts.map(product => (
-                            <div key={`${product.productName}-pros`} className="p-4 border-b border-gray-100 h-full hover:bg-blue-50 transition-colors">
+                            <div key={`${product.productName}-pros`} className="p-2 md:p-4 border-b border-gray-100 h-full hover:bg-blue-50 transition-colors">
                                 {product.aiProsCons && product.aiProsCons.pros && product.aiProsCons.pros.length > 0 ? (
-                                    <ul className="text-sm text-left space-y-1">
+                                    <ul className="text-xs md:text-sm text-left space-y-1">
                                         {product.aiProsCons.pros.slice(0, 3).map((pro, idx) => (
                                             <li key={idx} className="flex items-start text-green-700">
                                                 <span className="mr-2">•</span> {pro}
@@ -321,13 +354,13 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
                         ))}
 
                         {/* Cons Row */}
-                        <div className="p-4 border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 align-top z-10 col-start-1">
+                        <div className="p-2 md:p-4 border-r border-gray-100 bg-gray-50 font-semibold text-gray-700 sticky left-0 align-top z-10 col-start-1 text-sm md:text-base">
                             Top Cons
                         </div>
                         {comparingProducts.map(product => (
-                            <div key={`${product.productName}-cons`} className="p-4 border-gray-100 hover:bg-blue-50 transition-colors">
+                            <div key={`${product.productName}-cons`} className="p-2 md:p-4 border-gray-100 hover:bg-blue-50 transition-colors">
                                 {product.aiProsCons && product.aiProsCons.cons && product.aiProsCons.cons.length > 0 ? (
-                                    <ul className="text-sm text-left space-y-1">
+                                    <ul className="text-xs md:text-sm text-left space-y-1">
                                         {product.aiProsCons.cons.slice(0, 3).map((con, idx) => (
                                             <li key={idx} className="flex items-start text-red-700">
                                                 <span className="mr-2">•</span> {con}
@@ -351,6 +384,11 @@ const ComparePage = ({ allProducts, calculateCriticsScore }) => {
 ComparePage.propTypes = {
     allProducts: PropTypes.array.isRequired,
     calculateCriticsScore: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool,
 };
 
 export default ComparePage;
+
+ComparePage.defaultProps = {
+    isLoading: false,
+};

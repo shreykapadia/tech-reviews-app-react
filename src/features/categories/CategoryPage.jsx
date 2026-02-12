@@ -1,7 +1,7 @@
 // src/features/categories/CategoryPage.jsx
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Breadcrumbs from '../products/components/Breadcrumbs'; 
+import Breadcrumbs from '../products/components/Breadcrumbs';
 import ProductCard from '../../components/ProductCard';
 import { fetchProductsByCategory, fetchBrandsByCategory } from '../../services/productService';
 
@@ -17,16 +17,16 @@ FilterSection.displayName = 'FilterSection';
 
 const CheckboxFilterItem = React.memo(({ item, isSelected, onChange, isDisabled }) => (
   <label className={`flex items-center space-x-2 text-sm ${isDisabled ? 'cursor-not-allowed text-gray-400' : 'cursor-pointer hover:text-brand-primary'} text-gray-600`}>
-      <input
-        type="checkbox"
-        className={`h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-brand-primary/50 transition-colors duration-150 ${isDisabled ? 'text-gray-400 bg-gray-100' : 'text-brand-primary'}`}
-        value={item.value}
-        checked={isSelected}
-        onChange={(e) => !isDisabled && onChange(item.value, e.target.checked)}
-        disabled={isDisabled}
-      />
-      <span>{item.label}</span>
-    </label>
+    <input
+      type="checkbox"
+      className={`h-4 w-4 rounded border-gray-300 focus:ring-2 focus:ring-brand-primary/50 transition-colors duration-150 ${isDisabled ? 'text-gray-400 bg-gray-100' : 'text-brand-primary'}`}
+      value={item.value}
+      checked={isSelected}
+      onChange={(e) => !isDisabled && onChange(item.value, e.target.checked)}
+      disabled={isDisabled}
+    />
+    <span>{item.label}</span>
+  </label>
 ));
 CheckboxFilterItem.displayName = 'CheckboxFilterItem';
 
@@ -122,12 +122,12 @@ function CategoryPage({
   }
 
   if (!categoryDetails) {
-      return (
-        <div className="container mx-auto px-4 py-8 text-center min-h-[calc(100vh-10rem)] flex flex-col justify-center items-center">
-          <h1 className="text-2xl font-semibold text-red-600 mb-4">Category Not Found</h1>
-          <Link to="/" className="text-brand-primary hover:underline">Return to Homepage</Link>
-        </div>
-      );
+    return (
+      <div className="container mx-auto px-4 py-8 text-center min-h-[calc(100vh-10rem)] flex flex-col justify-center items-center">
+        <h1 className="text-2xl font-semibold text-red-600 mb-4">Category Not Found</h1>
+        <Link to="/" className="text-brand-primary hover:underline">Return to Homepage</Link>
+      </div>
+    );
   }
 
   const categoryPageCrumbs = [
@@ -149,40 +149,40 @@ function CategoryPage({
             <aside className={`lg:w-1/4 xl:w-1/5 mb-8 lg:mb-0`}>
               <div className="sticky top-24 space-y-6 p-4 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100">
                 <FilterSection title="Brand">
-                    {availableBrands.map(brand => (
-                        <CheckboxFilterItem
-                            key={brand.value}
-                            item={brand}
-                            isSelected={activeFilters.brands.includes(brand.value)}
-                            onChange={handleBrandFilterChange}
-                        />
-                    ))}
+                  {availableBrands.map(brand => (
+                    <CheckboxFilterItem
+                      key={brand.value}
+                      item={brand}
+                      isSelected={activeFilters.brands.includes(brand.value)}
+                      onChange={handleBrandFilterChange}
+                    />
+                  ))}
                 </FilterSection>
                 <FilterSection title="Price Range">
-                    <div className="flex flex-col gap-2">
-                        <input
-                            type="number"
-                            placeholder="Min Price"
-                            className="p-2 border rounded"
-                            value={activeFilters.minPrice}
-                            onChange={(e) => handlePriceFilterChange('minPrice', e.target.value)}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Max Price"
-                            className="p-2 border rounded"
-                            value={activeFilters.maxPrice}
-                            onChange={(e) => handlePriceFilterChange('maxPrice', e.target.value)}
-                        />
-                    </div>
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="number"
+                      placeholder="Min Price"
+                      className="p-2 border rounded"
+                      value={activeFilters.minPrice}
+                      onChange={(e) => handlePriceFilterChange('minPrice', e.target.value)}
+                    />
+                    <input
+                      type="number"
+                      placeholder="Max Price"
+                      className="p-2 border rounded"
+                      value={activeFilters.maxPrice}
+                      onChange={(e) => handlePriceFilterChange('maxPrice', e.target.value)}
+                    />
+                  </div>
                 </FilterSection>
               </div>
             </aside>
 
             <div className="lg:w-3/4 xl:w-4/5">
               {products.length === 0 && !loadingProducts && (
-                 <div className="text-center py-12">
-                    <h2 className="text-xl font-medium text-gray-800">No Products Found</h2>
+                <div className="text-center py-12">
+                  <h2 className="text-xl font-medium text-gray-800">No Products Found</h2>
                 </div>
               )}
 
@@ -197,15 +197,15 @@ function CategoryPage({
               </div>
 
               {products.length < totalCount && (
-                  <div className="mt-10 text-center">
-                      <button
-                        onClick={handleLoadMore}
-                        disabled={loadingProducts}
-                        className="px-6 py-3 bg-brand-primary text-white rounded-full font-semibold hover:bg-brand-primary-dark transition-colors disabled:opacity-50"
-                      >
-                          {loadingProducts ? 'Loading...' : 'Load More'}
-                      </button>
-                  </div>
+                <div className="mt-10 text-center">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingProducts}
+                    className="px-6 py-3 bg-brand-primary text-white rounded-full font-semibold hover:bg-brand-primary-dark transition-colors disabled:opacity-50"
+                  >
+                    {loadingProducts ? 'Loading...' : 'Load More'}
+                  </button>
+                </div>
               )}
             </div>
           </div>

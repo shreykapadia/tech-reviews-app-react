@@ -1,5 +1,5 @@
 // src/contexts/AuthContext.jsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient'; // Adjust path as necessary
 import Spinner from '../components/common/Spinner';
 
@@ -11,44 +11,47 @@ export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUserProfile = async (userId) => {
+  const fetchUserProfile = useCallback(async (userId, retryCount = 0) => {
     if (!userId) {
       setUserProfile(null);
       return null;
     }
-    try {
-      // console.log(`[AuthContext] Fetching profile for user ID: ${userId}`);
 
-      // Create a timeout promise that rejects after 5 seconds
+    try {
+      // console.log(`[AuthContext] Fetching profile for user ID: ${userId} (Attempt ${retryCount + 1})`);
+      // Create a promise that rejects after 15 seconds (increased from 5s)
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Profile fetch timed out')), 5000)
+        setTimeout(() => reject(new Error('Profile fetch timed out')), 15000)
       );
 
       // Race the supabase query against the timeout
       const { data, error } = await Promise.race([
         supabase
           .from('profiles')
-          .select('username, full_name, avatar_url, email, is_admin')
+          .select('username, full_name, avatar_url, email, is_admin') // Keep original select fields
           .eq('id', userId)
           .single(),
         timeoutPromise
       ]);
 
       if (error && error.code !== 'PGRST116') { // PGRST116: No rows found, not an error here
-        console.error('Error fetching user profile:', error);
-        setUserProfile(null); // Explicitly set to null on error
-        return null;
+        throw error; // Throw to be caught by the retry logic
       }
       // console.log('[AuthContext] Profile data fetched:', data);
       setUserProfile(data || null);
       return data || null;
     } catch (error) {
-      console.error('Unexpected error fetching user profile:', error);
-      // Don't clear userProfile if it simply timed out, just return null for this fetch
-      // But initially userProfile is null anyway.
+      console.error(`Error fetching user profile (Attempt ${retryCount + 1}):`, error);
+      // Retry up to 2 times
+      if (retryCount < 2) {
+        console.log(`Retrying profile fetch... (${retryCount + 1}/2)`);
+        // Add a small delay before retrying
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return fetchUserProfile(userId, retryCount + 1);
+      }
       return null;
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Get initial session

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { withTimeout, retryOperation } from '../utils/asyncHelpers';
 
 export const processProduct = (p) => ({
   ...p,
@@ -18,6 +19,7 @@ export const processProduct = (p) => ({
 });
 
 export const fetchProductBySlug = async (productNameSlug, brandSlug = null) => {
+  console.log(`fetchProductBySlug called with slug: ${productNameSlug}, brand: ${brandSlug}`);
   let query = supabase
     .from('products')
     .select('      *,      categories ( name ),       critic_reviews ( * )    ');
@@ -28,23 +30,9 @@ export const fetchProductBySlug = async (productNameSlug, brandSlug = null) => {
   // OR we use a RPC / Postgres function if available.
   // For now, let's assume we can at least filter by name if we know it.
 
-  // Actually, let's try to match by id if the slug has it (the app seems to support that)
-  const parseSlugAndId = (value = '') => {
-    const match = String(value).match(/^(.*)-(\d+)$/);
-    if (!match) return { slug: String(value), id: null };
-    return { slug: match[1], id: Number(match[2]) };
-  };
-
-  const { id } = parseSlugAndId(productNameSlug);
-
-  if (id) {
-    const { data, error } = await query.eq('id', id).single();
-    if (error) throw error;
-    return processProduct(data);
-  }
-
   // Fallback: search by name (this is less efficient but necessary without a slug column)
-  const { data, error } = await query.ilike('product_name', `%${productNameSlug}%`);
+  const normalizedSlug = productNameSlug.replace(/-/g, '%'); // allow flexible matching
+  const { data, error } = await retryOperation(() => withTimeout(query.ilike('product_name', `%${normalizedSlug}%`)));
   if (error) throw error;
 
   // Find the exact match after slugifying
@@ -75,20 +63,20 @@ export const fetchProductsByCategory = async (categoryName, { limit = 20, offset
   // If we can't easily filter price in SQL, we might have to do it in JS for now,
   // but that's still better than fetching EVERYTHING.
 
-  const { data, error, count } = await query;
+  const { data, error, count } = await retryOperation(() => withTimeout(query));
   if (error) throw error;
 
   let products = data.map(processProduct);
 
   // Manual price filtering if needed (if not possible in SQL)
   if (minPrice !== undefined || maxPrice !== undefined) {
-      products = products.filter(p => {
-          const price = p.keySpecs?.retailPrice;
-          if (typeof price !== 'number') return true;
-          if (minPrice !== undefined && price < minPrice) return false;
-          if (maxPrice !== undefined && price > maxPrice) return false;
-          return true;
-      });
+    products = products.filter(p => {
+      const price = p.keySpecs?.retailPrice;
+      if (typeof price !== 'number') return true;
+      if (minPrice !== undefined && price < minPrice) return false;
+      if (maxPrice !== undefined && price > maxPrice) return false;
+      return true;
+    });
   }
 
   return { products, totalCount: count };
@@ -108,21 +96,30 @@ export const searchProducts = async (searchTerm, { limit = 20 } = {}) => {
 };
 
 export const fetchFeaturedProducts = async (limit = 12) => {
-  const { data, error } = await supabase
+  const { data, error } = await retryOperation(() => withTimeout(supabase
     .from('products')
     .select('      *,      categories ( name ),       critic_reviews ( * )    ')
-    .limit(limit); // In a real app, order by 'featured' or random
+    .limit(limit))); // In a real app, order by 'featured' or random
 
   if (error) throw error;
   return data.map(processProduct);
 };
 
 export const fetchBrandsByCategory = async (categoryName) => {
-  const { data, error } = await supabase
+  const { data, error } = await retryOperation(() => withTimeout(supabase
     .from('products')
     .select('brand, categories!inner(name)')
-    .eq('categories.name', categoryName);
+    .eq('categories.name', categoryName)));
 
   if (error) throw error;
   return Array.from(new Set(data.map(p => p.brand).filter(Boolean))).sort();
+};
+
+export const fetchAllProducts = async () => {
+  const { data, error } = await retryOperation(() => withTimeout(supabase
+    .from('products')
+    .select('      *,      categories ( name ),       critic_reviews ( * )    ')));
+
+  if (error) throw error;
+  return data.map(processProduct);
 };

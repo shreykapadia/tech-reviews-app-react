@@ -30,6 +30,8 @@ function AppRoutes({
   onProductClick,
   calculateCriticsScore,
   isAppDataLoading,
+  allProductsArray, // Receive allProductsArray
+  isProductDataLoading,
 }) {
   const LoadingFallback = () => (
     <div className="flex justify-center items-center min-h-[calc(100vh-10rem)]">
@@ -75,6 +77,7 @@ function AppRoutes({
           element={
             <ComparePage
               allProducts={allProductsArray}
+              isLoading={isProductDataLoading} // Pass loading state
               calculateCriticsScore={calculateCriticsScore}
             />
           }
@@ -95,13 +98,14 @@ function AppRoutes({
             <TechFinderPage
               availableCategories={availableCategories}
               isAppDataLoading={isAppDataLoading}
-              allProducts={allProductsArray} // Pass allProductsArray as allProducts
+              allProducts={allProductsArray}
               calculateCriticsScore={calculateCriticsScore} // Pass calculateCriticsScore
             />}
         />
         {/* The main Footer component is typically rendered outside the Routes, in App.jsx or a Layout component */}
         <Route
-          path="/category/:categorySlug" element={(
+          path="/category/:categorySlug"
+          element={
             <>
               {/* This console.log executes if React Router matches this route and starts rendering the element */}
               {/* {console.log('AppRoutes: Matched /category/:categorySlug. Attempting to render CategoryPage...')} */}
@@ -110,6 +114,7 @@ function AppRoutes({
                 calculateCriticsScore={calculateCriticsScore}
                 areGlobalCategoriesLoading={isAppDataLoading}
               />
+            </>
           }
         />
         <Route path="/cookie-settings" element={<CookieSettingsPage />} />
@@ -143,10 +148,14 @@ AppRoutes.propTypes = {
   onProductClick: PropTypes.func.isRequired,
   calculateCriticsScore: PropTypes.func.isRequired,
   isAppDataLoading: PropTypes.bool,
+  allProductsArray: PropTypes.array,
+  isProductDataLoading: PropTypes.bool,
 };
 
 AppRoutes.defaultProps = {
   isAppDataLoading: true,
+  allProductsArray: [],
+  isProductDataLoading: true,
 };
 
 export default AppRoutes;

@@ -12,10 +12,13 @@ import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; //
 
 import AppRoutes from './routes/AppRoutes'; // Updated path
 import { AuthProvider } from './contexts/AuthContext'; // Import AuthProvider
+import { fetchAllProducts } from './services/productService'; // Import fetchAllProducts
 
 import CategoryPage from './features/categories/CategoryPage'; // Updated path
 import SearchResultsPage from './features/search/SearchResultsPage'; // Updated path
 import { supabase } from './services/supabaseClient.js'; // Updated path
+import { retryOperation, withTimeout } from './utils/asyncHelpers';
+
 
 // Memoized helper to pre-process search aliases for faster lookups
 const usePreprocessedAliases = (searchAliasesData) => {
@@ -56,12 +59,14 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const [searchAliasesData, setSearchAliasesData] = useState({}); // State for search aliases
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [availableCategories, setAvailableCategories] = useState([]);
+  const [allProductsArray, setAllProductsArray] = useState([]); // New state for all products
+  const [isProductsLoading, setIsProductsLoading] = useState(true); // New state for products loading
   const [showCookieBanner, setShowCookieBanner] = useState(false);
   const [cookieConsent, setCookieConsent] = useState({ analytics: false, marketing: false }); // New state for granular consent
   const [isAppDataLoading, setIsAppDataLoading] = useState(true); // New state for global data loading
 
   // State for header search functionality
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const location = useLocation(); // Hook to get current location
 
   // Preprocess search aliases
@@ -78,44 +83,84 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
     async function fetchData() {
       setIsAppDataLoading(true); // Explicitly set loading to true at the start
       // console.log("Fetching data from Supabase and local files..."); // Consider removing for prod
-      try {
-        // Parallelize fetching from Supabase and local JSON files
-        const [categoriesResponse, weightsFileResponse, aliasesFileResponse] = await Promise.all([
-          supabase.from("categories").select("*").order("name", { ascending: true }),
-          fetch("/data/criticWeights.json"),
-          fetch("/data/searchAliases.json")
-        ]);
+      // console.log("Fetching data from Supabase and local files..."); // Consider removing for prod
 
-        // Process Categories
-        if (categoriesResponse.error) {
-          console.error("Supabase categories error:", categoriesResponse.error);
-          throw categoriesResponse.error;
+      // 1. Critical Data: Categories (Needed for Navigation & Page Structure)
+      // We fetch this first or in parallel, but wait for IT specifically to set isAppDataLoading to false.
+      const fetchCategories = async () => {
+        try {
+          const { data, error } = await retryOperation(() => withTimeout(supabase.from("categories").select("*").order("name", { ascending: true })));
+          if (error) throw error;
+
+          const fetchedCategories = data || [];
+          const processedCategories = fetchedCategories.map(cat => ({
+            id: cat.id,
+            name: cat.name,
+            slug: cat.slug,
+            iconImageUrl: cat.icon_image_url,
+            ariaLabel: cat.aria_label,
+          }));
+          setAvailableCategories(processedCategories);
+        } catch (err) {
+          console.error("Supabase categories error:", err);
+          // Optionally set an error state for UI feedback
+        } finally {
+          // CRITICAL: We stop the global loading spinner as soon as categories are ready (or failed).
+          // The app is usable without weights/aliases for a moment.
+          setIsAppDataLoading(false);
         }
-        const fetchedCategories = categoriesResponse.data || []; // Ensure it's an array
-        const processedCategories = fetchedCategories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          slug: cat.slug,
-          iconImageUrl: cat.icon_image_url, // Map from snake_case
-          ariaLabel: cat.aria_label,       // Map from snake_case
-        }));
-        setAvailableCategories(processedCategories);
+      };
 
-        // Process Local JSON files
-        if (!weightsFileResponse.ok) throw new Error(`HTTP error! status: ${weightsFileResponse.status} for criticWeights.json`);
-        if (!aliasesFileResponse.ok) throw new Error(`HTTP error! status: ${aliasesFileResponse.status} for searchAliases.json`);
-        
-        const fetchedWeights = await weightsFileResponse.json();
-        const fetchedAliases = await aliasesFileResponse.json();
-        setCriticWeightsData(fetchedWeights);
-        setSearchAliasesData(fetchedAliases);
+      // 2. Non-Critical Data: Scoring Weights (Needed for Product Cards/Score calc)
+      // Fetched in background.
+      const fetchWeights = async () => {
+        try {
+          const response = await retryOperation(() => withTimeout(fetch("/data/criticWeights.json")));
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+          setCriticWeightsData(data);
+        } catch (err) {
+          console.error("Error fetching criticWeights:", err);
+        }
+      };
 
-      } catch (error) {
-        console.error("Error fetching or parsing data:", error);
-        // You might want to set an error state here to display to the user
-      } finally {
-        setIsAppDataLoading(false); // Set loading to false after fetching or if an error occurred
-      }
+      // 3. Non-Critical Data: Search Aliases (Needed for Search Bar optimization)
+      // Fetched in background.
+      const fetchAliases = async () => {
+        try {
+          const response = await retryOperation(() => withTimeout(fetch("/data/searchAliases.json")));
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+          setSearchAliasesData(data);
+        } catch (err) {
+          console.error("Error fetching searchAliases:", err);
+        }
+      };
+
+      // Fire them all!
+      // We await fetchCategories because we want to ensure standard React flow, 
+      // but practically we just fire the promises.
+      // However, standard useEffect pattern is usually fire-and-forget or track mounted state.
+
+      // 4. Non-Critical Data: All Products (Needed for Compare/TechFinder)
+      // Fetched in background.
+      const fetchAllProductsData = async () => {
+        setIsProductsLoading(true);
+        try {
+          // Remove redundant retry/timeout here, as fetchAllProducts already handles it internally
+          const products = await fetchAllProducts();
+          setAllProductsArray(products || []);
+        } catch (err) {
+          console.error("Error fetching all products in App.jsx:", err);
+        } finally {
+          setIsProductsLoading(false);
+        }
+      };
+
+      fetchCategories(); // This manages isAppDataLoading
+      fetchWeights();
+      fetchAliases();
+      fetchAllProductsData();
     }
     fetchData();
   }, []);
@@ -206,7 +251,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
         e.g., if MemoizedHomePageLayout has its own search bar for the `filteredProducts`.
         The Header's search bar uses `onSearchSubmit` for a different purpose (global search navigation).
       */}
-       <main className="flex-grow">
+      <main className="flex-grow">
         <AppRoutes
           selectedProduct={selectedProduct}
           onBackClick={handleBackToProducts}
@@ -218,6 +263,8 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
           // searchTerm={searchTerm} // The live input value
           // onSearchChange={handleSearchChange} // The handler to update live input
           // filteredProducts={filteredProducts} // The debounced, filtered list
+          allProductsArray={allProductsArray} // Pass all products to routes
+          isProductDataLoading={isProductsLoading} // Pass loading state
         />
       </main>
       <Footer />

@@ -1,19 +1,19 @@
 // src/features/products/ProductPage.jsx
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import Breadcrumbs from './components/Breadcrumbs'; 
-import ProductTitleBrand from './components/ProductTitleBrand'; 
-import ProductImageGallery from './components/ProductImageGallery'; 
-import CriticsScoreDisplay from './components/CriticsScoreDisplay'; 
-import AudienceRatingDisplay from './components/AudienceRatingDisplay'; 
-import ProsConsSummary from './components/ProsConsSummary'; 
-import WhereToBuyShare from './components/WhereToBuyShare'; 
-import ProductSpecifications from './components/ProductSpecifications'; 
-import CriticsReviewSection from './components/CriticsReviewSection'; 
-import AudienceReviewSection from './components/AudienceReviewSection'; 
-import FeatureSpecificInsights from './components/FeatureSpecificInsights'; 
-import CompareSimilarProducts from './components/CompareSimilarProducts'; 
-import RelatedArticles from './components/RelatedArticles'; 
+import Breadcrumbs from './components/Breadcrumbs';
+import ProductTitleBrand from './components/ProductTitleBrand';
+import ProductImageGallery from './components/ProductImageGallery';
+import CriticsScoreDisplay from './components/CriticsScoreDisplay';
+import AudienceRatingDisplay from './components/AudienceRatingDisplay';
+import ProsConsSummary from './components/ProsConsSummary';
+import WhereToBuyShare from './components/WhereToBuyShare';
+import ProductSpecifications from './components/ProductSpecifications';
+import CriticsReviewSection from './components/CriticsReviewSection';
+import AudienceReviewSection from './components/AudienceReviewSection';
+import FeatureSpecificInsights from './components/FeatureSpecificInsights';
+import CompareSimilarProducts from './components/CompareSimilarProducts';
+import RelatedArticles from './components/RelatedArticles';
 import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -39,6 +39,7 @@ const ProductPage = ({ calculateCriticsScore }) => {
       setLoading(true);
       try {
         const foundProduct = await fetchProductBySlug(productNameSlug, brandSlug);
+        console.log('ProductPage loadProduct result:', foundProduct);
         if (foundProduct) {
           setProduct(foundProduct);
           setError(null);
@@ -51,8 +52,9 @@ const ProductPage = ({ calculateCriticsScore }) => {
         }
       } catch (err) {
         console.error('Error loading product:', err);
-        setError('Failed to load product details.');
+        setError(`Failed to load product details. ${err.message}`);
       } finally {
+        console.log('ProductPage loadProduct finally block reached');
         setLoading(false);
       }
     };
@@ -148,13 +150,19 @@ const ProductPage = ({ calculateCriticsScore }) => {
     }
   };
 
-  const handleRetailerReviewDataUpdate = (data) => {
-      setRetailerReviewData(data);
-  };
+  const handleRetailerReviewDataUpdate = useCallback((data) => {
+    setRetailerReviewData((prevData) => {
+      // Simple deep equality check to prevent unnecessary re-renders
+      if (JSON.stringify(prevData) === JSON.stringify(data)) {
+        return prevData;
+      }
+      return data;
+    });
+  }, []);
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-10 text-center">
+      <div className="container mx-auto px-4 py-10 text-center mt-16 md:mt-20">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto"></div>
         <p className="mt-4 text-lg text-gray-600">Loading Product Details...</p>
       </div>
@@ -163,7 +171,7 @@ const ProductPage = ({ calculateCriticsScore }) => {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-10 text-center">
+      <div className="container mx-auto px-4 py-10 text-center mt-16 md:mt-20">
         <h1 className="text-2xl font-semibold text-red-600 mb-4">{error}</h1>
         <Link to="/" className="text-brand-primary hover:underline">Go back to Homepage</Link>
       </div>
@@ -228,20 +236,20 @@ const ProductPage = ({ calculateCriticsScore }) => {
           </div>
         </div>
         <div className="mb-8 sm:mb-10">
-             <WhereToBuyShare
-                product={product}
-                onRetailerReviewDataUpdate={handleRetailerReviewDataUpdate}
-                productPageUrl={window.location.href}
-            />
+          <WhereToBuyShare
+            product={product}
+            onRetailerReviewDataUpdate={handleRetailerReviewDataUpdate}
+            productPageUrl={window.location.href}
+          />
         </div>
         <ProductSpecifications product={product} />
         <CriticsReviewSection product={product} />
         <FeatureSpecificInsights product={product} insightsData={featureInsights} />
         <AudienceReviewSection product={product} />
         <CompareSimilarProducts
-            currentProduct={product}
-            allProducts={similarProducts}
-            calculateCriticsScore={calculateCriticsScore}
+          currentProduct={product}
+          allProducts={similarProducts}
+          calculateCriticsScore={calculateCriticsScore}
         />
         <RelatedArticles currentProduct={product} />
       </div>
