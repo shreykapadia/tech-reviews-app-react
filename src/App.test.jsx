@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Cookies from 'js-cookie';
 import App from './App'; // We test the App component which includes AppContent
-import { initGA, trackPageView } from './utils/analytics';
 
 // --- Mocks ---
 
@@ -71,6 +70,8 @@ global.fetch = jest.fn((url) => {
   return Promise.resolve({ ok: false, status: 404 });
 });
 
+
+
 // Mock analytics utility
 jest.mock('./utils/analytics', () => ({
   initGA: jest.fn(),
@@ -96,14 +97,14 @@ describe('App Cookie Consent Functionality', () => {
 
     // Default mock for fetch to avoid unhandled promise rejections if not specifically overridden
     global.fetch.mockImplementation((url) => {
-        if (url.includes('criticWeights.json')) {
-            return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
-        }
-        if (url.includes('searchAliases.json')) {
-            return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
-        }
-        // For supabase calls, if fetch is used by the library (it's not by default for js client)
-        return Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) });
+      if (url.includes('criticWeights.json')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      }
+      if (url.includes('searchAliases.json')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+      }
+      // For supabase calls, if fetch is used by the library (it's not by default for js client)
+      return Promise.resolve({ ok: false, status: 404, json: () => Promise.resolve({}) });
     });
   });
 
@@ -121,7 +122,7 @@ describe('App Cookie Consent Functionality', () => {
     render(<App />);
     // Wait for initial data loading to complete to ensure all useEffects have run
     await screen.findByTestId('app-routes'); // Wait for a stable part of the app to render
-    
+
     expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     expect(Cookies.get).toHaveBeenCalledWith('userConsent');
   });
@@ -146,14 +147,14 @@ describe('App Cookie Consent Functionality', () => {
     const acceptButton = screen.getByTestId('accept-cookies');
     fireEvent.click(acceptButton);
 
-    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: true, marketing: true }), { expires: 365, path: '/' });
+    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ marketing: true }), { expires: 365, path: '/' });
     expect(Cookies.set).toHaveBeenCalledWith(
       'userConsent',
-      JSON.stringify({ analytics: true, marketing: true }),
+      JSON.stringify({ marketing: true }),
       { expires: 365, path: '/' }
     );
     await waitFor(() => {
-        expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     });
   });
 
@@ -168,85 +169,16 @@ describe('App Cookie Consent Functionality', () => {
     const declineButton = screen.getByTestId('decline-cookies');
     fireEvent.click(declineButton);
 
-    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ analytics: false, marketing: false }), { expires: 365, path: '/' });
+    expect(Cookies.set).toHaveBeenCalledWith('userConsent', JSON.stringify({ marketing: false }), { expires: 365, path: '/' });
     expect(Cookies.set).toHaveBeenCalledWith(
       'userConsent',
-      JSON.stringify({ analytics: false, marketing: false }),
+      JSON.stringify({ marketing: false }),
       { expires: 365, path: '/' }
     );
     await waitFor(() => {
-        expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('cookie-banner')).not.toBeInTheDocument();
     });
   });
 
-  test('logs to console when analytics consent is enabled', async () => {
-    Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    render(<App />);
 
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Analytics enabled. Initializing analytics scripts...');
-    });
-    consoleSpy.mockRestore();
-  });
-  describe('Analytics Integration', () => {
-    test('initializes analytics when consent is granted after click', async () => {
-      Cookies.get.mockReturnValue(undefined);
-      render(<App />);
-
-      const acceptButton = await screen.findByTestId('accept-cookies');
-      fireEvent.click(acceptButton);
-
-      expect(initGA).toHaveBeenCalled();
-      expect(trackPageView).toHaveBeenCalledWith('/');
-    });
-
-    test('initializes analytics on mount if consent was previously granted', async () => {
-      Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
-      render(<App />);
-
-      await screen.findByTestId('app-routes');
-
-      await waitFor(() => {
-        expect(initGA).toHaveBeenCalled();
-      });
-      await waitFor(() => {
-        expect(trackPageView).toHaveBeenCalledWith('/');
-      });
-    });
-
-    test('does not initialize analytics if consent is declined', async () => {
-      Cookies.get.mockReturnValue(undefined);
-      render(<App />);
-
-      const declineButton = await screen.findByTestId('decline-cookies');
-      fireEvent.click(declineButton);
-
-      expect(initGA).not.toHaveBeenCalled();
-      expect(trackPageView).not.toHaveBeenCalled();
-    });
-
-    test('tracks page views on route change when consent is granted', async () => {
-      Cookies.get.mockReturnValue(JSON.stringify({ analytics: true, marketing: true }));
-
-      // We need to simulate a location change.
-      // Since we mocked useLocation, we can control its return value.
-      mockUseLocation.mockReturnValue({ pathname: '/', search: '' });
-
-      const { rerender } = render(<App />);
-      await screen.findByTestId('app-routes');
-
-      await waitFor(() => {
-        expect(trackPageView).toHaveBeenCalledWith('/');
-      });
-
-      // Change location and rerender
-      mockUseLocation.mockReturnValue({ pathname: '/search', search: '?q=test' });
-      rerender(<App />);
-
-      await waitFor(() => {
-        expect(trackPageView).toHaveBeenCalledWith('/search?q=test');
-      });
-    });
-  });
 });

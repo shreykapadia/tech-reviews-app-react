@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { supabase } from '../services/supabaseClient'; // Adjust path as necessary
 import Spinner from '../components/common/Spinner';
+import { withTimeout } from '../utils/asyncHelpers';
 
 export const AuthContext = createContext();
 
@@ -18,26 +19,15 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      // console.log(`[AuthContext] Fetching profile for user ID: ${userId} (Attempt ${retryCount + 1})`);
-      // Create a promise that rejects after 15 seconds (increased from 5s)
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Profile fetch timed out')), 15000)
-      );
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-      // Race the supabase query against the timeout
-      const { data, error } = await Promise.race([
-        supabase
-          .from('profiles')
-          .select('username, full_name, avatar_url, email, is_admin') // Keep original select fields
-          .eq('id', userId)
-          .single(),
-        timeoutPromise
-      ]);
-
-      if (error && error.code !== 'PGRST116') { // PGRST116: No rows found, not an error here
-        throw error; // Throw to be caught by the retry logic
+      if (error && error.code !== 'PGRST116') {
+        throw error;
       }
-      // console.log('[AuthContext] Profile data fetched:', data);
       setUserProfile(data || null);
       return data || null;
     } catch (error) {
@@ -54,31 +44,42 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      // console.log('[AuthContext] Initial session:', session);
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchUserProfile(session.user.id).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
+    // Get initial session with timeout
+    console.log('[AuthContext] Fetching initial session...');
+    withTimeout(supabase.auth.getSession(), 10000)
+      .then(({ data: { session } }) => {
+        console.log('[AuthContext] Initial session fetched:', session ? 'User logged in' : 'No user');
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchUserProfile(session.user.id).finally(() => {
+            setLoading(false);
+          });
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('[AuthContext] Error/Timeout fetching initial session:', err);
+        setLoading(false); // Ensure loading is stopped even on error
+      });
 
     // Listen for changes in auth state
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
-        // console.log('[AuthContext] Auth state changed:', _event, session);
+        console.log('[AuthContext] Auth state change event:', _event);
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          await fetchUserProfile(session.user.id);
+          try {
+            await withTimeout(fetchUserProfile(session.user.id), 10000);
+          } catch (err) {
+            console.error('[AuthContext] Error/Timeout fetching profile on auth change:', err);
+          }
         } else {
-          setUserProfile(null); // Clear profile on logout or session expiry
+          setUserProfile(null);
         }
-        // Ensure loading is set to false after potential async profile fetch
-        if (loading) setLoading(false);
+        setLoading(false);
       }
     );
 
@@ -86,7 +87,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       authListener?.subscription?.unsubscribe();
     };
-  }, [loading]); // Added loading to dependency array to ensure setLoading(false) is called correctly
+  }, []); // Explicitly empty array to prevent infinite loops and React hook warnings
 
   const signIn = async (email, password) => {
     setLoading(true);

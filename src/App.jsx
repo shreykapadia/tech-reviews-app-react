@@ -62,7 +62,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   const [allProductsArray, setAllProductsArray] = useState([]); // New state for all products
   const [isProductsLoading, setIsProductsLoading] = useState(true); // New state for products loading
   const [showCookieBanner, setShowCookieBanner] = useState(false);
-  const [cookieConsent, setCookieConsent] = useState({ analytics: false, marketing: false }); // New state for granular consent
+  const [cookieConsent, setCookieConsent] = useState({ marketing: false }); // New state for granular consent
   const [isAppDataLoading, setIsAppDataLoading] = useState(true); // New state for global data loading
 
   // State for header search functionality
@@ -157,10 +157,11 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
         }
       };
 
-      fetchCategories(); // This manages isAppDataLoading
-      fetchWeights();
-      fetchAliases();
-      fetchAllProductsData();
+      console.log('[App] Starting data fetch sequence...');
+      fetchCategories().then(() => console.log('[App] fetchCategories complete'));
+      fetchWeights().then(() => console.log('[App] fetchWeights complete'));
+      fetchAliases().then(() => console.log('[App] fetchAliases complete'));
+      fetchAllProductsData().then(() => console.log('[App] fetchAllProductsData complete'));
     }
     fetchData();
   }, []);
@@ -194,25 +195,20 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
     }
   }, []);
 
+
   // This new effect will run whenever consent changes, allowing you to initialize scripts.
   useEffect(() => {
-    if (cookieConsent.analytics) {
-      console.log('Analytics enabled. Initializing analytics scripts...');
-      initGA();
-    }
-    // You can add a similar block for marketing scripts
-  }, [cookieConsent.analytics]);
+    // We initialize our custom analytics. 
+    initGA();
+  }, []);
 
-  // Track page views when location or consent changes
+  // Track page views when location changes
   useEffect(() => {
-    if (cookieConsent.analytics) {
-      trackPageView(location.pathname + location.search);
-    }
-  }, [location, cookieConsent.analytics]);
-
+    trackPageView(location.pathname + location.search);
+  }, [location]);
 
   const handleAcceptCookieConsent = () => {
-    const newConsent = { analytics: true, marketing: true };
+    const newConsent = { marketing: true };
     Cookies.set('userConsent', JSON.stringify(newConsent), { expires: 365, path: '/' });
     setCookieConsent(newConsent);
     setShowCookieBanner(false);
@@ -220,7 +216,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
   };
 
   const handleDeclineCookieConsent = () => {
-    const newConsent = { analytics: false, marketing: false };
+    const newConsent = { marketing: false };
     Cookies.set('userConsent', JSON.stringify(newConsent), { expires: 365, path: '/' });
     setCookieConsent(newConsent);
     setShowCookieBanner(false);

@@ -33,7 +33,6 @@ const ToggleSwitch = ({ id, label, checked, onChange, disabled }) => (
 
 function CookieSettingsPage() {
   const [preferences, setPreferences] = useState({
-    analytics: false,
     marketing: false,
   });
   const [isSaved, setIsSaved] = useState(false);
@@ -47,16 +46,15 @@ function CookieSettingsPage() {
         const parsedConsent = JSON.parse(consentCookie);
         if (typeof parsedConsent === 'object' && parsedConsent !== null) {
           setPreferences({
-            analytics: !!parsedConsent.analytics,
             marketing: !!parsedConsent.marketing,
           });
         }
       } catch (e) {
         // Handle old "accepted" / "declined" string values for backward compatibility
         if (consentCookie === 'accepted') {
-          setPreferences({ analytics: true, marketing: true });
+          setPreferences({ marketing: true });
         } else {
-          setPreferences({ analytics: false, marketing: false });
+          setPreferences({ marketing: false });
         }
       }
     }
@@ -75,7 +73,7 @@ function CookieSettingsPage() {
   };
 
   const handleAcceptAll = () => {
-    const newPrefs = { analytics: true, marketing: true };
+    const newPrefs = { marketing: true };
     setPreferences(newPrefs);
     // Set as 'accepted' for simple compatibility with the main cookie banner logic
     Cookies.set('userConsent', 'accepted', { expires: 365, path: '/' });
@@ -113,17 +111,7 @@ function CookieSettingsPage() {
               </div>
             </div>
 
-            <div>
-              <ToggleSwitch
-                id="analytics-cookies"
-                label="Analytics Cookies"
-                checked={preferences.analytics}
-                onChange={() => handleToggle('analytics')}
-              />
-              <Paragraph>
-                These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. This allows us to measure and improve site performance.
-              </Paragraph>
-            </div>
+
 
             <div>
               <ToggleSwitch

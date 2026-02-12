@@ -22,6 +22,7 @@ const RequestPasswordResetPage = lazy(() => import('../features/auth/RequestPass
 const UpdatePasswordPage = lazy(() => import('../features/auth/UpdatePasswordPage'));
 const DashboardPage = lazy(() => import('../features/user/DashboardPage'));
 const AdminPage = lazy(() => import('../features/admin/AdminPage'));
+const AnalyticsDashboard = lazy(() => import('../features/admin/AnalyticsDashboard'));
 
 function AppRoutes({
   selectedProduct,
@@ -133,6 +134,14 @@ function AppRoutes({
           element={(
             <AdminRoute>
               <AdminPage />
+            </AdminRoute>
+          )}
+        />
+        <Route
+          path="/admin/analytics"
+          element={(
+            <AdminRoute>
+              <AnalyticsDashboard />
             </AdminRoute>
           )}
         />

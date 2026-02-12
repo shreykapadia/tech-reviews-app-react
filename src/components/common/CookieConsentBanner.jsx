@@ -17,7 +17,7 @@ function CookieConsentBanner({ onAccept, onDecline }) {
       borderTop: '1px solid #dee2e6'
     }}>
       <p style={{ margin: '0 0 15px 0', fontSize: '1rem' }}>
-        We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.
+        We use cookies to enhance your browsing experience. By clicking "Accept All", you consent to our use of cookies.
         {/* You should link to your cookie policy here */}
       </p>
       <button onClick={onAccept} style={{ marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}>Accept All</button>
