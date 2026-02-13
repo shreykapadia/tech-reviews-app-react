@@ -88,7 +88,7 @@ const HowItWorksSection = () => {
                 User-submitted reviews directly on the TechScore platform.
               </ListItem>
               <ListItem>
-                Aggregated user ratings and reviews from major e-commerce sites (e.g., Amazon, Best Buy), app stores, and relevant discussion forums or social media platforms.
+                Aggregated user ratings and reviews from major e-commerce sites (e.g., Amazon, Best Buy), app stores, and relevant discussion forums or social media platforms. (Coming Soon)
               </ListItem>
             </ul>
             <Paragraph>

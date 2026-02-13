@@ -9,6 +9,8 @@ import { initGA, trackPageView } from "./utils/analytics";
 import PrivacyPolicyPage from './features/staticContent/PrivacyPolicyPage'; // Updated path
 import CookieConsentBanner from './components/common/CookieConsentBanner'; // Updated path
 import TermsOfServicePage from './features/staticContent/TermsOfServicePage'; // Updated path
+import FeedbackWidget from './components/common/FeedbackWidget'; // Import FeedbackWidget
+import ScrollToTop from './components/common/ScrollToTop'; // Import ScrollToTop
 
 import AppRoutes from './routes/AppRoutes'; // Updated path
 import { AuthProvider } from './contexts/AuthContext'; // Import AuthProvider
@@ -270,6 +272,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
           onDecline={handleDeclineCookieConsent}
         />
       )}
+      <FeedbackWidget />
     </div>
   );
 }
@@ -278,6 +281,7 @@ function AppContent() { // Renamed App to AppContent to use hooks from react-rou
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <AppContent />
       </AuthProvider>

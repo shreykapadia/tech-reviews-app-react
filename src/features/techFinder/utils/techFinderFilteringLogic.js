@@ -13,6 +13,7 @@ import {
   getNumericScreenSizeOptions,
   getMobileScreenSize,
   parseSmartwatchBatteryLife,
+  getNumericSizeOptions, // Imported new utility
 } from './techFinderUtils';
 
 export const checkProductAgainstCriterion = (product, questionId, answerValue, categoryName, categoryQuestions) => {
@@ -249,7 +250,7 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
     const compatibility = String(keySpecs.compatibility || '').toLowerCase();
     const batteryHours = parseSmartwatchBatteryLife(keySpecs.batteryLife);
     const caseSizeStr = String(keySpecs.caseSize || '');
-    const caseSize = parseNumericValue(caseSizeStr);
+    const caseSizes = getNumericSizeOptions(caseSizeStr); // Parse to array: [42, 46]
     const retailPrice = parseNumericValue(keySpecs.retailPrice || product.retailPrice);
     const sensors = String(keySpecs.healthSensors || '').toLowerCase();
     const waterRes = String(keySpecs.waterResistance || '').toLowerCase();
@@ -288,11 +289,14 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
         return batteryMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Battery Life" } };
 
       case 'smartwatch-size':
-        if (caseSize === null) return { pass: true };
+        if (caseSizes.length === 0) return { pass: true };
         let sizeMatches = false;
-        if (answerValue === 'small_size') sizeMatches = caseSize <= 42;
-        else if (answerValue === 'medium_size') sizeMatches = caseSize >= 43 && caseSize <= 46;
-        else if (answerValue === 'large_size') sizeMatches = caseSize >= 46;
+        // Helper to check if ANY of the available sizes match the user preference
+        const hasSizeInRange = (min, max) => caseSizes.some(s => s >= min && s <= max);
+
+        if (answerValue === 'small_size') sizeMatches = hasSizeInRange(0, 42); // <= 42
+        else if (answerValue === 'medium_size') sizeMatches = hasSizeInRange(43, 46); // 43-46
+        else if (answerValue === 'large_size') sizeMatches = hasSizeInRange(46, 999); // >= 46 (Overlaps slightly with medium for border cases like 46mm, which is fine)
         else sizeMatches = true;
         return sizeMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Size" } };
 

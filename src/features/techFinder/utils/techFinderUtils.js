@@ -378,7 +378,8 @@ export const getNumericStorageOptions = (storageSpecInput) => {
     // Handles comma-separated strings, e.g., "128,256GB,1TB"
     // Also handles if the string itself is quoted like "\"128\",\"256GB\""
     // by relying on parseStorage to handle individual quoted items.
-    storageSpecInput.split(',').forEach(s => processItem(s.trim()));
+    // Handles comma or slash separated strings
+    storageSpecInput.split(/[,\/]/).forEach(s => processItem(s.trim()));
   } else if (typeof storageSpecInput === 'number') {
     processItem(storageSpecInput); // Assumed to be in GB
   }
@@ -412,7 +413,7 @@ export const getNumericScreenSizeOptions = (screenSizeSpecInput) => {
   if (Array.isArray(screenSizeSpecInput)) {
     screenSizeSpecInput.forEach(processItem);
   } else if (typeof screenSizeSpecInput === 'string') {
-    screenSizeSpecInput.split(',').forEach(s => processItem(s.trim()));
+    screenSizeSpecInput.split(/[,\/]/).forEach(s => processItem(s.trim()));
   } else if (typeof screenSizeSpecInput === 'number') {
     processItem(screenSizeSpecInput);
   }
@@ -443,3 +444,35 @@ export const getMobileScreenSize = (keySpecs) => {
 
   return null; // Return null if not a valid positive integer
 };
+
+/**
+ * Parses a generic size specification (e.g. "42mm / 46mm") to get an array of numeric options.
+ * Handles comma or slash separators.
+ * @param {string|string[]|number|null|undefined} sizeSpecInput - The size specification.
+ * @returns {number[]} Array of numeric values.
+ */
+export const getNumericSizeOptions = (sizeSpecInput) => {
+  if (sizeSpecInput === null || sizeSpecInput === undefined) return [];
+  const options = new Set();
+  const processItem = (item) => {
+    // Re-use parseNumericValue logic but for single item
+    // But parseNumericValue is aggressive with replace, so we use extractNumericSize logic from parseScreenSize
+    const match = String(item).match(/(\d+(\.\d+)?)/);
+    if (match) {
+      const val = parseFloat(match[1]);
+      if (!isNaN(val) && val > 0) options.add(val);
+    }
+  };
+
+  if (Array.isArray(sizeSpecInput)) {
+    sizeSpecInput.forEach(processItem);
+  } else if (typeof sizeSpecInput === 'string') {
+    // Split by comma or slash
+    sizeSpecInput.split(/[,\/]/).forEach(s => processItem(s.trim()));
+  } else if (typeof sizeSpecInput === 'number') {
+    processItem(sizeSpecInput);
+  }
+  return Array.from(options).sort((a, b) => a - b);
+};
+
+export const parseGenericNumericOptions = getNumericSizeOptions; // Alias if needed
