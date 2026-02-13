@@ -10,7 +10,7 @@ export function normalizeScore(score, scale, targetScale = 100) { // Added defau
   const lowerScale = typeof scale === 'string' ? scale.toLowerCase().trim() : ''; // Normalize scale input
 
   // More robust scale matching
-  if (lowerScale === 'out of 10' || lowerScale === '/10') {
+  if (lowerScale === 'out of 10' || lowerScale === '/10' || lowerScale === 'ai') {
     originalMax = 10;
   } else if (lowerScale === 'out of 5 stars' || lowerScale === '/5') {
     originalMax = 5;
@@ -37,57 +37,63 @@ export function normalizeScore(score, scale, targetScale = 100) { // Added defau
 
 // ... (the rest of your scoreCalculations.js file, like calculateCriticsScore, would go here)
 
-  
-  /**
-   * Calculates a weighted average Critics Score from an array of critic reviews.
-   */
-  export function calculateCriticsScore(product, criticWeightsData) {
-    if (!criticWeightsData || Object.keys(criticWeightsData).length === 0) {
-      console.warn("Critic weights not loaded or empty. Cannot calculate critics score.");
-      return null;
-    }
+
+/**
+ * Calculates a weighted average Critics Score from an array of critic reviews.
+ */
+export function calculateCriticsScore(product, criticWeightsData) {
+  if (!criticWeightsData || Object.keys(criticWeightsData).length === 0) {
+    console.warn("Critic weights not loaded or empty. Cannot calculate critics score.");
+    return null;
+  }
   // Check if product exists and if product.criticReviews is a non-empty array
   if (!product || !Array.isArray(product.criticReviews) || product.criticReviews.length === 0) {
     // console.warn(`Product "${product?.productName || 'N/A'}" has no valid critic reviews or criticReviews is not an array.`);
     return null; // No reviews to score, or invalid structure
   }
 
-    const reviews = product.criticReviews; // Use the actual reviews array from the product object
-    let totalWeightedScore = 0;
-    let totalWeight = 0;
-  
-    reviews.forEach(review => {
-      const normalizedScore = normalizeScore(review.score, review.scale, 100);
-      if (normalizedScore !== null) {
-        let publicationWeight = criticWeightsData[review.publication];
-        if (typeof publicationWeight !== 'number' || isNaN(publicationWeight)) {
-          publicationWeight = criticWeightsData.default; // Fallback to default weight
-        }
-  
-        if (typeof publicationWeight === 'number' && !isNaN(publicationWeight)) {
-          totalWeightedScore += normalizedScore * publicationWeight;
-          totalWeight += publicationWeight;
-        } else {
-          console.warn(`No valid weight found for publication "${review.publication}" (and no valid default). Skipping this review score.`);
-        }
-      }
-    });
-  
-    return totalWeight === 0 ? null : totalWeightedScore / totalWeight;
-  }
+  const reviews = product.criticReviews; // Use the actual reviews array from the product object
+  let totalWeightedScore = 0;
+  let totalWeight = 0;
 
-  /**
- * Calculates an aggregated audience score.
- * It considers the main product audience rating and count,
- * and optionally, an array of retailer reviews.
- * If actual review counts exist (main or retailer), it computes a weighted average.
- * If no review counts exist but audienceRatingString is parsable, it returns that score with a count of 0.
- * @param {string} audienceRatingString - E.g., "4.5 / 5".
- * @param {number} audienceReviewCountInput - Number of reviews for the main audienceRatingString.
- * @param {Array} retailerReviewsArray - Array of retailer review objects.
- *                                      Each object: { average: number, count: number, scale?: number }
- * @returns {object} - { score: number|null, count: number }
- */
+  reviews.forEach(review => {
+    const normalizedScore = normalizeScore(review.score, review.scale, 100);
+    if (normalizedScore !== null) {
+      let publicationWeight = criticWeightsData[review.publication];
+      if (typeof publicationWeight !== 'number' || isNaN(publicationWeight)) {
+        publicationWeight = criticWeightsData.default; // Fallback to default weight
+      }
+
+      // For AI-estimated scores, compound the publication weight with the Ai discount
+      const isAiEstimated = typeof review.scale === 'string' && review.scale.toLowerCase().trim() === 'ai';
+      if (isAiEstimated && typeof criticWeightsData.Ai === 'number') {
+        publicationWeight = publicationWeight * criticWeightsData.Ai;
+      }
+
+      if (typeof publicationWeight === 'number' && !isNaN(publicationWeight)) {
+        totalWeightedScore += normalizedScore * publicationWeight;
+        totalWeight += publicationWeight;
+      } else {
+        console.warn(`No valid weight found for publication "${review.publication}" (and no valid default). Skipping this review score.`);
+      }
+    }
+  });
+
+  return totalWeight === 0 ? null : totalWeightedScore / totalWeight;
+}
+
+/**
+* Calculates an aggregated audience score.
+* It considers the main product audience rating and count,
+* and optionally, an array of retailer reviews.
+* If actual review counts exist (main or retailer), it computes a weighted average.
+* If no review counts exist but audienceRatingString is parsable, it returns that score with a count of 0.
+* @param {string} audienceRatingString - E.g., "4.5 / 5".
+* @param {number} audienceReviewCountInput - Number of reviews for the main audienceRatingString.
+* @param {Array} retailerReviewsArray - Array of retailer review objects.
+*                                      Each object: { average: number, count: number, scale?: number }
+* @returns {object} - { score: number|null, count: number }
+*/
 export const calculateAudienceScore = (
   audienceRatingString,
   audienceReviewCountInput = 0,
