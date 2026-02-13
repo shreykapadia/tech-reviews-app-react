@@ -198,14 +198,14 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
 
 
     return (
-        <div className="min-h-screen pt-24 pb-12 bg-gray-50">
+        <div className="min-h-screen pt-24 pb-12 bg-gray-50 dark:bg-transparent">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center justify-between">
                     <button onClick={() => navigate(-1)} className="flex items-center text-gray-600 dark:text-slate-400 hover:text-brand-primary transition-colors">
                         <ChevronLeftIcon className="h-5 w-5 mr-1" />
                         Back
                     </button>
-                    <h1 className="text-3xl font-bold text-gray-900">Compare Products</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Compare Products</h1>
                     <div className="w-16"></div> {/* Spacer for centering if needed, or actions */}
                 </div>
 
@@ -227,7 +227,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                             <div key={product.productName} className="p-3 md:p-6 border-b border-gray-100 dark:border-slate-700 flex flex-col items-center text-center relative hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors group">
                                 <button
                                     onClick={() => handleRemoveProduct(product.productName)}
-                                    className="absolute top-2 right-2 p-1 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                                    className="absolute top-2 right-2 p-1 text-gray-300 dark:text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-all opacity-0 group-hover:opacity-100"
                                     title="Remove from comparison"
                                 >
                                     <XMarkIcon className="h-5 w-5" />
@@ -240,7 +240,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                                     />
                                 </Link>
                                 <Link to={`/product/${encodeURIComponent(product.productName)}`}>
-                                    <h3 className="font-bold text-sm md:text-lg text-brand-primary hover:underline mb-1">
+                                    <h3 className="font-bold text-sm md:text-lg text-brand-primary dark:text-blue-400 hover:underline mb-1">
                                         {product.productName}
                                     </h3>
                                 </Link>
@@ -342,7 +342,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                                 {product.aiProsCons && product.aiProsCons.pros && product.aiProsCons.pros.length > 0 ? (
                                     <ul className="text-xs md:text-sm text-left space-y-1">
                                         {product.aiProsCons.pros.slice(0, 3).map((pro, idx) => (
-                                            <li key={idx} className="flex items-start text-green-700">
+                                            <li key={idx} className="flex items-start text-green-700 dark:text-green-400">
                                                 <span className="mr-2">•</span> {pro}
                                             </li>
                                         ))}
@@ -362,7 +362,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
                                 {product.aiProsCons && product.aiProsCons.cons && product.aiProsCons.cons.length > 0 ? (
                                     <ul className="text-xs md:text-sm text-left space-y-1">
                                         {product.aiProsCons.cons.slice(0, 3).map((con, idx) => (
-                                            <li key={idx} className="flex items-start text-red-700">
+                                            <li key={idx} className="flex items-start text-red-700 dark:text-red-400">
                                                 <span className="mr-2">•</span> {con}
                                             </li>
                                         ))}

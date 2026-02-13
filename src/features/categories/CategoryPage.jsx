@@ -170,7 +170,7 @@ function CategoryPage({
                     <input
                       type="number"
                       placeholder="Max Price"
-                      className="p-2 border rounded"
+                      className="p-2 border dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 rounded"
                       value={activeFilters.maxPrice}
                       onChange={(e) => handlePriceFilterChange('maxPrice', e.target.value)}
                     />

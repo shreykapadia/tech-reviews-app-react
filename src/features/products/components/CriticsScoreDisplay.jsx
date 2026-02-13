@@ -48,7 +48,7 @@ const CriticsScoreDisplayComponent = ({ criticsScore }) => {
   return (
     <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl p-4 sm:p-5 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex items-center justify-between relative border border-white/60 dark:border-white/10 animate-fade-in-up transition-all duration-300">
       <div className="flex items-center">
-        <ShieldCheckIcon className="h-9 w-9 sm:h-10 sm:w-10 text-brand-primary mr-3 sm:mr-4 flex-shrink-0" aria-hidden="true" />
+        <ShieldCheckIcon className="h-9 w-9 sm:h-10 sm:w-10 text-brand-primary dark:text-blue-400 mr-3 sm:mr-4 flex-shrink-0" aria-hidden="true" />
         <div>
           <p className={`text-3xl sm:text-4xl font-bold ${scoreColorClass} leading-tight`}>
             {scoreToDisplay}

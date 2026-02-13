@@ -201,9 +201,9 @@ function Header({ onSearchSubmit, isHomePage = false }) {
   const showTransparentHeader = isHomePage && !isScrolled && !isMenuOpen && !isMobileSearchOpen;
 
   // Text color for logo and hamburger icon (contrasts with background)
-  const primaryInteractiveColorClass = showTransparentHeader ? 'text-white' : 'text-brand-primary';
+  const primaryInteractiveColorClass = showTransparentHeader ? 'text-white' : 'text-brand-primary dark:text-blue-400';
   // Text color for navigation links (contrasts with background)
-  const navLinkColorClass = showTransparentHeader ? 'text-white/90' : 'text-brand-text';
+  const navLinkColorClass = showTransparentHeader ? 'text-white/90' : 'text-brand-text dark:text-slate-200';
   // Search input style based on background
   const desktopSearchInputClasses = `
     w-full py-3 px-4 pr-10 text-sm rounded-full border transition-all duration-300 ease-in-out
@@ -234,7 +234,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
         >
           {/* Logo */}
           <Link to="/" className="cursor-pointer p-2 -m-2" onClick={closeMobileNavAndSearch}>
-            <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 font-serif ${showTransparentHeader ? 'text-white' : 'text-brand-primary'}`}>
+            <h1 className={`text-3xl font-extrabold transform hover:scale-105 transition-transform duration-200 font-serif ${showTransparentHeader ? 'text-white' : 'text-brand-primary dark:text-blue-400'}`}>
               TechScore
             </h1>
           </Link>
@@ -352,8 +352,8 @@ function Header({ onSearchSubmit, isHomePage = false }) {
       */}
       <nav
         className={`md:hidden absolute top-full left-0 right-0 w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg shadow-[0_16px_34px_rgba(7,33,58,0.16)] dark:shadow-[0_16px_34px_rgba(0,0,0,0.4)] py-3 transition-all duration-300 ease-in-out origin-top ${isMenuOpen && !isMobileSearchOpen
-            ? 'opacity-100 scale-y-100' // Open state: visible and full height
-            : 'opacity-0 scale-y-0 pointer-events-none' // Closed state: invisible, zero height, not interactive
+          ? 'opacity-100 scale-y-100' // Open state: visible and full height
+          : 'opacity-0 scale-y-0 pointer-events-none' // Closed state: invisible, zero height, not interactive
           }`}
       >
         <ul className="flex flex-col px-4 space-y-4 text-brand-text dark:text-slate-200 text-lg font-medium items-center">

@@ -85,10 +85,10 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={`feature-details-${feature.id}`}
-        className="w-full flex items-center justify-between py-3 sm:py-4 px-1 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-100 transition-colors"
+        className="w-full flex items-center justify-between py-3 sm:py-4 px-1 text-left hover:bg-gray-50 dark:hover:bg-slate-700/50 focus:outline-none focus:bg-gray-100 dark:focus:bg-slate-700/70 transition-colors"
       >
         <div className="flex items-center">
-          <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-brand-primary mr-3 flex-shrink-0" />
+          <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-brand-primary dark:text-blue-400 mr-3 flex-shrink-0" />
           <span className="text-sm sm:text-base font-medium text-brand-text">
             {feature.feature_category || 'Unnamed Feature'}
           </span>
@@ -102,7 +102,7 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
           {/* Always render the bar structure */}
           {/* Adjusted width of the bar container slightly if needed, or keep as is if layout allows */}
           {/* Original: w-16 sm:w-20. If space is tight, consider w-12 sm:w-16 or adjust margins. */}
-          <div className="w-14 sm:w-16 h-2 bg-gray-200 rounded-full overflow-hidden mr-2 sm:mr-3">
+          <div className="w-14 sm:w-16 h-2 bg-gray-200 dark:bg-slate-600 rounded-full overflow-hidden mr-2 sm:mr-3">
             <div
               className={`h-full rounded-full ${getSentimentColor(sentimentCategory)}`}
               style={{ width: `${displayScore}%` }}
@@ -113,7 +113,7 @@ const FeatureInsightItem = ({ feature, isOpen, onToggle }) => {
               }
             />
           </div>
-          {isOpen ? <ChevronUpIcon className="h-5 w-5 text-gray-500" /> : <ChevronDownIcon className="h-5 w-5 text-gray-500" />}
+          {isOpen ? <ChevronUpIcon className="h-5 w-5 text-gray-500 dark:text-slate-400" /> : <ChevronDownIcon className="h-5 w-5 text-gray-500 dark:text-slate-400" />}
         </div>
       </button>
       {isOpen && (
@@ -151,7 +151,7 @@ const FeatureSpecificInsights = ({ product, insightsData }) => {
   return (
     <div className="py-8 sm:py-10 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 animate-fade-in-up mt-6 sm:mt-8 transition-all duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
+        <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary dark:text-blue-400 font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Feature Insights
         </h3>
         <div className="border border-gray-200 dark:border-slate-600 rounded-md">

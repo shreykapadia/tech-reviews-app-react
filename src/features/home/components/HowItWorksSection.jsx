@@ -7,7 +7,7 @@ const HowItWorksSection = () => {
   // Helper component for consistent sub-section titles with icons
   const SectionSubTitle = ({ children, icon: IconComponent }) => (
     <div className="flex items-center mb-4">
-      {IconComponent && <IconComponent className="h-7 w-7 text-brand-primary mr-3 flex-shrink-0" aria-hidden="true" />}
+      {IconComponent && <IconComponent className="h-7 w-7 text-brand-primary dark:text-blue-400 mr-3 flex-shrink-0" aria-hidden="true" />}
       <h3 className="text-xl sm:text-2xl font-semibold text-brand-text font-sans">
         {children}
       </h3>
@@ -24,7 +24,7 @@ const HowItWorksSection = () => {
   // Helper component for consistent list item styling
   const ListItem = ({ children }) => (
     <li className="text-brand-text mb-3 leading-relaxed text-base flex items-start">
-      <CheckCircleIcon className="h-5 w-5 text-brand-primary mr-2.5 mt-1 flex-shrink-0" aria-hidden="true" />
+      <CheckCircleIcon className="h-5 w-5 text-brand-primary dark:text-blue-400 mr-2.5 mt-1 flex-shrink-0" aria-hidden="true" />
       <span>{children}</span>
     </li>
   );
@@ -33,7 +33,7 @@ const HowItWorksSection = () => {
     <section className="py-12 sm:py-16 bg-transparent animate-fade-in-up">
       <div className="container mx-auto px-4">
         {/* Main Title - Criterion 1.1, 1.2 */}
-        <h2 className="text-3xl font-bold text-brand-primary mb-10 sm:mb-12 text-center font-serif">
+        <h2 className="text-3xl font-bold text-brand-primary dark:text-blue-400 mb-10 sm:mb-12 text-center font-serif">
           Understanding Our Ratings
         </h2>
 

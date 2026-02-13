@@ -262,7 +262,7 @@ const AudienceReviewSection = ({ product }) => {
   return (
     <div className="py-8 sm:py-10 bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up mt-6 sm:mt-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center sm:text-left">
+        <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary dark:text-blue-400 font-serif mb-6 sm:mb-8 text-center sm:text-left">
           Community Rating
         </h3>
 
