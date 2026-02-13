@@ -1,4 +1,5 @@
-// src/components/ProductPage/AudienceRatingDisplay.jsx
+ 
+ // src/components/ProductPage/AudienceRatingDisplay.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'; // StarIcon and StarIconSolid imports removed
