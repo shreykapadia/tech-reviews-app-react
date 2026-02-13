@@ -6,7 +6,7 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
   if (!question) return null;
 
   return (
-    <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-lg shadow-xl dark:shadow-[0_16px_44px_rgba(0,0,0,0.35)]">
+    <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.4)] border border-white/60 dark:border-white/10 transition-all duration-300">
       <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-slate-200 mb-6">{question.text}</h3>
       {question.type === 'radio' && (
         <div className="space-y-3">

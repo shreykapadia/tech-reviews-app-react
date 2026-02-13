@@ -20,6 +20,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseClient';
 import { buildProductPath } from '../../utils/productRouting';
 import { fetchProductBySlug, fetchProductsByCategory } from '../../services/productService';
+import { useRecentlyViewed } from '../../hooks/useRecentlyViewed';
 
 const ProductPage = ({ calculateCriticsScore }) => {
   const { brandSlug, productNameSlug } = useParams();
@@ -33,6 +34,14 @@ const ProductPage = ({ calculateCriticsScore }) => {
   const { user, loading: authLoading } = useContext(AuthContext);
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoritingLoading, setFavoritingLoading] = useState(false);
+  const { addRecentlyViewed } = useRecentlyViewed();
+
+  // Track recently viewed products
+  useEffect(() => {
+    if (product && !loading) {
+      addRecentlyViewed(product);
+    }
+  }, [product, loading, addRecentlyViewed]);
 
   useEffect(() => {
     const loadProduct = async () => {

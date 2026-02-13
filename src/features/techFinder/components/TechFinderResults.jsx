@@ -78,7 +78,7 @@ const TechFinderResults = ({
           ))}
         </div>
       ) : (
-        <div className="text-center text-lg text-gray-600 dark:text-slate-400 py-10 bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-[0_16px_32px_rgba(8,38,67,0.12)] dark:shadow-[0_16px_32px_rgba(0,0,0,0.3)] border border-white/80 dark:border-slate-700/80 p-6">
+        <div className="text-center text-lg text-gray-600 dark:text-slate-400 py-10 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 p-6 transition-all duration-300">
           <p className="text-xl font-semibold mb-3">No exact matches found for all your criteria.</p>
           {!hasCloseMatches && (
             <p>Try relaxing your filters on budget or specific features, or go back to adjust your answers.</p>

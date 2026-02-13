@@ -140,19 +140,22 @@ const ProductCard = ({ product, layoutType = 'default' }) => {
       aria-label={`View details for ${product.productName}`}
     >
       {/* Image Section - Top for carousel, Left for default. Criterion II.1 */}
-      {/* Favorite button for ProductCard - positioned absolutely */}
-      {user && !authLoading && ( // Only show if user state is determined
+      {/* Favorite button — liquid glass style */}
+      {user && !authLoading && (
         <button
           onClick={handleFavoriteToggle}
           disabled={favoritingLoading}
-          className={`absolute top-2 right-2 z-10 p-1.5 rounded-full transition-colors duration-150 ease-in-out
-            ${isFavorited ? 'bg-red-500 hover:bg-red-600' : 'bg-brand-primary/75 hover:bg-brand-primary'}
-            ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`absolute top-3 right-3 z-10 p-2 rounded-xl backdrop-blur-xl transition-all duration-300 ease-in-out
+            border
+            ${isFavorited
+              ? 'bg-red-500/20 dark:bg-red-500/25 border-red-300/40 dark:border-red-400/30 shadow-[0_0_12px_rgba(239,68,68,0.3)]'
+              : 'bg-black/10 dark:bg-white/10 border-black/15 dark:border-white/15 hover:bg-black/20 dark:hover:bg-white/20'}
+            ${favoritingLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-110 active:scale-95'}`}
           aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
         >
           {isFavorited
-            ? <HeartSolidIcon className="h-5 w-5 text-white" />
-            : <HeartOutlineIcon className="h-5 w-5 text-white" />}
+            ? <HeartSolidIcon className="h-5 w-5 text-red-500 dark:text-red-400 drop-shadow-sm" />
+            : <HeartOutlineIcon className="h-5 w-5 text-slate-600 dark:text-white/90 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] dark:drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]" />}
         </button>
       )}
       <div

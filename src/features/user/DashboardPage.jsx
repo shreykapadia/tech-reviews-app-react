@@ -1,6 +1,6 @@
 // src/features/user/DashboardPage.jsx
 import { processProduct } from "../../services/productService";
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseClient';
@@ -78,6 +78,22 @@ function DashboardPage({ calculateCriticsScore }) {
     fetchUserFavorites();
   }, [user, authLoading]);
 
+  // Group favorites by category
+  const groupedFavorites = useMemo(() => {
+    const groups = {};
+    favoritedProducts.forEach(product => {
+      const cat = product.category || 'Uncategorized';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(product);
+    });
+    // Sort categories alphabetically, but push 'Uncategorized' to the end
+    return Object.entries(groups).sort(([a], [b]) => {
+      if (a === 'Uncategorized') return 1;
+      if (b === 'Uncategorized') return -1;
+      return a.localeCompare(b);
+    });
+  }, [favoritedProducts]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -91,7 +107,7 @@ function DashboardPage({ calculateCriticsScore }) {
 
   return (
     <div className="min-h-screen pt-24 pb-10 px-4 sm:px-6 lg:px-8 md:pt-28">
-      <div className="mx-auto bg-white/92 backdrop-blur-sm shadow-[0_24px_50px_rgba(8,38,67,0.14)] rounded-2xl border border-white/80 p-6 md:p-10">
+      <div className="mx-auto bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl shadow-[0_24px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.35)] rounded-2xl border border-white/60 dark:border-white/10 p-6 md:p-10">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-slate-100 mb-6">
           Welcome, <span className="text-brand-primary break-all">{userProfile?.username || user?.email || 'User'}</span>!
         </h1>
@@ -122,13 +138,28 @@ function DashboardPage({ calculateCriticsScore }) {
               <p className="text-gray-600 dark:text-slate-400 text-center py-10">You haven't favorited any products yet. Start exploring!</p>
             )}
             {!favoritesLoading && !favoritesError && favoritedProducts.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {favoritedProducts.map(product => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    calculateCriticsScore={calculateCriticsScore}
-                  />
+              <div className="space-y-10">
+                {groupedFavorites.map(([categoryName, products]) => (
+                  <div key={categoryName}>
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="h-8 w-1 rounded-full bg-brand-primary"></div>
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-slate-200">
+                        {categoryName}
+                      </h3>
+                      <span className="text-xs font-medium text-gray-400 dark:text-slate-500 bg-gray-100 dark:bg-slate-700 px-2.5 py-0.5 rounded-full">
+                        {products.length}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {products.map(product => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          calculateCriticsScore={calculateCriticsScore}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

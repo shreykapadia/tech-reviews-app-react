@@ -22,7 +22,7 @@ function SearchResultItemCard({ item, onCardClick, calculateCriticsScore }) {
 
   return (
     <div
-      className="bg-white dark:bg-slate-800 rounded-xl shadow-lg dark:shadow-[0_16px_44px_rgba(0,0,0,0.3)] transform hover:scale-[1.01] transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-blue-200 flex flex-col md:flex-row items-stretch cursor-pointer group overflow-hidden"
+      className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] transform hover:scale-[1.01] transition-all duration-300 border border-white/60 dark:border-white/10 flex flex-col md:flex-row items-stretch cursor-pointer group overflow-hidden"
       onClick={() => onCardClick(item)}
     >
       {/* Image Section */}

@@ -211,7 +211,7 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
 
                 <div className="overflow-x-auto pb-6">
                     <div
-                        className="min-w-max grid bg-white dark:bg-slate-800 shadow-xl dark:shadow-[0_16px_44px_rgba(0,0,0,0.35)] rounded-xl border border-gray-100 dark:border-slate-700"
+                        className="min-w-max grid bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-2xl border border-white/60 dark:border-white/10 transition-all duration-300"
                         style={{
                             gridTemplateColumns: isMobile
                                 ? `120px repeat(${comparingProducts.length}, minmax(160px, 1fr))`

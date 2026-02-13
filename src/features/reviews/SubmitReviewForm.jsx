@@ -265,7 +265,7 @@ function SubmitReviewForm({
   }
 
   return (
-    <div className="my-6 p-4 border border-gray-200 dark:border-slate-600 rounded-lg shadow dark:bg-slate-800">
+    <div className="my-6 p-4 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-slate-100 mb-4">{isEditMode ? 'Edit Your Review' : 'Write a Review'}</h3>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

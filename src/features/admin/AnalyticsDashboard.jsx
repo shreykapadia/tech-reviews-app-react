@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fi';
 
 const StatCard = ({ title, value, icon: Icon, colorClass }) => (
-    <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4 transition-all hover:shadow-md">
+    <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl p-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 flex items-center gap-4 transition-all duration-300 hover:shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
         <div className={`p-3 rounded-xl ${colorClass}`}>
             <Icon className="w-6 h-6 text-white" />
         </div>
@@ -140,7 +140,7 @@ const AnalyticsDashboard = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Top Pages Table */}
-                    <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                    <div className="lg:col-span-2 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 overflow-hidden transition-all duration-300">
                         <div className="p-6 border-b border-slate-100 dark:border-slate-700">
                             <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <FiMapPin className="text-blue-500" /> Most Visited Pages
@@ -173,7 +173,7 @@ const AnalyticsDashboard = () => {
                     </div>
 
                     {/* Event Breakdown */}
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+                    <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 p-6 transition-all duration-300">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                             <FiActivity className="text-purple-500" /> Event Mix
                         </h2>
@@ -201,7 +201,7 @@ const AnalyticsDashboard = () => {
                 </div>
 
                 {/* Recent Activity Log */}
-                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 overflow-hidden transition-all duration-300">
                     <div className="p-6 border-b border-slate-100 dark:border-slate-700">
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Recent Event Log</h2>
                     </div>

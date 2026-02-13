@@ -5,6 +5,7 @@ import HeroSection from './components/HeroSection';
 import ProductDetailView from './components/ProductDetailView';
 import CategoryBrowse from './components/CategoryBrowse';
 import ProductListings from './components/ProductListings';
+import RecentlyViewedProducts from './components/RecentlyViewedProducts';
 import HowItWorksSection from './components/HowItWorksSection';
 
 const HomePageComponent = ({
@@ -28,6 +29,7 @@ const HomePageComponent = ({
           <ProductListings
             calculateCriticsScore={calculateCriticsScore}
           />
+          <RecentlyViewedProducts />
           <HowItWorksSection />
         </>
       )}

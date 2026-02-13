@@ -27,7 +27,7 @@ const CategoryBrowse = React.memo(function CategoryBrowse({ categoriesData, isLo
                 key={category.id || category.slug} // Prefer category.id if available, fallback to slug
                 href={`/category/${category.slug}`} // Updated URL to match CategoryPage route
                 aria-label={category.ariaLabel}
-                className="group bg-white/85 dark:bg-slate-800/85 backdrop-blur-sm rounded-2xl shadow-[0_18px_35px_rgba(6,39,70,0.12)] dark:shadow-[0_18px_35px_rgba(0,0,0,0.3)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_22px_44px_rgba(6,39,70,0.16)] dark:hover:shadow-[0_22px_44px_rgba(0,0,0,0.4)] transition-all duration-300 border border-white/70 dark:border-slate-700/70 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
+                className="group bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] p-4 sm:p-6 transform hover:scale-[1.02] hover:shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] transition-all duration-300 border border-white/60 dark:border-white/10 hover:border-brand-accent/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary flex flex-col items-center justify-center text-center aspect-square"
               // aspect-square ensures the card is a square, good for consistent tap targets
               >
                 {category.iconImageUrl ? (

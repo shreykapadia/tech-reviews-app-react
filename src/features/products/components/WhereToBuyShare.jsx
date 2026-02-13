@@ -205,7 +205,7 @@ const WhereToBuyShare = ({ product, productPageUrl, onRetailerReviewDataUpdate }
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-slate-700 animate-fade-in-up">
+    <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl p-4 sm:p-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 animate-fade-in-up transition-all duration-300">
       <div className="flex justify-between items-center mb-4 sm:mb-5">
         <h3 className="text-xl sm:text-2xl font-semibold text-brand-primary font-serif">Find Best Deals</h3>
         <button

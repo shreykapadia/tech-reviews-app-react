@@ -65,7 +65,7 @@ function Carousel({
             <button
               onClick={prevPage}
               disabled={currentPage === 0}
-              className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 hover:bg-white rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 dark:bg-white/90 hover:bg-white dark:hover:bg-white rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] dark:shadow-[0_14px_28px_rgba(0,0,0,0.3)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               aria-label="Previous page"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-brand-primary">
@@ -116,7 +116,7 @@ function Carousel({
             <button
               onClick={nextPage}
               disabled={currentPage === totalPages - 1}
-              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 dark:bg-slate-700/85 hover:bg-white dark:hover:bg-slate-600 rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] dark:shadow-[0_14px_28px_rgba(0,0,0,0.3)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 p-3 bg-white/85 dark:bg-white/90 hover:bg-white dark:hover:bg-white rounded-full shadow-[0_14px_28px_rgba(8,38,67,0.16)] dark:shadow-[0_14px_28px_rgba(0,0,0,0.3)] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
               aria-label="Next page"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-brand-primary">
@@ -129,12 +129,12 @@ function Carousel({
 
       {/* Dots Navigation */}
       {!isMobileView && config.showDots && totalPages > 1 && itemsToDisplay.length > 0 && (
-        <div className="flex justify-center space-x-2 mt-10">
+        <div className="flex justify-center space-x-2.5 mt-5">
           {Array.from({ length: totalPages }).map((_, index) => (
             <button
               key={`dot-${index}`}
               onClick={() => goToPage(index)}
-              className={`w-3 h-3 rounded-full transition-colors duration-200 ${currentPage === index ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'}`}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${currentPage === index ? 'bg-brand-primary scale-125 shadow-[0_0_8px_rgba(59,130,246,0.4)]' : 'bg-gray-300 dark:bg-slate-600 hover:bg-gray-400 dark:hover:bg-slate-500'}`}
               aria-label={`Go to page ${index + 1}`}
             />
           ))}

@@ -57,7 +57,7 @@ const allArticlesData = [
 ];
 
 const ArticleCard = ({ article }) => (
-  <Link to={article.link} className="block bg-white dark:bg-slate-800 rounded-lg shadow-md dark:shadow-[0_8px_24px_rgba(0,0,0,0.3)] hover:shadow-lg transition-shadow duration-200 overflow-hidden group">
+  <Link to={article.link} className="block bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] border border-white/60 dark:border-white/10 transition-all duration-300 overflow-hidden group">
     {article.thumbnailUrl && (
       <img src={article.thumbnailUrl} alt={article.title} className="w-full h-32 sm:h-36 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
     )}
@@ -88,7 +88,7 @@ const RelatedArticles = ({ currentProduct }) => {
   }
 
   return (
-    <div className="py-8 sm:py-10 bg-gray-50 rounded-lg shadow-md border border-gray-200 animate-fade-in-up mt-6 sm:mt-8">
+    <div className="py-8 sm:py-10 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 animate-fade-in-up mt-6 sm:mt-8 transition-all duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl sm:text-3xl font-semibold text-brand-primary font-serif mb-6 sm:mb-8 text-center">
           Further Reading

@@ -147,7 +147,7 @@ function CategoryPage({
 
           <div className="lg:flex lg:space-x-8">
             <aside className={`lg:w-1/4 xl:w-1/5 mb-8 lg:mb-0`}>
-              <div className="sticky top-24 space-y-6 p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg dark:shadow-[0_16px_44px_rgba(0,0,0,0.3)] border border-gray-100 dark:border-slate-700">
+              <div className="sticky top-24 space-y-6 p-4 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 transition-all duration-300">
                 <FilterSection title="Brand">
                   {availableBrands.map(brand => (
                     <CheckboxFilterItem

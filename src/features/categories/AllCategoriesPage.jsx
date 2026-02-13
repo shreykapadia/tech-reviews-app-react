@@ -33,7 +33,7 @@ function AllCategoriesPage({ availableCategories, areGlobalCategoriesLoading }) 
           <Link
             key={category.slug || category.id}
             to={`/category/${category.slug}`}
-            className="block p-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-[0_16px_34px_rgba(8,38,67,0.12)] dark:shadow-[0_16px_34px_rgba(0,0,0,0.3)] hover:shadow-[0_22px_42px_rgba(8,38,67,0.16)] border border-white/80 dark:border-slate-700/80 transition-shadow duration-300 ease-in-out text-center transform hover:-translate-y-1"
+            className="block p-6 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] border border-white/60 dark:border-white/10 transition-all duration-300 text-center transform hover:-translate-y-1"
           >
             {category.iconImageUrl && (
               <img src={category.iconImageUrl} alt={`${category.name} icon`} className="w-16 h-16 mx-auto mb-4 object-contain" />
