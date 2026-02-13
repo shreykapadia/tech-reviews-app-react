@@ -26,7 +26,14 @@ const TOOLTIP_DESCRIPTIONS = {
     'OS': "The operating system (iOS or Android). Affects app ecosystem, customization, and interface feel.",
     'Resolution': "Pixel density of the screen. Higher resolution (e.g., 1440p, 4K) looks sharper than 1080p.",
     'Dxo': "DxOMark score is an independent benchmark for camera and audio quality. Higher scores indicate professional-grade performance.",
-    'Retail Price': "The official launch price. Actual market price may vary based on deals and discounts."
+    'Retail Price': "The official launch price. Actual market price may vary based on deals and discounts.",
+    // Smartwatch-specific
+    'Case Size': "The diameter of the watch case in millimeters. Larger cases (45mm+) have bigger displays but may not suit smaller wrists.",
+    'Battery Life': "How long the watch lasts on a single charge under typical use. Low Power Mode extends this by disabling features like always-on display.",
+    'Connectivity': "Wireless technologies the watch supports. 5G/LTE allows calls and data without your phone. Satellite enables emergency SOS in remote areas.",
+    'Compatibility': "Which phone and OS version is required to pair with this watch. Apple Watches require an iPhone.",
+    'Health Sensors': "Built-in health monitoring sensors like heart rate, ECG, blood oxygen, and temperature. More sensors enable richer health insights.",
+    'Water Resistance': "IP6X means fully dust-tight. WR50 is rated for swimming; WR100 supports recreational scuba diving up to 40m.",
 };
 
 const PortalTooltip = ({ activeTooltip }) => {
@@ -111,7 +118,15 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
         cameraSpecs_MP: 'Camera Specs (MP)',
         'Camera Specs_ MP': 'Camera Specs (MP)',
         dxo: 'Dxo',
-        operatingSystem: 'OS'
+        operatingSystem: 'OS',
+        // Smartwatch specs
+        caseSize: 'Case Size',
+        batteryLife: 'Battery Life',
+        connectivity: 'Connectivity',
+        compatibility: 'Compatibility',
+        healthSensors: 'Health Sensors',
+        waterResistance: 'Water Resistance',
+        retailPrice: 'Retail Price',
     };
 
     useEffect(() => {

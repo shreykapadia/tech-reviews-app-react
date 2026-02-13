@@ -50,27 +50,27 @@ const HowItWorksSection = () => {
           <div className="bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 hover:shadow-[0_16px_48px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.4)] transition-all duration-300">
             <SectionSubTitle icon={ShieldCheckIcon}>Critics Score</SectionSubTitle>
             <Paragraph>
-              The Critics Score is a single, aggregated numerical score on a <strong>0-100 scale</strong>. It represents the consensus of professional tech reviewers and reputable tech content creators, including established YouTubers.
+              The Critics Score is a single, aggregated numerical score on a <strong>0-100 scale</strong>. It represents the consensus of professional tech reviewers from top publications.
             </Paragraph>
             <Paragraph>
-              Our methodology employs a <strong>weighted average model</strong>. Key factors influencing the weighting include:
+              Our methodology uses a <strong>weighted average model</strong>:
             </Paragraph>
             <ul className="space-y-2 mb-4">
               <ListItem>
-                <strong>Source Authority/Reputation:</strong> Publications and reviewers with a history of rigorous, independent testing and long-standing reputations (e.g., CNET, TechRadar, Tom's Guide) receive higher weights.
+                <strong>Publication Weighting:</strong> Each publication is assigned a credibility weight based on their track record of rigorous, independent testing. Well-established sources carry more influence than lesser-known outlets.
               </ListItem>
               <ListItem>
-                <strong>Review Depth/Technicality:</strong> More in-depth reviews that provide technically validated assessments carry more weight than superficial overviews.
+                <strong>Score Normalization:</strong> Different reviewers use different rating scales, like 5-star, out of 10, or a percentage. We convert every score to a 0-100 scale before averaging so that all reviews are compared fairly.
               </ListItem>
               <ListItem>
-                <strong>Score Normalization:</strong> We utilize AI-driven techniques to normalize scores from various rating scales (e.g., 5-star, 10-point, letter grades) to our standard 0-100 scale, ensuring fair comparisons.
+                <strong>AI-Estimated Score Discount:</strong> When a publication writes a review but doesn't give an explicit numeric score, we estimate one based on the review's sentiment. These estimated scores are automatically discounted to reflect the lower confidence compared to an official rating.
               </ListItem>
             </ul>
             <Paragraph>
-              We are committed to transparency in our weighting and normalization processes. While the exact weights are dynamic and algorithmically adjusted, the principles guiding them remain consistent.
+              The final Critics Score is the weighted average of all normalized review scores, where each score's influence is determined by its publication's credibility weight.
             </Paragraph>
             <Paragraph className="text-sm text-gray-600 dark:text-slate-400 italic">
-              For example, a highly detailed review from a top-tier publication might contribute more significantly to the final Critics Score than a brief mention from a less established source. All scores are converted to a 0-100 scale before averaging.
+              For example, a 4.5 out of 5 review is first normalized to 90 out of 100, then factored into the average based on that publication's weight. A review from a top-tier source will naturally contribute more to the final score than one from a lesser-known outlet.
             </Paragraph>
           </div>
 

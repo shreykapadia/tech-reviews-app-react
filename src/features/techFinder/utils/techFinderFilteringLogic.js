@@ -250,9 +250,10 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
     const batteryHours = parseSmartwatchBatteryLife(keySpecs.batteryLife);
     const caseSizeStr = String(keySpecs.caseSize || '');
     const caseSize = parseNumericValue(caseSizeStr);
-    const retailPrice = parseNumericValue(keySpecs.retailPrice || product.retailPrice); // Handle flat or specs price
+    const retailPrice = parseNumericValue(keySpecs.retailPrice || product.retailPrice);
     const sensors = String(keySpecs.healthSensors || '').toLowerCase();
-    const type = String(keySpecs.type || '').toLowerCase(); // Hypothetical 'rugged' type or implied by other fields
+    const waterRes = String(keySpecs.waterResistance || '').toLowerCase();
+    const productNameLower = String(product.productName || '').toLowerCase();
 
     switch (questionId) {
       case 'smartwatch-compatibility':
@@ -266,17 +267,23 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
         let useMatches = false;
         if (answerValue === 'fitness_health') useMatches = sensors.includes('heart') || sensors.includes('oxygen') || sensors.includes('ecg') || sensors.includes('temp');
         else if (answerValue === 'notifications') useMatches = true; // Most smartwatches do this
-        else if (answerValue === 'style') useMatches = !caseSizeStr.toLowerCase().includes('rugged') && !caseSizeStr.toLowerCase().includes('ultra'); // Crude proxy
-        else if (answerValue === 'adventure') useMatches = caseSizeStr.toLowerCase().includes('rugged') || caseSizeStr.toLowerCase().includes('ultra') || String(product.productName).toLowerCase().includes('ultra') || String(product.productName).toLowerCase().includes('pro');
+        else if (answerValue === 'adventure') useMatches = productNameLower.includes('ultra') || productNameLower.includes('pro') || waterRes.includes('wr100') || waterRes.includes('mil-std');
         else useMatches = true;
         return useMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Primary Use" } };
+
+      case 'smartwatch-health':
+        let healthMatches = false;
+        if (answerValue === 'advanced_health') healthMatches = sensors.includes('ecg') || sensors.includes('blood oxygen') || sensors.includes('blood pressure') || sensors.includes('temperature');
+        else if (answerValue === 'basic_health') healthMatches = true; // All smartwatches have basic health
+        else healthMatches = true;
+        return healthMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Health Features" } };
 
       case 'smartwatch-battery-life':
         if (batteryHours === null) return { pass: true };
         let batteryMatches = false;
         if (answerValue === 'daily_charge') batteryMatches = batteryHours <= 24;
-        else if (answerValue === 'multi_day') batteryMatches = batteryHours > 24 && batteryHours <= 168; // Up to 7 days
-        else if (answerValue === 'long_battery') batteryMatches = batteryHours > 168; // > 7 days
+        else if (answerValue === 'multi_day') batteryMatches = batteryHours > 24 && batteryHours <= 72;
+        else if (answerValue === 'long_battery') batteryMatches = batteryHours > 36; // Prefer watches with above-average battery
         else batteryMatches = true;
         return batteryMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Battery Life" } };
 
@@ -284,7 +291,7 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
         if (caseSize === null) return { pass: true };
         let sizeMatches = false;
         if (answerValue === 'small_size') sizeMatches = caseSize <= 42;
-        else if (answerValue === 'medium_size') sizeMatches = caseSize >= 43 && caseSize <= 45;
+        else if (answerValue === 'medium_size') sizeMatches = caseSize >= 43 && caseSize <= 46;
         else if (answerValue === 'large_size') sizeMatches = caseSize >= 46;
         else sizeMatches = true;
         return sizeMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Size" } };
@@ -292,10 +299,10 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
       case 'smartwatch-budget':
         if (retailPrice === null) return { pass: true };
         let budgetMatches = false;
-        if (answerValue === 'under200') budgetMatches = retailPrice < 200;
-        else if (answerValue === '200-400') budgetMatches = retailPrice >= 200 && retailPrice <= 400;
-        else if (answerValue === '400-700') budgetMatches = retailPrice > 400 && retailPrice <= 700;
-        else if (answerValue === 'over700') budgetMatches = retailPrice > 700;
+        if (answerValue === 'under300') budgetMatches = retailPrice < 300;
+        else if (answerValue === '300-500') budgetMatches = retailPrice >= 300 && retailPrice <= 500;
+        else if (answerValue === '500-800') budgetMatches = retailPrice > 500 && retailPrice <= 800;
+        else if (answerValue === 'over800') budgetMatches = retailPrice > 800;
         else budgetMatches = true;
         return budgetMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
 

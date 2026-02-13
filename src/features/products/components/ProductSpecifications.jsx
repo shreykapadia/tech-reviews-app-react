@@ -47,17 +47,28 @@ const specDetailsMap = {
 
   // Smart Features (Primarily for TVs)
   smartTV: { label: 'Smart TV Platform', category: 'Smart Features', source: 'keySpecs' },
+
+  // Smartwatch-specific
+  caseSize: { label: 'Case Size', category: 'Design', source: 'keySpecs' },
+  compatibility: { label: 'Compatibility', category: 'General', source: 'keySpecs' },
+  batteryLife: { label: 'Battery Life', category: 'Battery & Power', source: 'keySpecs' },
+  connectivity: { label: 'Connectivity', category: 'Connectivity', source: 'keySpecs' },
+  healthSensors: { label: 'Health Sensors', category: 'Health & Sensors', source: 'keySpecs' },
+  waterResistance: { label: 'Water Resistance', category: 'Design', source: 'keySpecs' },
 };
 
 // Define the order of categories for display
 const orderedCategories = [
   'General',
+  'Design',
   'Display',
   'Performance',
   'Camera',
   'Storage',
   'Audio',
   'Smart Features',
+  'Connectivity',
+  'Health & Sensors',
   'Battery & Power',
 ];
 
