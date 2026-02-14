@@ -18,7 +18,7 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
                 value={option.value}
                 checked={currentAnswer === option.value}
                 onChange={() => onAnswerSelect(question.id, option.value)}
-                className="h-5 w-5 text-brand-primary focus:ring-brand-primary border-gray-300"
+                className="h-5 w-5 flex-shrink-0 text-brand-primary focus:ring-brand-primary border-gray-300"
               />
               <span className="ml-3 text-gray-700 dark:text-slate-300">{option.label}</span>
             </label>
@@ -36,7 +36,7 @@ const QuestionDisplay = ({ question, currentAnswer, onAnswerSelect }) => {
                 // currentAnswer for multiselect is expected to be an array
                 checked={Array.isArray(currentAnswer) && currentAnswer.includes(option.value)}
                 onChange={(e) => onAnswerSelect(question.id, option.value, e.target.checked)}
-                className="h-5 w-5 text-brand-primary focus:ring-brand-primary border-gray-300 rounded" // Added rounded for checkbox
+                className="h-5 w-5 flex-shrink-0 text-brand-primary focus:ring-brand-primary border-gray-300 rounded" // Added rounded for checkbox
               />
               <span className="ml-3 text-gray-700 dark:text-slate-300">{option.label}</span>
             </label>
