@@ -209,7 +209,7 @@ function Header({ onSearchSubmit, isHomePage = false }) {
     w-full py-3 px-4 pr-10 text-sm rounded-full border transition-all duration-300 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent
     ${showTransparentHeader
-      ? 'border-white/40 bg-white/20 text-white placeholder-white/75 focus:bg-white focus:text-brand-text shadow-lg backdrop-blur-sm'
+      ? 'border-white/40 bg-white/20 text-white placeholder-white/75 focus:bg-white focus:text-slate-900 shadow-lg backdrop-blur-sm'
       : 'border-slate-200 bg-white text-brand-text placeholder-slate-400 focus:bg-white shadow-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400 dark:focus:bg-slate-700'
     }
   `;

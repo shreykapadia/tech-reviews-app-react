@@ -115,7 +115,7 @@ export const searchProducts = async (searchTerm, { limit = 40 } = {}) => {
     let directMatchQuery = supabase
       .from('products')
       .select('*, categories(name), critic_reviews(*)')
-      .or(`product_name.ilike.%${term}%,brand.ilike.%${term}%,description.ilike.%${term}%`);
+      .or(`product_name.ilike.%${term}%,brand.ilike.%${term}%`);
 
     let categoryQuery = null;
     if (relevantCategories.length > 0) {
@@ -174,16 +174,30 @@ export const searchProducts = async (searchTerm, { limit = 40 } = {}) => {
       .sort((a, b) => {
         const aName = (a.productName || '').toLowerCase();
         const bName = (b.productName || '').toLowerCase();
-        const aMatch = aName.includes(term);
-        const bMatch = bName.includes(term);
-        // Boost exact matches or name matches to the top
-        if (aMatch && !bMatch) return -1;
-        if (!aMatch && bMatch) return 1;
+        const aBrand = (a.brand || '').toLowerCase();
+        const bBrand = (b.brand || '').toLowerCase();
 
-        // Secondary sort by critic score
+        // 1. Check for name/brand matches (Highest Priority)
+        const aInName = aName.includes(term) || aBrand.includes(term);
+        const bInName = bName.includes(term) || bBrand.includes(term);
+
+        if (aInName && !bInName) return -1;
+        if (!aInName && bInName) return 1;
+
+        // 2. Check for Category Relevance (Intent Match)
+        if (relevantCategories.length > 0) {
+          const aInCat = relevantCategories.includes(a.category);
+          const bInCat = relevantCategories.includes(b.category);
+          if (aInCat && !bInCat) return -1;
+          if (!aInCat && bInCat) return 1;
+        }
+
+        // 3. Secondary sort by critic score
         const aScore = a.preAggregatedCriticScore || 0;
         const bScore = b.preAggregatedCriticScore || 0;
-        return bScore - aScore;
+        if (aScore !== bScore) return bScore - aScore;
+
+        return 0;
       })
       .slice(0, limit);
 
