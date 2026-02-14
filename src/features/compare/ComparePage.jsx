@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon, XMarkIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import PropTypes from 'prop-types';
+import BackButton from '../../components/common/BackButton';
 
 // Helper to get query params
 function useQuery() {
@@ -216,12 +217,9 @@ const ComparePage = ({ allProducts, calculateCriticsScore, isLoading: isExternal
         <div className="min-h-screen pt-24 pb-12 bg-gray-50 dark:bg-transparent">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-6 flex items-center justify-between">
-                    <button onClick={() => navigate(-1)} className="flex items-center text-gray-600 dark:text-slate-400 hover:text-brand-primary transition-colors">
-                        <ChevronLeftIcon className="h-5 w-5 mr-1" />
-                        Back
-                    </button>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Compare Products</h1>
-                    <div className="w-16"></div> {/* Spacer for centering if needed, or actions */}
+                    <BackButton />
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100 text-center flex-grow">Compare Products</h1>
+                    <div className="w-10"></div> {/* Spacer to keep title centered */}
                 </div>
 
                 <div className="overflow-x-auto pb-6">

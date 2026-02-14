@@ -3,6 +3,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import ProductCard from '../../components/ProductCard';
 import { searchProducts } from '../../services/productService';
+import BackButton from '../../components/common/BackButton';
+import ThemeCheckbox from '../../components/common/ThemeCheckbox';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 function SearchResultsPage({ calculateCriticsScore }) {
   const [searchParams] = useSearchParams();
@@ -70,17 +73,26 @@ function SearchResultsPage({ calculateCriticsScore }) {
     );
   };
 
-  const FilterSection = ({ title, children }) => {
-    const [isOpen, setIsOpen] = useState(true);
+  const FilterSection = ({ title, children, defaultOpen = true }) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
     return (
       <div className="mb-4 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden transition-all duration-300">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600"
+          className="w-full flex justify-between items-center p-5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
         >
-          <h3 className="text-lg font-semibold text-brand-text dark:text-slate-100">{title}</h3>
+          <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-slate-400 opacity-90">{title}</h3>
+          {isOpen ? (
+            <ChevronUpIcon className="h-3.5 w-3.5 text-gray-400" />
+          ) : (
+            <ChevronDownIcon className="h-3.5 w-3.5 text-gray-400" />
+          )}
         </button>
-        {isOpen && <div className="p-4">{children}</div>}
+        {isOpen && (
+          <div className="px-5 pb-5 pt-1 space-y-4">
+            {children}
+          </div>
+        )}
       </div>
     );
   };
@@ -91,28 +103,54 @@ function SearchResultsPage({ calculateCriticsScore }) {
 
   return (
     <main className="container mx-auto px-4 py-10 mt-20 md:mt-24">
-      <div className="mb-12 flex flex-col sm:flex-row sm:items-baseline sm:gap-x-2">
-        <h1 className="text-3xl sm:text-4xl font-bold text-brand-primary font-serif">Search Results</h1>
-        {searchTerm && <p className="text-lg sm:text-xl text-brand-text mt-1 sm:mt-0">for <span className="font-semibold">"{searchTerm}"</span></p>}
+      <div className="mb-8">
+        <BackButton className="mb-4" />
+        <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-x-2">
+          <h1 className="text-3xl sm:text-4xl font-bold text-brand-primary font-serif">Search Results</h1>
+          {searchTerm && <p className="text-lg sm:text-xl text-brand-text mt-1 sm:mt-0">for <span className="font-semibold">"{searchTerm}"</span></p>}
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
         <aside className="w-full md:w-1/4 lg:w-1/5">
           <FilterSection title="Category">
             {availableCategories.map(cat => (
-              <label key={cat} className="flex items-center space-x-2 p-1 cursor-pointer">
-                <input type="checkbox" checked={selectedCategories.includes(cat)} onChange={() => handleCategoryChange(cat)} />
-                <span className="text-sm">{cat}</span>
-              </label>
+              <ThemeCheckbox
+                key={cat}
+                label={cat}
+                checked={selectedCategories.includes(cat)}
+                onChange={() => handleCategoryChange(cat)}
+              />
             ))}
           </FilterSection>
           <FilterSection title="Brand">
             {availableBrands.map(brand => (
-              <label key={brand} className="flex items-center space-x-2 p-1 cursor-pointer">
-                <input type="checkbox" checked={selectedBrands.includes(brand)} onChange={() => handleBrandChange(brand)} />
-                <span className="text-sm">{brand}</span>
-              </label>
+              <ThemeCheckbox
+                key={brand}
+                label={brand}
+                checked={selectedBrands.includes(brand)}
+                onChange={() => handleBrandChange(brand)}
+              />
             ))}
+          </FilterSection>
+
+          <FilterSection title="Price Range" defaultOpen={false}>
+            <div className="space-y-3">
+              <input
+                type="number"
+                placeholder="Min Price"
+                className="w-full p-2.5 text-sm bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all dark:text-slate-200"
+                value={priceRange.min}
+                onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
+              />
+              <input
+                type="number"
+                placeholder="Max Price"
+                className="w-full p-2.5 text-sm bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all dark:text-slate-200"
+                value={priceRange.max}
+                onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
+              />
+            </div>
           </FilterSection>
         </aside>
 

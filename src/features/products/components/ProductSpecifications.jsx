@@ -1,6 +1,7 @@
 // src/components/ProductPage/ProductSpecifications.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
+import { getStartingPrice } from '../../../utils/productUtils';
 
 // Define the structure, labels, and data sources for specifications
 const specDetailsMap = {
@@ -78,29 +79,7 @@ const ProductSpecifications = ({ product }) => {
   }
 
   const { keySpecs = {} } = product;
-
-  // Calculate starting retail price
-  let startingPrice = null;
-  const retailPriceData = keySpecs?.retailPrice;
-
-  if (typeof retailPriceData === 'number') {
-    startingPrice = retailPriceData;
-  } else if (Array.isArray(retailPriceData) && retailPriceData.length > 0) {
-    const prices = retailPriceData.map(item => {
-      if (typeof item === 'number') {
-        return item;
-      }
-      // Handles cases like [{ screenSize: "13", price: 999 }, ...]
-      if (typeof item === 'object' && item !== null && typeof item.price === 'number') {
-        return item.price;
-      }
-      return Infinity; // Ignore items not in expected format to ensure Math.min works correctly
-    }).filter(price => typeof price === 'number'); // Ensure only numbers are considered for Math.min
-
-    if (prices.length > 0) {
-      startingPrice = Math.min(...prices);
-    }
-  }
+  const startingPrice = getStartingPrice(keySpecs.retailPrice);
 
   return (
     <div className="py-8 sm:py-10 bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/60 dark:border-white/10 animate-fade-in-up mt-6 sm:mt-8 transition-all duration-300">

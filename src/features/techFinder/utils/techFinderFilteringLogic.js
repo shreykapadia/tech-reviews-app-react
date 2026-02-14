@@ -15,6 +15,7 @@ import {
   parseSmartwatchBatteryLife,
   getNumericSizeOptions, // Imported new utility
 } from './techFinderUtils';
+import { getStartingPrice } from '../../../utils/productUtils';
 
 export const checkProductAgainstCriterion = (product, questionId, answerValue, categoryName, categoryQuestions) => {
   const question = categoryQuestions.find(q => q.id === questionId);
@@ -87,8 +88,8 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
       case 'tv-brand-preference':
         return handleBrandPreferenceFilter(getNestedValue(product, question.productField), answerValue) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Brand Preference" } };
       case 'tv-budget': {
-        const prices = keySpecs?.retailPrice;
-        if (!prices) return { pass: true }; // No price info, can't filter by budget
+        const price = getStartingPrice(keySpecs?.retailPrice);
+        if (price === null) return { pass: true }; // No price info, can't filter by budget
         const checkPrice = (p) => {
           if (answerValue === 'under500') return p < 500;
           if (answerValue === '500-1000') return p >= 500 && p <= 1000;
@@ -96,11 +97,7 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
           if (answerValue === 'over2000') return p > 2000;
           return true;
         };
-        let matchesBudget = false;
-        if (typeof prices === 'number') matchesBudget = checkPrice(prices);
-        else if (Array.isArray(prices)) matchesBudget = prices.some(item => checkPrice(typeof item === 'object' ? item.price : item));
-        else matchesBudget = true; // Should not happen if prices is not number/array and not null
-        return matchesBudget ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+        return checkPrice(price) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
       }
       default: return { pass: true };
     }
@@ -154,9 +151,8 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
       case 'laptop-brand-preference':
         return handleBrandPreferenceFilter(getNestedValue(product, question.productField), answerValue) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Brand Preference" } };
       case 'laptop-budget': {
-        const retailPriceData = keySpecs?.retailPrice;
-        if (!retailPriceData) return { pass: true };
-        let budgetMatches = false;
+        const price = getStartingPrice(keySpecs?.retailPrice);
+        if (price === null) return { pass: true };
         const checkPrice = (p) => {
           if (answerValue === 'under500') return p < 500;
           if (answerValue === '500-800') return p >= 500 && p <= 800;
@@ -165,10 +161,7 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
           if (answerValue === 'over1800') return p > 1800;
           return true;
         };
-        if (typeof retailPriceData === 'number') budgetMatches = checkPrice(retailPriceData);
-        else if (Array.isArray(retailPriceData)) budgetMatches = retailPriceData.some(item => checkPrice(typeof item === 'object' ? item.price : item));
-        else budgetMatches = true;
-        return budgetMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+        return checkPrice(price) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
       }
       default: return { pass: true };
     }
@@ -234,8 +227,8 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
       case 'smartphone-brand-preference':
         return handleBrandPreferenceFilter(getNestedValue(product, question.productField), answerValue) ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Brand Preference" } };
       case 'smartphone-budget': {
-        const price = keySpecs?.retailPrice;
-        if (typeof price !== 'number') return { pass: true }; // No price info
+        const price = getStartingPrice(keySpecs?.retailPrice);
+        if (price === null) return { pass: true }; // No price info
         let budgetMatchesSM = false;
         if (answerValue === 'budget_under300_sm') budgetMatchesSM = price < 300;
         else if (answerValue === 'budget_300_600_sm') budgetMatchesSM = price >= 300 && price <= 600;
@@ -300,15 +293,17 @@ export const checkProductAgainstCriterion = (product, questionId, answerValue, c
         else sizeMatches = true;
         return sizeMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Size" } };
 
-      case 'smartwatch-budget':
-        if (retailPrice === null) return { pass: true };
-        let budgetMatches = false;
-        if (answerValue === 'under300') budgetMatches = retailPrice < 300;
-        else if (answerValue === '300-500') budgetMatches = retailPrice >= 300 && retailPrice <= 500;
-        else if (answerValue === '500-800') budgetMatches = retailPrice > 500 && retailPrice <= 800;
-        else if (answerValue === 'over800') budgetMatches = retailPrice > 800;
-        else budgetMatches = true;
-        return budgetMatches ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+      case 'smartwatch-budget': {
+        const price = getStartingPrice(keySpecs?.retailPrice || product.retailPrice);
+        if (price === null) return { pass: true };
+        let budgetMatchesWatch = false;
+        if (answerValue === 'under300') budgetMatchesWatch = price < 300;
+        else if (answerValue === '300-500') budgetMatchesWatch = price >= 300 && price <= 500;
+        else if (answerValue === '500-800') budgetMatchesWatch = price > 500 && price <= 800;
+        else if (answerValue === 'over800') budgetMatchesWatch = price > 800;
+        else budgetMatchesWatch = true;
+        return budgetMatchesWatch ? { pass: true } : { pass: false, reason: { id: questionId, label: question.filterLabel || question.text || "Budget" } };
+      }
 
       default: return { pass: true };
     }
@@ -368,20 +363,5 @@ export const getProductPriceForSort = (product, currentAnswers, categoryName) =>
   }
 
   // Fallback for non-TVs or TVs without size-specific pricing in answers
-  if (typeof retailPriceData === 'number') {
-    return retailPriceData;
-  }
-  if (Array.isArray(retailPriceData) && retailPriceData.length > 0) {
-    let minPrice = Infinity;
-    let foundPrice = false;
-    for (const item of retailPriceData) {
-      const currentItemPrice = (typeof item === 'object' && typeof item.price === 'number') ? item.price : (typeof item === 'number' ? item : null);
-      if (currentItemPrice !== null) {
-        minPrice = Math.min(minPrice, currentItemPrice);
-        foundPrice = true;
-      }
-    }
-    return foundPrice ? minPrice : null;
-  }
-  return null;
+  return getStartingPrice(retailPriceData);
 };

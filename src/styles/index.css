@@ -302,3 +302,14 @@ details .content {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+/* Hide scrollbar utilities */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar,
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

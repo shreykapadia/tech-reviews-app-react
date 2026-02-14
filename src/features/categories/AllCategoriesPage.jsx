@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Breadcrumbs from '../products/components/Breadcrumbs';
+import BackButton from '../../components/common/BackButton';
 
 function AllCategoriesPage({ availableCategories, areGlobalCategoriesLoading }) {
   if (areGlobalCategoriesLoading) {
@@ -25,6 +26,9 @@ function AllCategoriesPage({ availableCategories, areGlobalCategoriesLoading }) 
   return (
     <div className="container mx-auto px-4 py-10 mt-16 md:mt-20">
       <Breadcrumbs crumbs={[{ label: 'Home', path: '/' }, { label: 'Categories' }]} />
+      <div className="mb-6 flex justify-start">
+        <BackButton />
+      </div>
       <h1 className="text-3xl sm:text-4xl font-bold text-brand-text dark:text-slate-100 font-serif mb-8 text-center">
         All Categories
       </h1>

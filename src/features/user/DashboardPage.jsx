@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabaseClient';
 import ProductCard from '../../components/ProductCard';
+import BackButton from '../../components/common/BackButton';
 
 function DashboardPage({ calculateCriticsScore }) {
   const { user, userProfile, loading: authLoading } = useContext(AuthContext);
@@ -108,6 +109,7 @@ function DashboardPage({ calculateCriticsScore }) {
   return (
     <div className="min-h-screen pt-24 pb-10 px-4 sm:px-6 lg:px-8 md:pt-28">
       <div className="mx-auto bg-white/85 dark:bg-slate-800/70 backdrop-blur-xl shadow-[0_24px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.35)] rounded-2xl border border-white/60 dark:border-white/10 p-6 md:p-10">
+        <BackButton className="mb-6" />
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-slate-100 mb-6">
           Welcome, <span className="text-brand-primary break-all">{userProfile?.username || user?.email || 'User'}</span>!
         </h1>

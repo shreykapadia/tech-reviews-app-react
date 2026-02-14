@@ -21,6 +21,7 @@ import { supabase } from '../../services/supabaseClient';
 import { buildProductPath } from '../../utils/productRouting';
 import { fetchProductBySlug, fetchProductsByCategory } from '../../services/productService';
 import { useRecentlyViewed } from '../../hooks/useRecentlyViewed';
+import BackButton from '../../components/common/BackButton';
 
 const ProductPage = ({ calculateCriticsScore }) => {
   const { brandSlug, productNameSlug } = useParams();
@@ -206,7 +207,10 @@ const ProductPage = ({ calculateCriticsScore }) => {
   return (
     <>
       <Breadcrumbs crumbs={productPageCrumbs} />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mt-16 md:mt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <BackButton />
+      </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mt-4 md:mt-8">
         <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-x-8 gap-y-6 sm:gap-y-8 mb-8 sm:mb-10">
           <div className="order-1 lg:col-start-9 lg:col-span-4 lg:row-start-1">
             <ProductTitleBrand productName={product.productName} brand={product.brand} />
